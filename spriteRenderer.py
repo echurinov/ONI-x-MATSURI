@@ -7,6 +7,7 @@ class SpriteRenderer(Component):
         super().__init__("SpriteRenderer")
         self.__sprite = sprite
 
+    # Add the "parent" attribute to the sprite (useful later)
     def on_added_to_entity(self):
         self.__sprite.parent = self.parent
 

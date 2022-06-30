@@ -56,8 +56,10 @@ class MyGame(arcade.Window):
     def setup(self):
         self.__create_player()
         self.__create_level()
-
         arcade.set_background_color(arcade.color.AMAZON)
+
+        # Trigger the "Start" event
+        EventManager.trigger_event("Start")
 
     def on_update(self, dt):
         # Trigger screen update event

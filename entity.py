@@ -8,7 +8,7 @@ class Entity:
         self.__components = components
         for item in components:
             item.parent = self  # Set the parent of each component to this entity
-        self.__static = static
+        self.__static = static  # Whether this entity is static. Decides which spritelist the entity is put into
         self.__children = []
         self.__parent = None
         self.__active = active

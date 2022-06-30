@@ -34,6 +34,24 @@ class EntityManager:
             if hasattr(component, 'on_created'):
                 component.on_created()
 
+    # Sets an entity to be static (True) or dynamic (False) and assigns it to the relevant SpriteList
+    @staticmethod
+    def set_static(entity, static):
+        sprite = entity.get_component_by_name("SpriteRenderer")
+        if sprite is not None:
+            # Remove entity from existing sprite lists
+            if entity.static:
+                EntityManager.__static_entities.remove(sprite.sprite)
+            else:
+                EntityManager.__dynamic_entities.remove(sprite.sprite)
+            # Add entity to new sprite list
+            if static:
+                EntityManager.__static_entities.append(sprite.sprite)
+            else:
+                EntityManager.__dynamic_entities.append(sprite.sprite)
+        # Set the static flag if it isn't already set
+        entity.static = static
+
     # Returns a list of entities matching the given name
     @staticmethod
     def get_entities_by_name(name):

@@ -59,7 +59,7 @@ class PhysicsObject(Component):
         transform_comp = self.parent.get_component_by_name("Transform")
         # Get entity sprite renderer component
         sprite_comp = self.parent.get_component_by_name("SpriteRenderer")
-        # Move the player
+        # Move the entity
         transform_comp.move((self.__velocity[0] * dt, self.__velocity[1] * dt))
 
         # Reset the touching ground flag (will be set later if it's on the ground)
@@ -69,7 +69,9 @@ class PhysicsObject(Component):
         # Only checks for collisions with static entities
         collider_hit_list = arcade.check_for_collision_with_list(sprite_comp.sprite, EntityManager.get_static_entities())
         for collider in collider_hit_list:
-            # Get the difference in height between the player and the floor (how far the player is into the floor)
+            # Get the difference in height between the player and the floor (how far the entity is into the floor)
+            # The "parent" attribute is added to the sprite when the SpriteRenderer is added to the entity
+            # This parent is the parent entity
             difference = (collider.parent.get_component_by_name("Transform").position[1] + collider.height/2) \
                          - (transform_comp.position[1] - sprite_comp.sprite.height/2)
             # Move the player back up to the floor
