@@ -11,8 +11,9 @@ class PlayerController(Component):
         self.__keys_pressed[key] = True
 
         # Jump
-        if key == arcade.key.W:
-            self.parent.get_component_by_name("PhysicsObject").set_velocity((0, 250))
+        if key == arcade.key.W and self.parent.get_component_by_name("PhysicsObject").touching_ground:
+            self.parent.get_component_by_name("PhysicsObject").set_velocity((0, 400))
+            self.parent.get_component_by_name("PhysicsObject").touching_ground = False
 
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):

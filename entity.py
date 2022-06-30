@@ -2,7 +2,7 @@
 # Entities have Components, which give them functionality
 # Entities can be tagged to help find them
 class Entity:
-    def __init__(self, name="", tags=[], components=[], static=False):
+    def __init__(self, name="", tags=[], components=[], static=False, active=True):
         self.__name = name
         self.__tags = tags
         self.__components = components
@@ -11,11 +11,26 @@ class Entity:
         self.__static = static
         self.__children = []
         self.__parent = None
+        self.__active = active
+        # Call on_added_to_entity on all child components
+        for item in components:
+            if hasattr(item, 'on_added_to_entity'):
+                item.on_added_to_entity()
 
     # Add a component to an entity
     def add_component(self, component):
         self.__components.append(component)
         component.parent = self
+        if hasattr(component, 'on_added_to_entity'):
+            component.on_added_to_entity()
+
+    @property
+    def active(self):
+        return self.__active
+
+    @active.setter
+    def active(self, value):
+        self.__active = value
 
     @property
     def name(self):

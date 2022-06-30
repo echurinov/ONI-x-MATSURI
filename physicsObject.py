@@ -1,7 +1,9 @@
 import arcade
 
 from component import Component
+from entityManager import EntityManager
 from eventManager import EventManager
+
 
 # Component to add physics to an object
 # Currently only supports gravity and basic acceleration
@@ -11,11 +13,20 @@ class PhysicsObject(Component):
         self.__velocity = (0, 0)
         self.__usesGravity = uses_gravity
         self.__max_velocity = max_velocity
+        self.__touching_ground = False
         # Add listener for physics update events
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)
         if uses_gravity:
             # Add listener for gravity update event
             EventManager.add_listener("GravityUpdate", self.on_gravity_update)
+
+    @property
+    def touching_ground(self):
+        return self.__touching_ground
+
+    @touching_ground.setter
+    def touching_ground(self, value):
+        self.__touching_ground = value
 
     @property
     def uses_gravity(self):
@@ -44,9 +55,29 @@ class PhysicsObject(Component):
             arcade.clamp(self.__velocity[0], -self.__max_velocity[0], self.__max_velocity[0]),
             arcade.clamp(self.__velocity[1], -self.__max_velocity[1], self.__max_velocity[1])
         )
-        player_ent = self.parent
-        transform_comp = player_ent.get_component_by_name("Transform")
+        # Get entity transform component
+        transform_comp = self.parent.get_component_by_name("Transform")
+        # Get entity sprite renderer component
+        sprite_comp = self.parent.get_component_by_name("SpriteRenderer")
+        # Move the player
         transform_comp.move((self.__velocity[0] * dt, self.__velocity[1] * dt))
+
+        # Reset the touching ground flag (will be set later if it's on the ground)
+        self.__touching_ground = False
+
+        # Check for collisions, move object to the surface if it's inside the floor
+        # Only checks for collisions with static entities
+        collider_hit_list = arcade.check_for_collision_with_list(sprite_comp.sprite, EntityManager.get_static_entities())
+        for collider in collider_hit_list:
+            # Get the difference in height between the player and the floor (how far the player is into the floor)
+            difference = (collider.parent.get_component_by_name("Transform").position[1] + collider.height/2) \
+                         - (transform_comp.position[1] - sprite_comp.sprite.height/2)
+            # Move the player back up to the floor
+            transform_comp.move((0, difference))
+            # Set player vertical velocity to 0
+            self.set_velocity((self.__velocity[0], 0))
+            # Set touching ground to true
+            self.__touching_ground = True
 
     def on_gravity_update(self, gravity, dt):
         self.add_acceleration((0, gravity))
