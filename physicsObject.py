@@ -1,7 +1,7 @@
 import arcade
 
 from component import Component
-from entityManager import EntityManager
+from gameManager import GameManager
 from eventManager import EventManager
 
 
@@ -67,7 +67,7 @@ class PhysicsObject(Component):
 
         # Check for collisions, move object to the surface if it's inside the floor
         # Only checks for collisions with static entities
-        collider_hit_list = arcade.check_for_collision_with_list(sprite_comp.sprite, EntityManager.get_static_entities())
+        collider_hit_list = arcade.check_for_collision_with_list(sprite_comp.sprite, GameManager.get_static_entities())
         for collider in collider_hit_list:
             # Get the difference in height between the player and the floor (how far the entity is into the floor)
             # The "parent" attribute is added to the sprite when the SpriteRenderer is added to the entity

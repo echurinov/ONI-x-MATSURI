@@ -3,7 +3,7 @@ import arcade
 # From arcade online docs
 from collider import Collider
 from entity import Entity
-from entityManager import EntityManager
+from gameManager import GameManager
 from eventManager import EventManager
 from physicsObject import PhysicsObject
 from playerController import PlayerController
@@ -29,7 +29,7 @@ class MyGame(arcade.Window):
         level_entity = Entity("Level", ["LevelTag"], [level_sprite_renderer, level_transform, level_collider],
                               static=True)
         # Add the platform entity to the manager
-        EntityManager.add_entity(level_entity)
+        GameManager.add_entity(level_entity)
 
     def __create_player(self):
         # Setup player
@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
                                 player_collider],
                                static=False)
         # Add the player entity to the manager
-        EntityManager.add_entity(player_entity)
+        GameManager.add_entity(player_entity)
 
     def setup(self):
         self.__create_player()
@@ -78,7 +78,7 @@ class MyGame(arcade.Window):
     def on_draw(self):
         # Render the screen
         self.clear()
-        EntityManager.draw()
+        GameManager.draw()
 
 
 def main():
