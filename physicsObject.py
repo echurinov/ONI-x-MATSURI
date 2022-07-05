@@ -69,14 +69,20 @@ class PhysicsObject(Component):
         # Only checks for collisions with static entities
         # Has issues with walls
         collider_hit_list = arcade.check_for_collision_with_list(sprite_comp.sprite, GameManager.get_static_entities())
+        highest = -float("inf")
         for collider in collider_hit_list:
             # Get the difference in height between the player and the floor (how far the entity is into the floor)
             # The "parent" attribute is added to the sprite when the SpriteRenderer is added to the entity
             # This parent is the parent entity
             difference = (collider.parent.get_component_by_name("Transform").position[1] + collider.height/2) \
                          - (transform_comp.position[1] - sprite_comp.sprite.height/2)
+            if difference > highest:
+                highest = difference
+
+        # If the highest variable was set, the entity is inside the floor
+        if highest != -float("inf"):
             # Move the player back up to the floor
-            transform_comp.move((0, difference))
+            transform_comp.move((0, highest))
             # Set player vertical velocity to 0
             self.set_velocity((self.__velocity[0], 0))
             # Set touching ground to true

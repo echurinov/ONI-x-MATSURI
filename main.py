@@ -38,9 +38,9 @@ class MyGame(arcade.Window):
 
         # Create entities for background (tiled)
         for i in range(10):
-            background_sprite = arcade.Sprite("assets/backgrounds/background1.png")
+            background_sprite = arcade.Sprite("assets/backgrounds/background1.png", 0.5)
             background_sprite_renderer = SpriteRenderer(background_sprite)
-            background_transform = Transform((i * background_sprite.width, 0), 0, (1.0, 1.0))
+            background_transform = Transform((i * background_sprite.width, background_sprite.height/2), 0, (1.0, 1.0))
             background_entity = Entity("Background", ["BackgroundTag"], [background_sprite_renderer, background_transform])
             GameManager.add_background_entity(background_entity)
 

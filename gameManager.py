@@ -19,7 +19,7 @@ class GameManager:
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
 
-    DEBUG = True
+    DEBUG = False
 
     main_camera = None  # Scrolling camera
     gui_camera = None  # Static camera
