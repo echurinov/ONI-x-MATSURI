@@ -33,7 +33,6 @@ class PlayerController(Component):
         self.__coyote_timer -= dt
         self.__jump_timer -= dt
 
-
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
         # In both cases, determine if they've collided with a wall
@@ -75,7 +74,8 @@ class PlayerController(Component):
                 if "Ground" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         # Get how far we would have to move the player to get them out of the ceiling
-                        difference = (collider.transform.position[1] - collider.height/2) - (self.__transform.position[1] + self.__collider.height/2)
+                        difference = (collider.transform.position[1] - collider.height / 2) - (
+                                self.__transform.position[1] + self.__collider.height / 2)
                         if difference < largest_difference:  # Largest negative amount
                             largest_difference = difference
                         # Stop the player's vertical movement
@@ -102,8 +102,7 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         # Get how far we would have to move the player to get them out of the floor
                         difference = (collider.transform.position[1] + collider.height / 2) - \
-                        (self.__transform.position[1] - self.__collider.height / 2)
-
+                                     (self.__transform.position[1] - self.__collider.height / 2)
 
                         if difference > largest_difference:
                             largest_difference = difference
@@ -117,12 +116,13 @@ class PlayerController(Component):
 
             # Deal with vertical acceleration
             # Multiply vertical acceleration by a multiplier to get faster falling (less "floaty")
-            self.__velocity = (self.__velocity[0], self.__velocity[1] + (self.__gravity * self.__falling_speed_multiplier * dt))
+            self.__velocity = (
+                self.__velocity[0], self.__velocity[1] + (self.__gravity * self.__falling_speed_multiplier * dt))
 
         # If we're on the ground (or in coyote time) and the player has pressed the jump button, let them jump
         if (self.__jump_requested or self.__jump_timer > 0) and (self.__touching_ground or self.__coyote_timer > 0):
             self.__velocity = (self.__velocity[0], self.__jump_speed)
-            #print(self.__velocity)
+            # print(self.__velocity)
             self.__jump_requested = False
             self.__jump_timer = 0
             self.__touching_ground = False
@@ -142,10 +142,8 @@ class PlayerController(Component):
                 self.__velocity = (self.__velocity[0] - self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
             else:  # Moving left (accelerating)
                 self.__velocity = (self.__velocity[0] - self.__horizontal_acceleration * dt, self.__velocity[1])
-        else: # no keys pressed, default deceleration
+        else:  # no keys pressed, default deceleration
             self.__velocity = (self.__velocity[0] * (1 - self.__horizontal_deceleration_multiplier * dt), self.__velocity[1])
-
-
 
         self.__jump_requested = False
 

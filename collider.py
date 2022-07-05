@@ -73,10 +73,10 @@ class Collider(Component):
         if self.sprite_renderer is None:
             self.sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         self.__base_polygon = (
-            (self.sprite_renderer.sprite.texture.image.width / 2, self.sprite_renderer.sprite.texture.image.height / 2),
-            (-self.sprite_renderer.sprite.texture.image.width / 2, self.sprite_renderer.sprite.texture.image.height / 2),
-            (-self.sprite_renderer.sprite.texture.image.width / 2, -self.sprite_renderer.sprite.texture.image.height / 2),
-            (self.sprite_renderer.sprite.texture.image.width / 2, -self.sprite_renderer.sprite.texture.image.height / 2),
+            (self.sprite_renderer.sprite.width / 2, self.sprite_renderer.sprite.height / 2),
+            (-self.sprite_renderer.sprite.width / 2, self.sprite_renderer.sprite.height / 2),
+            (-self.sprite_renderer.sprite.width / 2, -self.sprite_renderer.sprite.height / 2),
+            (self.sprite_renderer.sprite.width / 2, -self.sprite_renderer.sprite.height / 2),
         )
         self.__height = None
 
