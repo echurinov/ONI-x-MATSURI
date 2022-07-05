@@ -5,6 +5,9 @@ from eventManager import EventManager
 
 
 # A component that handles input for a player
+from gameManager import GameManager
+
+
 class PlayerController(Component):
     # Called when a key is pressed
     def on_key_press(self, key, modifiers):
@@ -30,6 +33,12 @@ class PlayerController(Component):
             transform_comp.move((-50 * dt, 0))
         if self.__keys_pressed[arcade.key.D]:
             transform_comp.move((50 * dt, 0))
+
+        # Scroll the screen so the player stays in the center
+        GameManager.main_camera.move_to(
+            (transform_comp.position[0] - GameManager.SCREEN_WIDTH/2,
+             transform_comp.position[1] - GameManager.SCREEN_HEIGHT/2),
+            0.25)
 
     def __init__(self):
         super().__init__("PlayerController")

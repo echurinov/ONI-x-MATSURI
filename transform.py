@@ -2,6 +2,9 @@ from component import Component
 
 
 # Component for handling position, rotation, and scale of an Entity
+from gameManager import GameManager
+
+
 class Transform(Component):
     def __init__(self, position=(0, 0), rotation=0, scale=(1.0, 1.0)):
         super().__init__("Transform")
@@ -13,8 +16,8 @@ class Transform(Component):
     def on_created(self):
         sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         if sprite_renderer is not None:
-            sprite_renderer.sprite.center_x = self.position[0]
-            sprite_renderer.sprite.center_y = self.position[1]
+            sprite_renderer.sprite.center_x = self.position[0] - GameManager.get_scroll()[0]
+            sprite_renderer.sprite.center_y = self.position[1] - GameManager.get_scroll()[1]
 
     @property
     def rotation(self):
@@ -40,8 +43,8 @@ class Transform(Component):
             sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
             if sprite_renderer is not None:
                 # Changes the position of arcade Sprite
-                sprite_renderer.sprite.center_x = value[0]
-                sprite_renderer.sprite.center_y = value[1]
+                sprite_renderer.sprite.center_x = value[0] - GameManager.get_scroll()[0]
+                sprite_renderer.sprite.center_y = value[1] - GameManager.get_scroll()[1]
         else:
             raise ValueError("Position must be a tuple of length 2 (Got tuple of length " + str(len(value)) + ").")
 
@@ -50,4 +53,4 @@ class Transform(Component):
         if len(amount) == 2:
             self.position = (self.position[0] + amount[0], self.position[1] + amount[1])
         else:
-            raise ValueError("Amount must be a tuple of length 2 (Got tuple of length " + str(len(value)) + ").")
+            raise ValueError("Amount must be a tuple of length 2 (Got tuple of length " + str(len(amount)) + ").")

@@ -8,6 +8,16 @@ from eventManager import EventManager
 # Doesn't do much right now, the actual movement mechanics use
 # the arcade check_for_collision function right now
 class Collider(Component):
+
+    # Translates a polygon
+    @staticmethod
+    def translate_polygon(polygon, amount):
+        new_polygon = []
+        for index, point in enumerate(polygon):
+            new_polygon.append((point[0] + amount[0],
+                                point[1] + amount[1]))
+        return new_polygon
+
     def __init__(self, auto_generate_polygon="simple"):
         super().__init__("Collider")
         self.__polygon = None  # The polygon that represents the hitbox, lines up with the sprite

@@ -3,11 +3,30 @@ import arcade
 
 # Handles all the entities in the game and drawing them
 # Everything in this class is static
+from collider import Collider
+
+
 class GameManager:
     __entities = []
     # Setup sprite lists for drawing stuff to the screen
     __dynamic_entities = arcade.SpriteList()
     __static_entities = arcade.SpriteList()
+    __background_entities = arcade.SpriteList()
+    __gui_entities = arcade.SpriteList()
+
+    __scroll_position = (0, 0)
+
+    SCREEN_WIDTH = 800
+    SCREEN_HEIGHT = 600
+
+    main_camera = None # Scrolling camera
+    gui_camera = None # Static camera
+
+    # Runs once the game is started and the window is created
+    @staticmethod
+    def start():
+        GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        GameManager.gui_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
 
     @staticmethod
     def get_dynamic_entities():
@@ -16,6 +35,11 @@ class GameManager:
     @staticmethod
     def get_static_entities():
         return GameManager.__static_entities
+
+    @staticmethod
+    def get_background_entities():
+        return GameManager.__background_entities
+
 
     # Adds a new entity.
     # Handles adding it to sprite lists so it gets rendered
@@ -75,14 +99,43 @@ class GameManager:
     # Draw everything to screen
     @staticmethod
     def draw():
-        GameManager.__dynamic_entities.draw()
+        GameManager.main_camera.use()
+        GameManager.__background_entities.draw()
         GameManager.__static_entities.draw()
-
+        GameManager.__dynamic_entities.draw()
         # Debug
         if True:
             for collider in GameManager.get_colliders():
-                arcade.draw_polygon_outline(collider.polygon, arcade.color.RED, 2)
+                arcade.draw_polygon_outline(Collider.translate_polygon(collider.polygon, (
+                -GameManager.__scroll_position[0], -GameManager.__scroll_position[1])), arcade.color.RED, 2)
+
+        # Draw GUI
+        GameManager.gui_camera.use()
+        GameManager.__gui_entities.draw()
+
+        # Debug
+        if True:
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
             string_to_print2 = "Touching ground: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("PhysicsObject").touching_ground)
             arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)
             arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20)
+
+    @staticmethod
+    def get_scroll():
+        return GameManager.__scroll_position
+
+    @staticmethod
+    def set_scroll(scroll):
+        GameManager.__scroll_position = (scroll[0], scroll[1])
+        # Update each entity's position based on the scroll position
+        for entity in GameManager.__entities:
+            transform = entity.get_component_by_name("Transform")
+            transform.position = transform.position
+
+    @staticmethod
+    def scroll_screen(scroll):
+        GameManager.__scroll_position = (GameManager.__scroll_position[0] + scroll[0], GameManager.__scroll_position[1] + scroll[1])
+        # Update each entity's position based on the scroll position
+        for entity in GameManager.__entities:
+            transform = entity.get_component_by_name("Transform")
+            transform.position = transform.position

@@ -82,12 +82,11 @@ class MyGame(arcade.Window):
 
 
 def main():
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
     SCREEN_TITLE = "ONI x MATSURI"
 
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = MyGame(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
+    GameManager.start()
     window.run()
 
 
