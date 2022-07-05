@@ -1,3 +1,5 @@
+import random
+
 import arcade
 
 # From arcade online docs
@@ -17,19 +19,30 @@ class MyGame(arcade.Window):
 
     def __create_level(self):
         # Setup level
-        # Create sprite for platform
-        level_sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png")
-        # Create sprite renderer component
-        level_sprite_renderer = SpriteRenderer(level_sprite)
-        # Create transform component
-        level_transform = Transform((100, 100), 0, (1.0, 1.0))
-        # Create collider (hitbox will be generated when entity is created)
-        level_collider = Collider()
-        # Create platform entity and add all the components to it
-        level_entity = Entity("Level", ["LevelTag"], [level_sprite_renderer, level_transform, level_collider],
-                              static=True)
-        # Add the platform entity to the manager
-        GameManager.add_entity(level_entity)
+
+        # Create box entities for a somewhat random floor
+        for i in range(100):
+            # Create sprite for platform
+            level_sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png")
+            # Create sprite renderer component
+            level_sprite_renderer = SpriteRenderer(level_sprite)
+            # Create transform component
+            level_transform = Transform((i * 100 * random.uniform(0.5, 1.25), 100 + random.uniform(-50, 50)), 0, (1.0, 1.0))
+            # Create collider (hitbox will be generated when entity is created)
+            level_collider = Collider()
+            # Create platform entity and add all the components to it
+            level_entity = Entity("Level", ["LevelTag"], [level_sprite_renderer, level_transform, level_collider],
+                                  static=True)
+            # Add the platform entity to the manager
+            GameManager.add_entity(level_entity)
+
+        # Create entities for background (tiled)
+        for i in range(10):
+            background_sprite = arcade.Sprite("assets/backgrounds/background1.png")
+            background_sprite_renderer = SpriteRenderer(background_sprite)
+            background_transform = Transform((i * background_sprite.width, 0), 0, (1.0, 1.0))
+            background_entity = Entity("Background", ["BackgroundTag"], [background_sprite_renderer, background_transform])
+            GameManager.add_background_entity(background_entity)
 
     def __create_player(self):
         # Setup player

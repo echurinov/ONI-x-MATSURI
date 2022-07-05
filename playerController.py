@@ -30,15 +30,15 @@ class PlayerController(Component):
         transform_comp = player_ent.get_component_by_name("Transform")
         # Move the character based on which keys are pressed
         if self.__keys_pressed[arcade.key.A]:
-            transform_comp.move((-50 * dt, 0))
+            transform_comp.move((-100 * dt, 0))
         if self.__keys_pressed[arcade.key.D]:
-            transform_comp.move((50 * dt, 0))
+            transform_comp.move((100 * dt, 0))
 
         # Scroll the screen so the player stays in the center
         GameManager.main_camera.move_to(
             (transform_comp.position[0] - GameManager.SCREEN_WIDTH/2,
              transform_comp.position[1] - GameManager.SCREEN_HEIGHT/2),
-            0.25)
+            0.125)
 
     def __init__(self):
         super().__init__("PlayerController")

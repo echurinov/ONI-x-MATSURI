@@ -19,8 +19,10 @@ class GameManager:
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
 
-    main_camera = None # Scrolling camera
-    gui_camera = None # Static camera
+    DEBUG = True
+
+    main_camera = None  # Scrolling camera
+    gui_camera = None  # Static camera
 
     # Runs once the game is started and the window is created
     @staticmethod
@@ -40,6 +42,18 @@ class GameManager:
     def get_background_entities():
         return GameManager.__background_entities
 
+    # Adds a background entity (draws below everything else, has no collision)
+    @staticmethod
+    def add_background_entity(entity):
+        GameManager.__entities.append(entity)
+        # Add sprite to list so it gets drawn
+        sprite = entity.get_component_by_name("SpriteRenderer")
+        if sprite is not None:
+            GameManager.__background_entities.append(sprite.sprite)
+        # Call on_created for all components attached to this entity
+        for component in entity.components:
+            if hasattr(component, 'on_created'):
+                component.on_created()
 
     # Adds a new entity.
     # Handles adding it to sprite lists so it gets rendered
@@ -104,7 +118,7 @@ class GameManager:
         GameManager.__static_entities.draw()
         GameManager.__dynamic_entities.draw()
         # Debug
-        if True:
+        if GameManager.DEBUG:
             for collider in GameManager.get_colliders():
                 arcade.draw_polygon_outline(Collider.translate_polygon(collider.polygon, (
                 -GameManager.__scroll_position[0], -GameManager.__scroll_position[1])), arcade.color.RED, 2)
@@ -114,7 +128,7 @@ class GameManager:
         GameManager.__gui_entities.draw()
 
         # Debug
-        if True:
+        if GameManager.DEBUG:
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
             string_to_print2 = "Touching ground: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("PhysicsObject").touching_ground)
             arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)
