@@ -23,11 +23,12 @@ class MyGame(arcade.Window):
         # Create box entities for a somewhat random floor
         for i in range(100):
             # Create sprite for platform
-            level_sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png")
+            level_sprite = random.choice((arcade.Sprite(":resources:images/tiles/boxCrate_double.png"),
+                                          arcade.Sprite(":resources:images/tiles/boxCrate.png")))
             # Create sprite renderer component
             level_sprite_renderer = SpriteRenderer(level_sprite)
             # Create transform component
-            level_transform = Transform((i * 100 * random.uniform(0.5, 1.25), 100 + random.uniform(-50, 50)), 0, (1.0, 1.0))
+            level_transform = Transform((i * 100 * random.uniform(0.5, 1), 100 + random.uniform(-50, 50)), 0, (1.0, 1.0))
             # Create collider (hitbox will be generated when entity is created)
             level_collider = Collider()
             # Create platform entity and add all the components to it
@@ -35,6 +36,24 @@ class MyGame(arcade.Window):
                                   static=True)
             # Add the platform entity to the manager
             GameManager.add_entity(level_entity)
+
+        # Create platform entities
+        for i in range(30):
+            # Create sprite for platform
+            platform_sprite = random.choice((arcade.Sprite(":resources:images/tiles/bridgeA.png"),
+                                          arcade.Sprite(":resources:images/tiles/bridgeB.png")))
+            # Create sprite renderer component
+            platform_sprite_renderer = SpriteRenderer(platform_sprite)
+            # Create transform component
+            platform_transform = Transform((i * 200 * random.uniform(0.25, 1.75), 400 + random.uniform(-50, 50)), 0,
+                                        (1.0, 1.0))
+            # Create collider (hitbox will be generated when entity is created)
+            platform_collider = Collider()
+            # Create platform entity and add all the components to it
+            platform_entity = Entity("Level", ["LevelTag"], [platform_sprite_renderer, platform_transform, platform_collider],
+                                  static=True)
+            # Add the platform entity to the manager
+            GameManager.add_entity(platform_entity)
 
         # Create entities for background (tiled)
         for i in range(10):

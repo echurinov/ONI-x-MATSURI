@@ -19,7 +19,7 @@ class GameManager:
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
 
-    DEBUG = False
+    debug = False
 
     main_camera = None  # Scrolling camera
     gui_camera = None  # Static camera
@@ -118,7 +118,7 @@ class GameManager:
         GameManager.__static_entities.draw()
         GameManager.__dynamic_entities.draw()
         # Debug
-        if GameManager.DEBUG:
+        if GameManager.debug:
             for collider in GameManager.get_colliders():
                 arcade.draw_polygon_outline(Collider.translate_polygon(collider.polygon, (
                 -GameManager.__scroll_position[0], -GameManager.__scroll_position[1])), arcade.color.RED, 2)
@@ -128,7 +128,7 @@ class GameManager:
         GameManager.__gui_entities.draw()
 
         # Debug
-        if GameManager.DEBUG:
+        if GameManager.debug:
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
             string_to_print2 = "Touching ground: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("PhysicsObject").touching_ground)
             arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)

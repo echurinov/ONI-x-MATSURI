@@ -18,6 +18,10 @@ class PlayerController(Component):
             self.parent.get_component_by_name("PhysicsObject").set_velocity((0, 400))
             self.parent.get_component_by_name("PhysicsObject").touching_ground = False
 
+        # Toggle debug
+        if key == arcade.key.F:
+            GameManager.debug = not GameManager.debug
+
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
