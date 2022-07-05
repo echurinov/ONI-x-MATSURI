@@ -72,3 +72,12 @@ class Entity:
     @static.setter
     def static(self, value):
         self.__static = value
+
+    @property
+    def tags(self):
+        return self.__tags
+
+    @tags.setter
+    def tags(self, value):
+        self.__tags = value
+

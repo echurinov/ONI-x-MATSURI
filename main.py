@@ -28,11 +28,12 @@ class MyGame(arcade.Window):
             # Create sprite renderer component
             level_sprite_renderer = SpriteRenderer(level_sprite)
             # Create transform component
-            level_transform = Transform((i * 100 * random.uniform(0.5, 1), 100 + random.uniform(-50, 50)), 0, (1.0, 1.0))
+            level_transform = Transform((i * 100 * random.uniform(0.5, 1), 100 + random.uniform(-50, 50)), 0,
+                                        (1.0, 1.0))
             # Create collider (hitbox will be generated when entity is created)
             level_collider = Collider()
             # Create platform entity and add all the components to it
-            level_entity = Entity("Level", ["LevelTag"], [level_sprite_renderer, level_transform, level_collider],
+            level_entity = Entity("Block " + str(i), ["Ground"], [level_sprite_renderer, level_transform, level_collider],
                                   static=True)
             # Add the platform entity to the manager
             GameManager.add_entity(level_entity)
@@ -41,17 +42,18 @@ class MyGame(arcade.Window):
         for i in range(30):
             # Create sprite for platform
             platform_sprite = random.choice((arcade.Sprite(":resources:images/tiles/bridgeA.png"),
-                                          arcade.Sprite(":resources:images/tiles/bridgeB.png")))
+                                             arcade.Sprite(":resources:images/tiles/bridgeB.png")))
             # Create sprite renderer component
             platform_sprite_renderer = SpriteRenderer(platform_sprite)
             # Create transform component
             platform_transform = Transform((i * 200 * random.uniform(0.25, 1.75), 400 + random.uniform(-50, 50)), 0,
-                                        (1.0, 1.0))
+                                           (1.0, 1.0))
             # Create collider (hitbox will be generated when entity is created)
             platform_collider = Collider()
             # Create platform entity and add all the components to it
-            platform_entity = Entity("Level", ["LevelTag"], [platform_sprite_renderer, platform_transform, platform_collider],
-                                  static=True)
+            platform_entity = Entity("Level", ["Platform"],
+                                     [platform_sprite_renderer, platform_transform, platform_collider],
+                                     static=True)
             # Add the platform entity to the manager
             GameManager.add_entity(platform_entity)
 
@@ -59,8 +61,9 @@ class MyGame(arcade.Window):
         for i in range(10):
             background_sprite = arcade.Sprite("assets/backgrounds/background1.png", 0.5)
             background_sprite_renderer = SpriteRenderer(background_sprite)
-            background_transform = Transform((i * background_sprite.width, background_sprite.height/2), 0, (1.0, 1.0))
-            background_entity = Entity("Background", ["BackgroundTag"], [background_sprite_renderer, background_transform])
+            background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, (1.0, 1.0))
+            background_entity = Entity("Background", ["BackgroundTag"],
+                                       [background_sprite_renderer, background_transform])
             GameManager.add_background_entity(background_entity)
 
     def __create_player(self):
@@ -74,13 +77,13 @@ class MyGame(arcade.Window):
         # Create player controller component
         player_controller = PlayerController()
         # Create physics component for the player
-        player_physics = PhysicsObject(uses_gravity=True, max_velocity=(5000, 5000))
+        # Player physics handled by player controller instead now
+        #player_physics = PhysicsObject(uses_gravity=True, max_velocity=(5000, 5000))
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
         player_collider = Collider()
         # Create the player entity and add all the components to it
-        player_entity = Entity("Player", ["PlayerTag"],
-                               [player_sprite_renderer, player_transform, player_controller, player_physics,
-                                player_collider],
+        player_entity = Entity("Player", ["Player"],
+                               [player_sprite_renderer, player_transform, player_controller, player_collider],
                                static=False)
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)

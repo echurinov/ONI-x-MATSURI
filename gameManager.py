@@ -14,8 +14,6 @@ class GameManager:
     __background_entities = arcade.SpriteList()
     __gui_entities = arcade.SpriteList()
 
-    __scroll_position = (0, 0)
-
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
 
@@ -90,6 +88,15 @@ class GameManager:
         # Set the static flag if it isn't already set
         entity.static = static
 
+    # Returns a list of entities with a given tag
+    @staticmethod
+    def get_entities_by_tag(tag):
+        to_return = []
+        for item in GameManager.__entities:
+            if tag in item.tags:
+                to_return.append(item)
+        return to_return
+
     # Returns a list of entities matching the given name
     @staticmethod
     def get_entities_by_name(name):
@@ -120,8 +127,8 @@ class GameManager:
         # Debug
         if GameManager.debug:
             for collider in GameManager.get_colliders():
-                arcade.draw_polygon_outline(Collider.translate_polygon(collider.polygon, (
-                -GameManager.__scroll_position[0], -GameManager.__scroll_position[1])), arcade.color.RED, 2)
+                arcade.draw_polygon_outline(collider.polygon, arcade.color.RED, 2)
+                arcade.draw_circle_outline(collider.transform.position[0], collider.transform.position[1], 5.0, arcade.color.PINK)
 
         # Draw GUI
         GameManager.gui_camera.use()
@@ -129,27 +136,9 @@ class GameManager:
 
         # Debug
         if GameManager.debug:
+            player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
-            string_to_print2 = "Touching ground: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("PhysicsObject").touching_ground)
+            string_to_print2 = "Touching ground: " + str(player_cont.touching_ground)
             arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)
             arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20)
 
-    @staticmethod
-    def get_scroll():
-        return GameManager.__scroll_position
-
-    @staticmethod
-    def set_scroll(scroll):
-        GameManager.__scroll_position = (scroll[0], scroll[1])
-        # Update each entity's position based on the scroll position
-        for entity in GameManager.__entities:
-            transform = entity.get_component_by_name("Transform")
-            transform.position = transform.position
-
-    @staticmethod
-    def scroll_screen(scroll):
-        GameManager.__scroll_position = (GameManager.__scroll_position[0] + scroll[0], GameManager.__scroll_position[1] + scroll[1])
-        # Update each entity's position based on the scroll position
-        for entity in GameManager.__entities:
-            transform = entity.get_component_by_name("Transform")
-            transform.position = transform.position

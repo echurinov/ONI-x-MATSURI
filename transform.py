@@ -16,8 +16,8 @@ class Transform(Component):
     def on_created(self):
         sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         if sprite_renderer is not None:
-            sprite_renderer.sprite.center_x = self.position[0] - GameManager.get_scroll()[0]
-            sprite_renderer.sprite.center_y = self.position[1] - GameManager.get_scroll()[1]
+            sprite_renderer.sprite.center_x = self.position[0]
+            sprite_renderer.sprite.center_y = self.position[1]
 
     @property
     def rotation(self):
@@ -43,8 +43,8 @@ class Transform(Component):
             sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
             if sprite_renderer is not None:
                 # Changes the position of arcade Sprite
-                sprite_renderer.sprite.center_x = value[0] - GameManager.get_scroll()[0]
-                sprite_renderer.sprite.center_y = value[1] - GameManager.get_scroll()[1]
+                sprite_renderer.sprite.center_x = value[0]
+                sprite_renderer.sprite.center_y = value[1]
         else:
             raise ValueError("Position must be a tuple of length 2 (Got tuple of length " + str(len(value)) + ").")
 
