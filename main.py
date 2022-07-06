@@ -59,7 +59,7 @@ class MyGame(arcade.Window):
 
         # Create entities for background (tiled)
         for i in range(10):
-            background_sprite = arcade.Sprite("assets/backgrounds/background1.png", 0.5)
+            background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
             background_sprite_renderer = SpriteRenderer(background_sprite)
             background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, (1.0, 1.0))
             background_entity = Entity("Background", ["BackgroundTag"],
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
     def __create_player(self):
         # Setup player
         # Create an arcade.Sprite for the player
-        player_sprite = arcade.Sprite("assets/tiles/character.png", 0.25)
+        player_sprite = arcade.Sprite("assets/sprites/player/player_idle_1.png", 0.5)
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
