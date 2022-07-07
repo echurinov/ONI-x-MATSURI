@@ -3,6 +3,7 @@ import random
 import arcade
 
 # From arcade online docs
+from eventManager import EventManager
 from gameManager import GameManager
 from screenView import GameView
 from screenView import StartView
@@ -13,6 +14,7 @@ class GameWindow(arcade.Window):
         super().on_resize(width, height)
         GameManager.gui_camera.resize(width, height)
         GameManager.main_camera.resize(width, height)
+        EventManager.trigger_event("Resize", width, height)
 
 
 def main():

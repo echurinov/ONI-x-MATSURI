@@ -75,7 +75,7 @@ class GameView(arcade.View):
     def setup(self):
         self.__create_player()
         self.__create_level()
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # Trigger the "Start" event
         EventManager.trigger_event("Start")
