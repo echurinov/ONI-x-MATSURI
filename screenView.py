@@ -2,6 +2,7 @@ import arcade
 
 from backgroundResizer import BackgroundResizer
 from collider import Collider
+from enemyController import EnemyController
 from entity import Entity
 from gameManager import GameManager
 from eventManager import EventManager
@@ -71,6 +72,17 @@ class GameView(arcade.View):
                                static=False)
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
+
+    def __create_enemy(self):
+        # Setup enemy(Red Oni)
+        # Create an arcade.Sprite for the enemy(Red Oni)
+        enemy_sprite = arcade.Sprite("assets/sprites/enemy/oni_idle_1.png")
+        # Create a sprite renderer component
+        enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
+        # Create a transform component for the enemy
+        enemy_transform = Transform((500, 1000), 0, (1.0, 1.0))
+        # Create enemy controller component
+        enemy_controller = EnemyController()
 
     def setup(self):
         self.__create_player()

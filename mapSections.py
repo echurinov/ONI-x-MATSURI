@@ -69,4 +69,11 @@ def section1():
         entities.append(SimpleBlock(((1 * i * 187), 93)))
     return entities
 
+def section2():
+    entities = []
+    for i in range(10):
+        entities.append(SimpleBlock(((1 * i+5 * 187), 272)))
+    for i in range(10):
+        entities.append(SimpleBlock(((1 * i * 187), 93)))
 
+    return entities
