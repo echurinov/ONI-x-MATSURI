@@ -22,5 +22,4 @@ class BackgroundResizer(Component):
     def on_resize(self, width, height):
         new_scale = height / self.__original_height
         self.__sprite.scale = new_scale
-        print(new_scale)
         self.__transform.position = (self.__original_position[0] * new_scale, self.__original_position[1] * new_scale)

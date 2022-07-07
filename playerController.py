@@ -21,6 +21,10 @@ class PlayerController(Component):
         if key == arcade.key.F:
             GameManager.debug = not GameManager.debug
 
+        # Pause/quit
+        if key == arcade.key.ESCAPE:
+            exit()
+
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
