@@ -7,12 +7,12 @@ from eventManager import EventManager
 class EnemyController(Component):
 
     # Called every time physics get updated (currently every frame)
-    # Deals with all player movement and collision
+    # Deals with all enemy movement and collision
     def on_physics_update(self, dt):
         # Round velocity to 0 if we're close enough
         epsilon = 0.001
         if abs(self.__velocity[0]) < epsilon:
-            self.__velocity = (0, self.__velocity[1])
+            self.__velocity = (2, self.__velocity[1])
         if abs(self.__velocity[1]) < epsilon:
             self.__velocity = (self.__velocity[0], 0)
 

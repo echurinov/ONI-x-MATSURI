@@ -73,14 +73,14 @@ class GameView(arcade.View):
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 
-    def __create_enemy(self):
+    def __create_enemy(self, xy_position):
         # Setup enemy(Red Oni)
         # Create an arcade.Sprite for the enemy(Red Oni)
         enemy_sprite = arcade.Sprite("assets/sprites/enemy/oni_idle_1.png")
         # Create a sprite renderer component
         enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
         # Create a transform component for the enemy
-        enemy_transform = Transform((50, 1000), 0, (1.0, 1.0))
+        enemy_transform = Transform(xy_position, 0, (1.0, 1.0))
         # Create enemy controller component
         enemy_controller = EnemyController()
         # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
@@ -95,7 +95,9 @@ class GameView(arcade.View):
     def setup(self):
         self.__create_player()
         self.__create_level()
-        self.__create_enemy()
+        self.__create_enemy((300, 266))
+        self.__create_enemy((600, 266))
+        self.__create_enemy((1000, 266))
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Trigger the "Start" event
