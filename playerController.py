@@ -23,7 +23,7 @@ class PlayerController(Component):
 
         # Pause/quit
         if key == arcade.key.ESCAPE:
-            exit()
+            arcade.exit()
 
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
