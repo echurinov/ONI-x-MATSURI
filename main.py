@@ -17,7 +17,7 @@ class GameWindow(arcade.Window):
 
 def main():
     SCREEN_TITLE = "ONI x MATSURI"
-
+    GameManager.set_paused(True)
     # window = GameView(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT, SCREEN_TITLE)
     window = GameWindow(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     start_view = GameView()

@@ -28,7 +28,6 @@ class PlayerController(Component):
     # Called every time physics get updated (currently every frame)
     # Deals with all player movement and collision
     def on_physics_update(self, dt):
-
         # Round velocity to 0 if we're close enough
         epsilon = 0.001
         if abs(self.__velocity[0]) < epsilon:
@@ -138,7 +137,7 @@ class PlayerController(Component):
         # Deal with wall collision
         # First, move the character horizontally
 
-        self.__transform.move((self.__velocity[0], 0))
+        self.__transform.move((self.__velocity[0] * dt, 0))
         if self.__keys_pressed[arcade.key.D]:
             if self.__velocity[0] > 0:  # Moving right (accelerating)
                 self.__velocity = (self.__velocity[0] + self.__horizontal_acceleration * dt, self.__velocity[1])
@@ -159,17 +158,21 @@ class PlayerController(Component):
     def on_update(self, dt):
         # Scroll the screen so the player stays in the center
         GameManager.main_camera.move_to(
-            (self.__transform.position[0] - GameManager.SCREEN_WIDTH / 2,
-             0),
-            5 * dt)
+            (self.__transform.position[0] - GameManager.SCREEN_WIDTH / 2, 0), 5 * dt)
 
         # Animation states
-        if self.__velocity[0] < 0:
+        if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A]:
             self.__animation_state = "idle_L"
-        elif self.__velocity[0] > 0:
+        elif self.__velocity[0] > 0 and not self.__keys_pressed[arcade.key.D]:
             self.__animation_state = "idle_R"
+        elif self.__keys_pressed[arcade.key.A]:
+            self.__animation_state = "walk_L"
+        elif self.__keys_pressed[arcade.key.D]:
+            self.__animation_state = "walk_R"
         else:
             self.__animation_state = "idle"
+
+
 
         # Animation
         self.__animation_timer += 1
@@ -200,7 +203,7 @@ class PlayerController(Component):
         self.__velocity = (0, 0)
         self.__gravity = -2000
         self.__jump_speed = 750
-        self.__max_velocity = (100, 2500)
+        self.__max_velocity = (500, 2500)
         self.__falling_speed_multiplier = 1.5  # Fall faster than you go up (makes jumps feel better)
         self.__coyote_time = 0.1  # Period after walking off a platform where you can still jump (another QOL feature)
         self.__coyote_timer = 0  # Temporary variable to keep track of the coyote time
@@ -210,9 +213,9 @@ class PlayerController(Component):
         self.__jump_buffer_time = 0.1
         self.__jump_timer = 0
 
-        self.__horizontal_acceleration = 10  # How quickly you accelerate when moving sideways
+        self.__horizontal_acceleration = 400  # How quickly you accelerate when moving sideways
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed
-        self.__horizontal_turnaround_acceleration = 200  # How quickly you decelerate when changing direction
+        self.__horizontal_turnaround_acceleration = 4000  # How quickly you decelerate when changing direction
 
         # Sprite switching (animation)
         self.__animation_timer = 0  # Frames since last change
@@ -239,6 +242,18 @@ class PlayerController(Component):
                 "frame_delay": 30,
                 "frames": []
             },
+            "walk_L": {
+                "name_prefix": "player_walk_L_",
+                "num_frames": 4,
+                "frame_delay": 5,
+                "frames": []
+            },
+            "walk_R": {
+                "name_prefix": "player_walk_R_",
+                "num_frames": 4,
+                "frame_delay": 5,
+                "frames": []
+            }
         }
         for animation_name, animation in self.__animation_data.items():
             for i in range(animation["num_frames"]):

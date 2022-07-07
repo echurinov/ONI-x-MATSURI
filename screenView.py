@@ -90,7 +90,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
-        player_transform = Transform((50, 500), 0, (1.0, 1.0))
+        player_transform = Transform((50, 1000), 0, (1.0, 1.0))
         # Create player controller component
         player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
@@ -113,14 +113,24 @@ class GameView(arcade.View):
     def on_update(self, dt):
         # Trigger screen update event
         EventManager.trigger_event("Update", dt)
+
+        # Don't do physics or gravity if we're paused
+        if GameManager.get_paused():
+            return
         EventManager.trigger_event("PhysicsUpdate", dt)
         EventManager.trigger_event("GravityUpdate", -9.8, dt)
 
     def on_key_press(self, key, modifiers):
+        # Don't do anything if we're paused
+        if GameManager.get_paused():
+            return
         # Trigger key press events
         EventManager.trigger_event("KeyPress", key, modifiers)
 
     def on_key_release(self, key, modifiers):
+        # Don't do anything if we're paused
+        if GameManager.get_paused():
+            return
         # Trigger key release events
         EventManager.trigger_event("KeyRelease", key, modifiers)
 
