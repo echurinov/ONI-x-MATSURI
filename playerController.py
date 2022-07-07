@@ -223,6 +223,7 @@ class PlayerController(Component):
         self.__animation_state = "idle"
         # Dictionary for frames for animations
 
+
         self.__animation_data = {
             "idle_L": {
                 "name_prefix": "player_idle_L_",  # Prefix for the filenames of the animation (not including the number)
