@@ -59,8 +59,8 @@ class PlayerController(Component):
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
 
+        self.__taking_damage = False
         for collider in all_colliders:
-            self.__taking_damage = False
             # Ignore the player's own collider
             if collider.parent is self:
                 continue
@@ -70,10 +70,10 @@ class PlayerController(Component):
                     self.__taking_damage = True
                     self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
-            if self.__taking_damage:
-                self.__sprite_renderer.sprite.color = (255, 0, 0)
-            else:
-                self.__sprite_renderer.sprite.color = (255, 255, 255)
+        if self.__taking_damage:
+            self.__sprite_renderer.sprite.color = (255, 0, 0)
+        else:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
 
 
 

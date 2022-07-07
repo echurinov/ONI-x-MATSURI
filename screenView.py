@@ -102,7 +102,7 @@ class GameView(arcade.View):
         self.__create_level()
         self.__create_enemy((300, 266))
         self.__create_enemy((600, 266))
-        self.__create_enemy((1000, 266))
+        self.__create_enemy((800, 266))
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # Trigger the "Start" event

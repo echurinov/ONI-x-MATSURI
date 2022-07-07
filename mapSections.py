@@ -25,7 +25,7 @@ class FoodStalls(Entity):
         food_stall_sprite_renderer = SpriteRenderer(food_stall_sprite)
         food_stall_transform = Transform(position, 0, (0.25, 0.25))
         food_stall_collider = Collider(auto_generate_polygon="box")
-        super(FoodStalls, self).__init__("Block", ["Ground"], [food_stall_sprite_renderer, food_stall_transform, food_stall_collider], static=True)
+        super(FoodStalls, self).__init__("FoodStall", ["Ground"], [food_stall_sprite_renderer, food_stall_transform, food_stall_collider], static=True)
 
 class GroundPit(Entity):
     def __init__(self, position):
