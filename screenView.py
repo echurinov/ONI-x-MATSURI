@@ -1,5 +1,3 @@
-import random
-
 import arcade
 
 from backgroundResizer import BackgroundResizer
@@ -11,6 +9,7 @@ from physicsObject import PhysicsObject
 from playerController import PlayerController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
+import mapSections
 
 
 class StartView(arcade.View):
@@ -39,41 +38,10 @@ class GameView(arcade.View):
         # Setup level
 
         # Create box entities for a somewhat random floor
-        for i in range(100):
-            # Create sprite for platform
-            level_sprite = random.choice((arcade.Sprite("assets/tiles/box1.png", 0.25),
-                                          arcade.Sprite("assets/tiles/box2.png", 0.25)))
-            # Create sprite renderer component
-            level_sprite_renderer = SpriteRenderer(level_sprite)
-            # Create transform component
-            level_transform = Transform((i * 100 * random.uniform(0.5, 1), 100 + random.uniform(-50, 50)), 0,
-                                        (1.0, 1.0))
-            # Create collider (hitbox will be generated when entity is created)
-            level_collider = Collider(auto_generate_polygon="box")
-            # Create platform entity and add all the components to it
-            level_entity = Entity("Block " + str(i), ["Ground"], [level_sprite_renderer, level_transform, level_collider],
-                                  static=True)
-            # Add the platform entity to the manager
-            GameManager.add_entity(level_entity)
 
-        # Create platform entities
-        for i in range(30):
-            # Create sprite for platform
-            platform_sprite = random.choice((arcade.Sprite("assets/tiles/platform1.png", 0.25),
-                                             arcade.Sprite("assets/tiles/platform2.png", 0.25)))
-            # Create sprite renderer component
-            platform_sprite_renderer = SpriteRenderer(platform_sprite)
-            # Create transform component
-            platform_transform = Transform((i * 200 * random.uniform(0.25, 1.75), 400 + random.uniform(-50, 50)), 0,
-                                           (1.0, 1.0))
-            # Create collider (hitbox will be generated when entity is created)
-            platform_collider = Collider(auto_generate_polygon="box")
-            # Create platform entity and add all the components to it
-            platform_entity = Entity("Level", ["Platform"],
-                                     [platform_sprite_renderer, platform_transform, platform_collider],
-                                     static=True)
-            # Add the platform entity to the manager
-            GameManager.add_entity(platform_entity)
+        entities = mapSections.tutorial()
+        for i in entities:
+            GameManager.add_entity(i)
 
         # Create entities for background (tiled)
         for i in range(10):
@@ -88,7 +56,7 @@ class GameView(arcade.View):
     def __create_player(self):
         # Setup player
         # Create an arcade.Sprite for the player
-        player_sprite = arcade.Sprite("assets/sprites/player/player_idle_1.png", 0.5)
+        player_sprite = arcade.Sprite("assets/sprites/player/player_idle_1.png")
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
