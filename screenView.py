@@ -40,7 +40,7 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        entities = mapSections.tutorial()
+        entities = mapSections.section1()
         for i in entities:
             GameManager.add_entity(i)
 
@@ -80,13 +80,22 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
         # Create a transform component for the enemy
-        enemy_transform = Transform((500, 1000), 0, (1.0, 1.0))
+        enemy_transform = Transform((50, 1000), 0, (1.0, 1.0))
         # Create enemy controller component
         enemy_controller = EnemyController()
+        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
+        enemy_collider = Collider(auto_generate_polygon="box")
+        # Create the enemy entity and add all the components to it
+        enemy_entity = Entity("Enemy", ["Enemy"],
+                               [enemy_sprite_renderer, enemy_transform, enemy_controller, enemy_collider],
+                               static=False)
+        # Add the enemy entity to the manager
+        GameManager.add_entity(enemy_entity)
 
     def setup(self):
         self.__create_player()
         self.__create_level()
+        self.__create_enemy()
         arcade.set_background_color(arcade.color.AMAZON)
 
         # Trigger the "Start" event

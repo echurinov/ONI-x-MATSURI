@@ -73,14 +73,7 @@ class EnemyController(Component):
         }
         for animation_name, animation in self.__animation_data.items():
             for i in range(animation["num_frames"]):
-                animation["frames"].append(arcade.Sprite("assets/sprites/player/" + animation["name_prefix"] + str(i+1) +".png", 0.5))
-
-        # Add listeners for all the events
-        EventManager.add_listener("Update", self.on_update)  # calls on_update every frame
-        EventManager.add_listener("KeyPress", self.on_key_press)  # calls on_key_press every time a key is pressed
-        EventManager.add_listener("KeyRelease",
-                                  self.on_key_release)  # calls on_key_release every time a key is released
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+                animation["frames"].append(arcade.Sprite("assets/sprites/enemy/" + animation["name_prefix"] + str(i+1) +".png", 0.5))
 
     # Called when parent entity is created
     def on_created(self):
