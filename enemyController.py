@@ -20,7 +20,7 @@ class EnemyController(Component):
     # dt is the time taken since the last frame
     def on_update(self, dt):
         # Animation states
-        if self.__velocity[0] < 0: #(and not self.__position_x < x_left_boundary
+        if self.__velocity[0] < 0:
             self.__animation_state = "walk_L"
         elif self.__velocity[0] > 0: #(and not self.__position_x > x_right_boundary
             self.__animation_state = "walk_R"
@@ -44,6 +44,9 @@ class EnemyController(Component):
         self.__transform = None
         self.__collider = None
         self.__sprite_renderer = None
+
+        # Store enemy attributes
+        self.__health = 50
 
         # Sprite switching (animation)
         self.__animation_timer = 0  # Frames since last change
