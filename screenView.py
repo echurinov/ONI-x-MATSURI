@@ -44,7 +44,7 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        entities = mapSections.tutorial()
+        entities = mapSections.section1()
         for i in entities:
             GameManager.add_entity(i)
 
