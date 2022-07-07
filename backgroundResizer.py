@@ -11,4 +11,5 @@ class BackgroundResizer(Component):
         pass
 
     def on_update(self, dt):
+        return
         GameManager.SCREEN_HEIGHT
