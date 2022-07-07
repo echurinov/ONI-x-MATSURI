@@ -95,6 +95,8 @@ class MyGame(arcade.Window):
         EventManager.trigger_event("Start")
 
     def on_update(self, dt):
+
+        GameManager.dt = dt
         # Trigger screen update event
         EventManager.trigger_event("Update", dt)
         EventManager.trigger_event("PhysicsUpdate", dt)
