@@ -2,6 +2,7 @@ import random
 
 import arcade
 
+from backgroundResizer import BackgroundResizer
 from collider import Collider
 from entity import Entity
 from gameManager import GameManager
@@ -79,8 +80,9 @@ class GameView(arcade.View):
             background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
             background_sprite_renderer = SpriteRenderer(background_sprite)
             background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, (1.0, 1.0))
+            background_resizer = BackgroundResizer()
             background_entity = Entity("Background", ["BackgroundTag"],
-                                       [background_sprite_renderer, background_transform])
+                                       [background_sprite_renderer, background_transform, background_resizer])
             GameManager.add_background_entity(background_entity)
 
     def __create_player(self):
