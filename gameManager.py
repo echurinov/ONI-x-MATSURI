@@ -19,6 +19,20 @@ class GameManager:
 
     debug = False
 
+    __paused = False
+
+    @staticmethod
+    def get_paused():
+        return GameManager.__paused
+
+    @staticmethod
+    def set_paused(value):
+        GameManager.__paused = value
+        if value:
+            print("Paused")
+        else:
+            print("Unpaused")
+
     main_camera = None  # Scrolling camera
     gui_camera = None  # Static camera
 
@@ -30,6 +44,7 @@ class GameManager:
     def start():
         GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
         GameManager.gui_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        GameManager.set_paused(False)
 
     @staticmethod
     def get_dynamic_entities():
