@@ -21,6 +21,10 @@ class PlayerController(Component):
         if key == arcade.key.F:
             GameManager.debug = not GameManager.debug
 
+        # Pause/quit
+        if key == arcade.key.ESCAPE:
+            arcade.exit()
+
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
@@ -54,6 +58,24 @@ class PlayerController(Component):
         # Get some stuff we'll need
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
+
+        for collider in all_colliders:
+            self.__taking_damage = False
+            # Ignore the player's own collider
+            if collider.parent is self:
+                continue
+            if "Enemy" in collider.parent.tags:
+                if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
+                    self.__health = self.__health - 1
+                    self.__taking_damage = True
+                    self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+
+            if self.__taking_damage:
+                self.__sprite_renderer.sprite.color = (255, 0, 0)
+            else:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+
+
 
         # Two cases here: moving up and moving down
         # Both have different physics and check for different things
@@ -116,6 +138,7 @@ class PlayerController(Component):
                         self.__velocity = (self.__velocity[0], 0)
                         # Set the touching_ground flag
                         self.__touching_ground = True
+
             # Move the player out of the floor if they're in it
             if largest_difference != float("-inf"):
                 self.__transform.move((0, largest_difference))
@@ -196,6 +219,10 @@ class PlayerController(Component):
         self.__transform = None
         self.__collider = None
         self.__sprite_renderer = None
+
+        # Private variables for player health
+        self.__health = 6
+        self.__taking_damage = False
 
         # Private variables for player movement
         self.__touching_ground = False
@@ -280,3 +307,11 @@ class PlayerController(Component):
     @property
     def velocity(self):
         return self.__velocity
+
+    @property
+    def health(self):
+        return self.__health
+
+    @property
+    def taking_damage(self):
+        return self.__taking_damage
