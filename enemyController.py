@@ -45,6 +45,10 @@ class EnemyController(Component):
         self.__collider = None
         self.__sprite_renderer = None
 
+        # Private variables for enemy health
+        self.__health = 6
+        self.__taking_damage = False
+
         # Sprite switching (animation)
         self.__animation_timer = 0  # Frames since last change
         self.__animation_frame = 0  # Which frame we're in
@@ -88,3 +92,11 @@ class EnemyController(Component):
     @property
     def velocity(self):
         return self.__velocity
+
+    @property
+    def health(self):
+        return self.__health
+
+    @property
+    def taking_damage(self):
+        return self.__taking_damage
