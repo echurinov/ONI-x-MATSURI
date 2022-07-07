@@ -14,8 +14,8 @@ class GameManager:
     __background_entities = arcade.SpriteList()
     __gui_entities = arcade.SpriteList()
 
-    SCREEN_WIDTH = 1920
-    SCREEN_HEIGHT = 1080
+    SCREEN_WIDTH = 800
+    SCREEN_HEIGHT = 600
 
     debug = False
 
@@ -139,6 +139,6 @@ class GameManager:
             player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
             string_to_print2 = "Touching ground: " + str(player_cont.touching_ground)
-            arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)
-            arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20)
+            arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
+            arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
 

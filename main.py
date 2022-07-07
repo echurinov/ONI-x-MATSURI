@@ -15,7 +15,7 @@ from transform import Transform
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, resizable=True)
 
     def __create_level(self):
         # Setup level
@@ -33,7 +33,8 @@ class MyGame(arcade.Window):
             # Create collider (hitbox will be generated when entity is created)
             level_collider = Collider(auto_generate_polygon="box")
             # Create platform entity and add all the components to it
-            level_entity = Entity("Block " + str(i), ["Ground"], [level_sprite_renderer, level_transform, level_collider],
+            level_entity = Entity("Block " + str(i), ["Ground"],
+                                  [level_sprite_renderer, level_transform, level_collider],
                                   static=True)
             # Add the platform entity to the manager
             GameManager.add_entity(level_entity)
@@ -111,6 +112,13 @@ class MyGame(arcade.Window):
         # Render the screen
         self.clear()
         GameManager.draw()
+
+    def on_resize(self, width, height):
+        super().on_resize(width, height)
+        GameManager.main_camera.resize(width, height)
+        GameManager.gui_camera.resize(width, height)
+        GameManager.SCREEN_WIDTH = width
+        GameManager.SCREEN_HEIGHT = height
 
 
 def main():
