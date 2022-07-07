@@ -24,10 +24,20 @@ class Collider(Component):
         self.__base_polygon = None  # The base polygon that represents the hitbox, not transformed/rotated
         self.__auto_generate_polygon = auto_generate_polygon
         # Components attached to the parent, cached here for ease of use
-        self.transform = None
+        self.__transform = None
         self.sprite_renderer = None
 
         self.__height = None  # Height of the polygon, cached for performance
+
+    @property
+    def transform(self):
+        if self.__transform is None:
+            self.__transform = self.parent.get_component_by_name("Transform")
+        return self.__transform
+
+    @transform.setter
+    def transform(self, value):
+        self.__transform = value
 
     # Generate the polygon when the component is added to an entity
     def on_added_to_entity(self):
@@ -41,8 +51,8 @@ class Collider(Component):
     # Gets the actual position of the polygon for an entity (takes into account transforms)
     @property
     def polygon(self):
-        if self.transform is None:
-            self.transform = self.parent.get_component_by_name("Transform")
+        if self.__transform is None:
+            self.__transform = self.parent.get_component_by_name("Transform")
         new_polygon = []
         for index, point in enumerate(self.__base_polygon):
             new_polygon.append((point[0] + self.transform.position[0],

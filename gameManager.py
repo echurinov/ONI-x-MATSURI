@@ -14,19 +14,37 @@ class GameManager:
     __background_entities = arcade.SpriteList()
     __gui_entities = arcade.SpriteList()
 
-    SCREEN_WIDTH = 1920
-    SCREEN_HEIGHT = 1080
+    SCREEN_WIDTH = 800
+    SCREEN_HEIGHT = 600
 
     debug = False
 
+    __paused = False
+
+    @staticmethod
+    def get_paused():
+        return GameManager.__paused
+
+    @staticmethod
+    def set_paused(value):
+        GameManager.__paused = value
+        if value:
+            print("Paused")
+        else:
+            print("Unpaused")
+
     main_camera = None  # Scrolling camera
     gui_camera = None  # Static camera
+
+    # Delta time, here for convenience
+    dt = 0.02
 
     # Runs once the game is started and the window is created
     @staticmethod
     def start():
         GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
         GameManager.gui_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        GameManager.set_paused(False)
 
     @staticmethod
     def get_dynamic_entities():
@@ -128,7 +146,7 @@ class GameManager:
         if GameManager.debug:
             for collider in GameManager.get_colliders():
                 arcade.draw_polygon_outline(collider.polygon, arcade.color.RED, 2)
-                arcade.draw_circle_outline(collider.transform.position[0], collider.transform.position[1], 5.0, arcade.color.PINK)
+                arcade.draw_circle_outline(collider.transform.position[0], collider.transform.position[1], 5.0, arcade.color.GREEN)
 
         # Draw GUI
         GameManager.gui_camera.use()
@@ -138,7 +156,8 @@ class GameManager:
         if GameManager.debug:
             player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
-            string_to_print2 = "Touching ground: " + str(player_cont.touching_ground)
-            arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20)
-            arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20)
+            string_to_print2 = "Vel: " + str(player_cont.velocity)
+            arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
+            arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
+            arcade.draw_text("Frame time: " + str(GameManager.dt), 0, 530, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
 

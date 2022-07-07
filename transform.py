@@ -54,3 +54,4 @@ class Transform(Component):
             self.position = (self.position[0] + amount[0], self.position[1] + amount[1])
         else:
             raise ValueError("Amount must be a tuple of length 2 (Got tuple of length " + str(len(amount)) + ").")
+
