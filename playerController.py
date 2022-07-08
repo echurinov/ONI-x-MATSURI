@@ -75,7 +75,6 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
-
         self.__is_attacking = False
 
         # For when the player is taking damage
@@ -89,7 +88,6 @@ class PlayerController(Component):
                     if self.__invincibility_timer < 0:
                         self.__invincibility_timer = 1.0
                         self.__health = self.__health - 1
-                        print(self.__health)
                         self.__taking_damage = True
                         self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
@@ -275,7 +273,7 @@ class PlayerController(Component):
         self.__jump_requested = False
         self.__velocity = (0, 0)
         self.__gravity = -2000
-        self.__jump_speed = 750
+        self.__jump_speed = 1000
         self.__max_velocity = (500, 2500)
         self.__falling_speed_multiplier = 1.5  # Fall faster than you go up (makes jumps feel better)
         self.__coyote_time = 0.1  # Period after walking off a platform where you can still jump (another QOL feature)
@@ -286,7 +284,7 @@ class PlayerController(Component):
         self.__jump_buffer_time = 0.1
         self.__jump_timer = 0
 
-        self.__horizontal_acceleration = 400  # How quickly you accelerate when moving sideways
+        self.__horizontal_acceleration = 700  # How quickly you accelerate when moving sideways
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed
         self.__horizontal_turnaround_acceleration = 4000  # How quickly you decelerate when changing direction
 

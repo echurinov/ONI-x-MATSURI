@@ -58,6 +58,40 @@ class GameManager:
     def get_background_entities():
         return GameManager.__background_entities
 
+    @staticmethod
+    def get_gui_entities():
+        return GameManager.__gui_entities
+
+    @staticmethod
+    def remove_all_entities():
+        GameManager.__entities = []
+        GameManager.__dynamic_entities = arcade.SpriteList()
+        GameManager.__static_entities = arcade.SpriteList()
+        GameManager.__background_entities = arcade.SpriteList()
+        GameManager.__gui_entities = arcade.SpriteList()
+
+    @staticmethod
+    def remove_entity(entity):
+        if entity in GameManager.__entities:
+            GameManager.__entities.remove(entity)
+        else:
+            print("Entity", entity.name, "not found in GameManager.__entities")
+
+        if entity.get_component_by_name("SpriteRenderer"):
+            sprite = entity.get_component_by_name("SpriteRenderer").sprite
+            if sprite in GameManager.__static_entities:
+                GameManager.__static_entities.remove(sprite)
+            if sprite in GameManager.__dynamic_entities:
+                GameManager.__dynamic_entities.remove(sprite)
+            if sprite in GameManager.__background_entities:
+                GameManager.__background_entities.remove(sprite)
+            if sprite in GameManager.__gui_entities:
+                GameManager.__gui_entities.remove(sprite)
+        else:
+            print("Entity", entity.name, "has no SpriteRenderer")
+
+
+
     # Adds a background entity (draws below everything else, has no collision)
     @staticmethod
     def add_background_entity(entity):
@@ -83,6 +117,20 @@ class GameManager:
                 GameManager.__static_entities.append(sprite.sprite)
             else:
                 GameManager.__dynamic_entities.append(sprite.sprite)
+        # Call on_created for all components attached to this entity
+        for component in entity.components:
+            if hasattr(component, 'on_created'):
+                component.on_created()
+
+    # Adds a new GUI entity.
+    # Handles adding it to sprite lists so it gets rendered
+    @staticmethod
+    def add_gui_entity(entity):
+        GameManager.__entities.append(entity)
+        sprite = entity.get_component_by_name("SpriteRenderer")
+        # Only add to sprite lists if entity has a sprite component
+        if sprite is not None:
+            GameManager.__gui_entities.append(sprite.sprite)
         # Call on_created for all components attached to this entity
         for component in entity.components:
             if hasattr(component, 'on_created'):
@@ -134,6 +182,11 @@ class GameManager:
                 if collider is not None:
                     colliders.append(collider)
         return colliders
+
+    # Returns a list of all entities
+    @staticmethod
+    def get_entities():
+        return GameManager.__entities
 
     # Draw everything to screen
     @staticmethod
