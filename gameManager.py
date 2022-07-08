@@ -58,6 +58,24 @@ class GameManager:
     def get_background_entities():
         return GameManager.__background_entities
 
+    @staticmethod
+    def remove_entity(entity):
+        if entity in GameManager.__entities:
+            GameManager.__entities.remove(entity)
+
+        if entity.get_component_by_name("SpriteRenderer"):
+            sprite = entity.get_component_by_name("SpriteRenderer").sprite
+            if sprite in GameManager.__static_entities:
+                GameManager.__static_entities.remove(sprite)
+            if sprite in GameManager.__dynamic_entities:
+                GameManager.__dynamic_entities.remove(sprite)
+            if sprite in GameManager.__background_entities:
+                GameManager.__background_entities.remove(sprite)
+            if sprite in GameManager.__gui_entities:
+                GameManager.__gui_entities.remove(sprite)
+
+
+
     # Adds a background entity (draws below everything else, has no collision)
     @staticmethod
     def add_background_entity(entity):

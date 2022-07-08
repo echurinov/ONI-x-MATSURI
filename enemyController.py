@@ -2,6 +2,7 @@ import arcade
 
 from component import Component
 from eventManager import EventManager
+from gameManager import GameManager
 
 
 class EnemyController(Component):
@@ -10,6 +11,8 @@ class EnemyController(Component):
             return
         self.__damage_timer = 1.0
         self.__health = self.health - amount
+        if self.__health < 0:
+            GameManager.remove_entity(self.parent)
         self.__taking_damage = True
 
     # Called every time physics get updated (currently every frame)
