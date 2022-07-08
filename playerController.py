@@ -274,7 +274,7 @@ class PlayerController(Component):
         self.__jump_requested = False
         self.__velocity = (0, 0)
         self.__gravity = -2000
-        self.__jump_speed = 750
+        self.__jump_speed = 1000
         self.__max_velocity = (500, 2500)
         self.__falling_speed_multiplier = 1.5  # Fall faster than you go up (makes jumps feel better)
         self.__coyote_time = 0.1  # Period after walking off a platform where you can still jump (another QOL feature)
@@ -285,7 +285,7 @@ class PlayerController(Component):
         self.__jump_buffer_time = 0.1
         self.__jump_timer = 0
 
-        self.__horizontal_acceleration = 400  # How quickly you accelerate when moving sideways
+        self.__horizontal_acceleration = 700  # How quickly you accelerate when moving sideways
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed
         self.__horizontal_turnaround_acceleration = 4000  # How quickly you decelerate when changing direction
 
