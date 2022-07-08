@@ -28,7 +28,7 @@ class EnemyController(Component):
         if not self.__taking_damage:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
         # Animation states
-        if self.__velocity[0] < 0: #(and not self.__position_x < x_left_boundary
+        if self.__velocity[0] < 0:
             self.__animation_state = "walk_L"
         elif self.__velocity[0] > 0: #(and not self.__position_x > x_right_boundary
             self.__animation_state = "walk_R"
