@@ -74,7 +74,6 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
-
         self.__is_attacking = False
 
         # For when the player is taking damage

@@ -88,6 +88,20 @@ class GameManager:
             if hasattr(component, 'on_created'):
                 component.on_created()
 
+    # Adds a new GUI entity.
+    # Handles adding it to sprite lists so it gets rendered
+    @staticmethod
+    def add_gui_entity(entity):
+        GameManager.__entities.append(entity)
+        sprite = entity.get_component_by_name("SpriteRenderer")
+        # Only add to sprite lists if entity has a sprite component
+        if sprite is not None:
+            GameManager.__gui_entities.append(sprite.sprite)
+        # Call on_created for all components attached to this entity
+        for component in entity.components:
+            if hasattr(component, 'on_created'):
+                component.on_created()
+
     # Sets an entity to be static (True) or dynamic (False) and assigns it to the relevant SpriteList
     @staticmethod
     def set_static(entity, static):
