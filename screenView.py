@@ -247,6 +247,7 @@ class StartButton(arcade.gui.UITextureButton):
 class QuitButton(arcade.gui.UITextureButton):
     def __init__(self, *args, **keywords):
         super().__init__(**keywords)
+        self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         arcade.exit()
@@ -256,6 +257,7 @@ class ReturnButton(arcade.gui.UITextureButton):
     def __init__(self, current_view: arcade.View, *args, **keywords):
         super().__init__(**keywords)
         self.View = current_view
+        self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         start_view = StartView()
