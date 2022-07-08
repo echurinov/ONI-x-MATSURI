@@ -75,7 +75,7 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        entities = mapSections.section1()
+        entities = mapSections.section2()
         for i in entities:
             GameManager.add_entity(i)
 
@@ -108,31 +108,9 @@ class GameView(arcade.View):
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 
-    def __create_enemy(self, xy_position):
-        # Setup enemy(Red Oni)
-        # Create an arcade.Sprite for the enemy(Red Oni)
-        enemy_sprite = arcade.Sprite("assets/sprites/enemy/oni_idle_1.png")
-        # Create a sprite renderer component
-        enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
-        # Create a transform component for the enemy
-        enemy_transform = Transform(xy_position, 0, (1.0, 1.0))
-        # Create enemy controller component
-        enemy_controller = EnemyController()
-        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
-        enemy_collider = Collider(auto_generate_polygon="box")
-        # Create the enemy entity and add all the components to it
-        enemy_entity = Entity("Enemy", ["Enemy"],
-                               [enemy_sprite_renderer, enemy_transform, enemy_controller, enemy_collider],
-                               static=False)
-        # Add the enemy entity to the manager
-        GameManager.add_entity(enemy_entity)
-
     def setup(self):
         self.__create_player()
         self.__create_level()
-        self.__create_enemy((300, 266))
-        self.__create_enemy((600, 266))
-        self.__create_enemy((800, 266))
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # Trigger the "Start" event
