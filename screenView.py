@@ -23,7 +23,7 @@ class StartView(arcade.View):
         # Create managers and box for buttons
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
-        box = arcade.gui.UIBoxLayout(x=0, y=-500, vertical=False)
+        box = arcade.gui.UIBoxLayout(x=0, y=0, vertical=False)
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
 
         # Start button
@@ -76,7 +76,7 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        entities = mapSections.section1()
+        entities = mapSections.section2()
         for i in entities:
             GameManager.add_entity(i)
 
@@ -109,31 +109,9 @@ class GameView(arcade.View):
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 
-    def __create_enemy(self, xy_position):
-        # Setup enemy(Red Oni)
-        # Create an arcade.Sprite for the enemy(Red Oni)
-        enemy_sprite = arcade.Sprite("assets/sprites/enemy/oni_idle_1.png")
-        # Create a sprite renderer component
-        enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
-        # Create a transform component for the enemy
-        enemy_transform = Transform(xy_position, 0, (1.0, 1.0))
-        # Create enemy controller component
-        enemy_controller = EnemyController()
-        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
-        enemy_collider = Collider(auto_generate_polygon="box")
-        # Create the enemy entity and add all the components to it
-        enemy_entity = Entity("Enemy", ["Enemy"],
-                               [enemy_sprite_renderer, enemy_transform, enemy_controller, enemy_collider],
-                               static=False)
-        # Add the enemy entity to the manager
-        GameManager.add_entity(enemy_entity)
-
     def setup(self):
         self.__create_player()
         self.__create_level()
-        self.__create_enemy((300, 266))
-        self.__create_enemy((600, 266))
-        self.__create_enemy((800, 266))
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # Trigger the "Start" event
@@ -148,6 +126,11 @@ class GameView(arcade.View):
             return
         EventManager.trigger_event("PhysicsUpdate", dt)
         EventManager.trigger_event("GravityUpdate", -9.8, dt)
+
+        # Wait for game over
+        if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
+            lose_view = LoseView()
+            self.window.show_view(lose_view)
 
     def on_key_press(self, key, modifiers):
         # Don't do anything if we're paused
@@ -169,16 +152,93 @@ class GameView(arcade.View):
         GameManager.draw()
 
 
+class WinView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        # Create managers and box for buttons
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        box = arcade.gui.UIBoxLayout(x=0, y=0, vertical=False)
+        self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
+
+        # Return button
+        button = StartButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
+        box.add(button.with_space_around(top=100))
+
+
+    def on_show_view(self):
+        """ This is run once when we switch to this view """
+        # Load background
+        background_sprite = arcade.Sprite("assets/backgrounds/win_screen.png", 1.0)
+        background_sprite_renderer = SpriteRenderer(background_sprite)
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_resizer = BackgroundResizer()
+        background_entity = Entity("Background", ["BackgroundTag"],
+                                   [background_sprite_renderer, background_transform, background_resizer])
+        GameManager.add_background_entity(background_entity)
+
+        # Reset the viewport, necessary if we have a scrolling game and we need
+        # to reset the viewport back to the start so we can see what we draw.
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
+    def on_draw(self):
+        # Draw this view
+        self.clear()
+        GameManager.draw()
+        self.manager.draw()
+
+
+class LoseView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        # Create managers and box for buttons
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        box = arcade.gui.UIBoxLayout(x=0, y=0, vertical=False)
+        self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
+
+        # Return button
+        button = QuitButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
+        box.add(button.with_space_around(top=100))
+
+    def on_show_view(self):
+        """ This is run once when we switch to this view """
+        # Load background
+        background_sprite = arcade.Sprite("assets/backgrounds/lose_screen.png", 1.0)
+        background_sprite_renderer = SpriteRenderer(background_sprite)
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_resizer = BackgroundResizer()
+        background_entity = Entity("Background", ["BackgroundTag"],
+                                   [background_sprite_renderer, background_transform, background_resizer])
+        GameManager.add_background_entity(background_entity)
+
+        # Reset the viewport, necessary if we have a scrolling game and we need
+        # to reset the viewport back to the start so we can see what we draw.
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
+    def on_draw(self):
+        # Draw this view
+        self.clear()
+        GameManager.draw()
+        self.manager.draw()
+
+
 class StartButton(arcade.gui.UITextureButton):
     def __init__(self, current_view: arcade.View, *args, **keywords):
         super().__init__(**keywords)
         self.View = current_view
+        self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
-        game_view = GameView()
-        game_view.setup()
-        self.View.window.show_view(game_view)
-        print("clicked")
+        if not self.__start_pressed:
+            self.__start_pressed = True
+            game_view = GameView()
+            game_view.setup()
+            self.View.window.show_view(game_view)
 
 
 class QuitButton(arcade.gui.UITextureButton):
@@ -187,3 +247,14 @@ class QuitButton(arcade.gui.UITextureButton):
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         arcade.exit()
+
+
+class ReturnButton(arcade.gui.UITextureButton):
+    def __init__(self, current_view: arcade.View, *args, **keywords):
+        super().__init__(**keywords)
+        self.View = current_view
+
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        start_view = StartView()
+        start_view.setup()
+        self.View.window.show_view(start_view)

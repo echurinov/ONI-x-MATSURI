@@ -5,6 +5,7 @@ import arcade
 from collider import Collider
 from entity import Entity
 from gameManager import GameManager
+from enemyController import EnemyController
 from eventManager import EventManager
 from physicsObject import PhysicsObject
 from playerController import PlayerController
@@ -51,6 +52,23 @@ class Platform(Entity):
         platform_collider = Collider(auto_generate_polygon="box")
         super(Platform, self).__init__("Block", ["Ground"], [platform_sprite_renderer, platform_transform, platform_collider], static=True)
 
+class Enemy(Entity):
+    def __init__(self, position):
+        # Setup enemy(Red Oni)
+
+        # Create an arcade.Sprite for the enemy(Red Oni)
+        enemy_sprite = arcade.Sprite("assets/sprites/enemy/oni_idle_1.png")
+        # Create a sprite renderer component
+        enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
+        # Create a transform component for the enemy
+        enemy_transform = Transform(position, 0, (1.0, 1.0))
+        # Create enemy controller component
+        enemy_controller = EnemyController()
+        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
+        enemy_collider = Collider(auto_generate_polygon="box")
+        # Create the enemy entity and add all the components to it
+        super(Enemy, self).__init__("Enemy", ["Enemy"], [enemy_sprite_renderer, enemy_transform, enemy_controller, enemy_collider], static=False)
+
 def tutorial(): #this is the section which will contain the tutorial sign
     entities = []
     tutorial_sprite = arcade.Sprite("assets/tiles/tutorial.PNG", 0.5)
@@ -73,4 +91,15 @@ def section1():
 
 def section2():
     entities = []
-
+    # Set stalls to be behind the floor (So that they dont clip over the floor)
+    entities.append(FoodStalls((1500, 407, 0)))
+    # Create floor
+    for i in range(50):
+        entities.append(SimpleBlock(((1 * i * 187), 93)))
+    # Enemies at the base floor (before the stalls)
+    for i in range(3):
+        entities.append(Enemy((300 + (i * 300), 266, 0)))
+    # Enemies on top of the tents
+    for i in range(2):
+        entities.append(Enemy((1300 + (i * 500), 714, 0)))
+    return entities
