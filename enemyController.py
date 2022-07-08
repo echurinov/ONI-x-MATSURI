@@ -6,9 +6,15 @@ from eventManager import EventManager
 
 class EnemyController(Component):
 
+    def take_damage(self, amount):
+        self.__health = self.health - amount
+        self.__taking_damage = True
+        self.__sprite_renderer.sprite.color = (255, 0, 0)
+
     # Called every time physics get updated (currently every frame)
     # Deals with all enemy movement and collision
     def on_physics_update(self, dt):
+
         # Round velocity to 0 if we're close enough
         epsilon = 0.001
         if abs(self.__velocity[0]) < epsilon:
@@ -19,6 +25,8 @@ class EnemyController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
+        if not self.__taking_damage:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
         # Animation states
         if self.__velocity[0] < 0:
             self.__animation_state = "walk_L"
@@ -46,7 +54,7 @@ class EnemyController(Component):
         self.__sprite_renderer = None
 
         # Private variables for enemy health
-        self.__health = 6
+        self.__health = 1
         self.__taking_damage = False
 
         # Sprite switching (animation)

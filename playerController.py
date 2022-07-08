@@ -1,5 +1,6 @@
 import arcade
 
+import enemyController
 from component import Component
 from eventManager import EventManager
 
@@ -24,6 +25,11 @@ class PlayerController(Component):
         # Pause/quit
         if key == arcade.key.ESCAPE:
             arcade.exit()
+
+        # Attacking
+        if key == arcade.key.SPACE:
+            self.__is_attacking = True
+
 
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
@@ -59,6 +65,19 @@ class PlayerController(Component):
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
 
+        # For when the player is attacking
+        if self.__is_attacking:
+            for collider in all_colliders:
+                if collider.parent is self:
+                    continue
+                if "Enemy" in collider.parent.tags:
+                    if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
+                        collider.parent.get_component_by_name("EnemyController").take_damage(1)
+
+
+        self.__is_attacking = False
+
+        # For when the player is taking damage
         self.__taking_damage = False
         for collider in all_colliders:
             # Ignore the player's own collider
@@ -74,6 +93,8 @@ class PlayerController(Component):
             self.__sprite_renderer.sprite.color = (255, 0, 0)
         else:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
+
+
 
 
 
@@ -184,18 +205,36 @@ class PlayerController(Component):
             (self.__transform.position[0] - GameManager.SCREEN_WIDTH / 2, 0), 5 * dt)
 
         # Animation states
-        if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A]:
-            self.__animation_state = "idle_L"
-        elif self.__velocity[0] > 0 and not self.__keys_pressed[arcade.key.D]:
-            self.__animation_state = "idle_R"
-        elif self.__keys_pressed[arcade.key.A]:
-            self.__animation_state = "walk_L"
-        elif self.__keys_pressed[arcade.key.D]:
-            self.__animation_state = "walk_R"
+        # If the player is attacking
+        if self.__is_attacking:
+            # If the player is in the air
+            if not self.__touching_ground:
+                if not self.__keys_pressed[arcade.key.A]:
+                    self.__animation_state = "jump_attack_R"
+                elif not self.__keys_pressed[arcade.key.D]:
+                    self.__animation_state = "jump_attack_L"
+                else:
+                    self.__animation_state = "jump_attack_R"
+
+            # Change attacking animation to be the one of on ground
+            if self.__touching_ground:
+                if not self.__keys_pressed[arcade.key.A]:
+                    self.__animation_state = "attack_R"
+                elif not self.__keys_pressed[arcade.key.D]:
+                    self.__animation_state = "attack_L"
+                else:
+                    self.__animation_state = "attack_R"
         else:
-            self.__animation_state = "idle"
-
-
+            if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A]:
+                self.__animation_state = "idle_L"
+            elif self.__velocity[0] > 0 and not self.__keys_pressed[arcade.key.D]:
+                self.__animation_state = "idle_R"
+            elif self.__keys_pressed[arcade.key.A]:
+                self.__animation_state = "walk_L"
+            elif self.__keys_pressed[arcade.key.D]:
+                self.__animation_state = "walk_R"
+            else:
+                self.__animation_state = "idle"
 
         # Animation
         self.__animation_timer += 1
@@ -223,6 +262,9 @@ class PlayerController(Component):
         # Private variables for player health
         self.__health = 6
         self.__taking_damage = False
+
+        #Private variable for player attacking
+        self.__is_attacking = False
 
         # Private variables for player movement
         self.__touching_ground = False
@@ -281,6 +323,30 @@ class PlayerController(Component):
                 "num_frames": 4,
                 "frame_delay": 5,
                 "frames": []
+            },
+            "attack_L": {
+                "name_prefix": "player_attack_L_",  # Prefix for the filenames of the animation (not including the number)
+                "num_frames": 2,  # Numbers of frames in the animation
+                "frame_delay": 5,  # Frames between animation frames
+                "frames": []  # All the sprites, loaded at runtime
+            },
+            "attack_R": {
+                "name_prefix": "player_attack_R_",
+                "num_frames": 2,
+                "frame_delay": 5,
+                "frames": []
+            },
+            "jump_attack_L": {
+                "name_prefix": "player_jump_attack_L_",
+                "num_frames": 2,
+                "frame_delay": 5,
+                "frames": []
+            },
+            "jump_attack_R": {
+                "name_prefix": "player_jump_attack_R_",
+                "num_frames": 2,
+                "frame_delay": 5,
+                "frames": []
             }
         }
         for animation_name, animation in self.__animation_data.items():
@@ -315,3 +381,7 @@ class PlayerController(Component):
     @property
     def taking_damage(self):
         return self.__taking_damage
+
+    @property
+    def is_attacking(self):
+        return self.__is_attacking
