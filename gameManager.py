@@ -59,9 +59,23 @@ class GameManager:
         return GameManager.__background_entities
 
     @staticmethod
+    def get_gui_entities():
+        return GameManager.__gui_entities
+
+    @staticmethod
+    def remove_all_entities():
+        GameManager.__entities = []
+        GameManager.__dynamic_entities = arcade.SpriteList()
+        GameManager.__static_entities = arcade.SpriteList()
+        GameManager.__background_entities = arcade.SpriteList()
+        GameManager.__gui_entities = arcade.SpriteList()
+
+    @staticmethod
     def remove_entity(entity):
         if entity in GameManager.__entities:
             GameManager.__entities.remove(entity)
+        else:
+            print("Entity", entity.name, "not found in GameManager.__entities")
 
         if entity.get_component_by_name("SpriteRenderer"):
             sprite = entity.get_component_by_name("SpriteRenderer").sprite
@@ -73,6 +87,8 @@ class GameManager:
                 GameManager.__background_entities.remove(sprite)
             if sprite in GameManager.__gui_entities:
                 GameManager.__gui_entities.remove(sprite)
+        else:
+            print("Entity", entity.name, "has no SpriteRenderer")
 
 
 
@@ -166,6 +182,11 @@ class GameManager:
                 if collider is not None:
                     colliders.append(collider)
         return colliders
+
+    # Returns a list of all entities
+    @staticmethod
+    def get_entities():
+        return GameManager.__entities
 
     # Draw everything to screen
     @staticmethod

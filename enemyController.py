@@ -20,7 +20,6 @@ class EnemyController(Component):
     def on_physics_update(self, dt):
 
         # Update timer
-        print(self.__damage_timer)
         self.__damage_timer -= dt
 
     # Gets called every frame

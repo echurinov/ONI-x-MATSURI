@@ -207,6 +207,8 @@ class LoseView(arcade.View):
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
+        GameManager.remove_all_entities()
+
         # Load background
         background_sprite = arcade.Sprite("assets/backgrounds/lose_screen.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
@@ -218,7 +220,7 @@ class LoseView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        GameManager.main_camera.move((0, 0))
 
     def on_draw(self):
         # Draw this view
