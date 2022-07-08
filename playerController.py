@@ -89,7 +89,6 @@ class PlayerController(Component):
                     if self.__invincibility_timer < 0:
                         self.__invincibility_timer = 1.0
                         self.__health = self.__health - 1
-                        print(self.__health)
                         self.__taking_damage = True
                         self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
