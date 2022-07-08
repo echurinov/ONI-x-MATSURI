@@ -4,7 +4,12 @@ Current Stage: Prototype
 
 --------------------------
 
-Build command: 
+Build command:
+    First, install the required dependencies by running the following command *as an administrator* in the project root folder:
+        pip install -r requirements.txt
+    Next, run the following command to build the application:
+        pyinstaller --add-data "assets;assets" main.py
+    The resulting main.exe will be located in the dist\main\ directory.
 Installation package executable link: 
 
 --------------------------
