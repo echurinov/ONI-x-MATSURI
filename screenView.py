@@ -127,6 +127,11 @@ class GameView(arcade.View):
         EventManager.trigger_event("PhysicsUpdate", dt)
         EventManager.trigger_event("GravityUpdate", -9.8, dt)
 
+        # Wait for game over
+        if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
+            lose_view = LoseView()
+            self.window.show_view(lose_view)
+
     def on_key_press(self, key, modifiers):
         # Don't do anything if we're paused
         if GameManager.get_paused():
@@ -195,11 +200,10 @@ class LoseView(arcade.View):
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
 
         # Return button
-        button = StartButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
-                                            texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
-                                            texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
+        button = QuitButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
         box.add(button.with_space_around(top=100))
-
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
