@@ -42,7 +42,7 @@ class GameManager:
     # Runs once the game is started and the window is created
     @staticmethod
     def start():
-        GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH - 500, GameManager.SCREEN_HEIGHT- 500)
         GameManager.gui_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
         GameManager.set_paused(False)
 

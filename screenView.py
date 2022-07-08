@@ -24,6 +24,7 @@ class StartView(arcade.View):
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width - 1, 0, self.window.height - 1)
 
+
     def on_draw(self):
         # Draw this view
         self.clear()
