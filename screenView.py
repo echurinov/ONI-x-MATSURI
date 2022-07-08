@@ -218,6 +218,7 @@ class LoseView(arcade.View):
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
 
+        background_resizer.on_resize(self.window.width, self.window.height)
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         GameManager.main_camera.move((0, 0))
@@ -246,6 +247,7 @@ class StartButton(arcade.gui.UITextureButton):
 class QuitButton(arcade.gui.UITextureButton):
     def __init__(self, *args, **keywords):
         super().__init__(**keywords)
+        self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         arcade.exit()
@@ -255,6 +257,7 @@ class ReturnButton(arcade.gui.UITextureButton):
     def __init__(self, current_view: arcade.View, *args, **keywords):
         super().__init__(**keywords)
         self.View = current_view
+        self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         start_view = StartView()
