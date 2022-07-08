@@ -2,6 +2,8 @@ import random
 
 import arcade
 
+import arcade.gui
+
 from backgroundResizer import BackgroundResizer
 from collider import Collider
 from enemyController import EnemyController
@@ -16,24 +18,52 @@ import mapSections
 
 
 class StartView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        # Create managers and box for buttons
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        box = arcade.gui.UIBoxLayout(x=0, y=-500, vertical=False)
+        self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
+
+        # Start button
+        button = StartButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/start_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/start_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/start_button_pressed.png'))
+        box.add(button.with_space_around(right=20, top=100))
+
+        # Quit Button
+        quit_button = QuitButton(x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
+        box.add(quit_button.with_space_around(left=20, top=100))
+
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        self.texture = arcade.load_texture("assets/backgrounds/start_screen.png")
+        # Load background
+        background_sprite = arcade.Sprite("assets/backgrounds/start_screen.png", 1.0)
+        background_sprite_renderer = SpriteRenderer(background_sprite)
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_resizer = BackgroundResizer()
+        background_entity = Entity("Background", ["BackgroundTag"],
+                                   [background_sprite_renderer, background_transform, background_resizer])
+        GameManager.add_background_entity(background_entity)
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        arcade.set_viewport(0, self.window.width - 1, 0, self.window.height - 1)
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_draw(self):
         # Draw this view
         self.clear()
-        self.texture.draw_sized(GameManager.SCREEN_WIDTH / 2, GameManager.SCREEN_HEIGHT / 2, GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        GameManager.draw()
+        self.manager.draw()
 
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
-        """ If the user presses the mouse button, start the game. """
-        game_view = GameView()
-        game_view.setup()
-        self.window.show_view(game_view)
+    #def on_mouse_press(self, _x, _y, _button, _modifiers):
+    #    """ If the user presses the mouse button, start the game. """
+    #    game_view = GameView()
+    #    game_view.setup()
+    #    self.window.show_view(game_view)
 
 
 class GameView(arcade.View):
@@ -138,3 +168,21 @@ class GameView(arcade.View):
         GameManager.draw()
 
 
+class StartButton(arcade.gui.UITextureButton):
+    def __init__(self, current_view: arcade.View, *args, **keywords):
+        super().__init__(**keywords)
+        self.View = current_view
+
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        game_view = GameView()
+        game_view.setup()
+        self.View.window.show_view(game_view)
+        print("clicked")
+
+
+class QuitButton(arcade.gui.UITextureButton):
+    def __init__(self, *args, **keywords):
+        super().__init__(**keywords)
+
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        arcade.exit()
