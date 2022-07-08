@@ -48,6 +48,7 @@ class PlayerController(Component):
         # Update timers
         self.__coyote_timer -= dt
         self.__jump_timer -= dt
+        self.__invincibility_timer -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -85,15 +86,17 @@ class PlayerController(Component):
                 continue
             if "Enemy" in collider.parent.tags:
                 if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
-                    self.__health = self.__health - 1
-                    self.__taking_damage = True
-                    self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+                    if self.__invincibility_timer < 0:
+                        self.__invincibility_timer = 1.0
+                        self.__health = self.__health - 1
+                        print(self.__health)
+                        self.__taking_damage = True
+                        self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
-        if self.__taking_damage:
-            self.__sprite_renderer.sprite.color = (255, 0, 0)
+        if self.__invincibility_timer > 0:
+            self.__sprite_renderer.sprite.color = (255, 100, 100)
         else:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
-
 
 
 
@@ -262,6 +265,7 @@ class PlayerController(Component):
         # Private variables for player health
         self.__health = 6
         self.__taking_damage = False
+        self.__invincibility_timer = 0.0
 
         #Private variable for player attacking
         self.__is_attacking = False
