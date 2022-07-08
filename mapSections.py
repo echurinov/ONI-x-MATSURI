@@ -113,6 +113,13 @@ def section2():
     # Set stalls to be behind the floor (So that they dont clip over the floor)
     entities.append(FoodStalls((1500, 407, 0)))
     # Create floor
+    tutorial_sprite = arcade.Sprite("assets/tiles/tutorial_board.png")
+    tutorial_sprite_renderer = SpriteRenderer(tutorial_sprite)
+    tutorial_transform = Transform((80, 415))
+    tutorial_collider = Collider(auto_generate_polygon="box")
+    tutorial_entity = Entity("Tutorial Block", ["Tutorial"],
+                             [tutorial_sprite_renderer, tutorial_transform, tutorial_collider], static=True)
+    entities.append(tutorial_entity)
     for i in range(50):
         entities.append(SimpleBlock(((1 * i * 187), 93)))
     # Enemies at the base floor (before the stalls)

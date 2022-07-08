@@ -250,6 +250,7 @@ class QuitButton(arcade.gui.UITextureButton):
         self.__start_pressed = False
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
+        print("Quitting")
         arcade.exit()
 
 
