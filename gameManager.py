@@ -198,7 +198,10 @@ class GameManager:
         # Debug
         if GameManager.debug:
             for collider in GameManager.get_colliders():
-                arcade.draw_polygon_outline(collider.polygon, arcade.color.RED, 2)
+                if collider.auto_generate_polygon == "box":
+                    arcade.draw_rectangle_outline(collider.transform.position[0], collider.transform.position[1], collider.width, collider.height, arcade.color.RED, 2)
+                else:
+                    arcade.draw_polygon_outline(collider.polygon, arcade.color.RED, 2)
                 arcade.draw_circle_outline(collider.transform.position[0], collider.transform.position[1], 5.0, arcade.color.GREEN)
 
         # Draw GUI

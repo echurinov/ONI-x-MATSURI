@@ -28,6 +28,11 @@ class Collider(Component):
         self.sprite_renderer = None
 
         self.__height = None  # Height of the polygon, cached for performance
+        self.__width = None  # Width of the polygon, cached for performance
+
+    @property
+    def auto_generate_polygon(self):
+        return self.__auto_generate_polygon
 
     @property
     def transform(self):
@@ -65,6 +70,24 @@ class Collider(Component):
         if self.__height is None:
             self.__height = self.__get_polygon_height()
         return self.__height
+
+    @property
+    def width(self):
+        if self.__width is None:
+            self.__width = self.__get_polygon_width()
+        return self.__width
+
+    def __get_polygon_width(self):
+        width = 0
+        left = float("-inf")
+        right = float("inf")
+        for point in self.polygon:
+            if point[0] > left:
+                left = point[0]
+            if point[0] < right:
+                right = point[0]
+        width = left - right
+        return width
 
     def __get_polygon_height(self):
         height = 0
