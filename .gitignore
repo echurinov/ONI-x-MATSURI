@@ -2,3 +2,10 @@ __pycache__/*
 __pycache__/**
 .idea/misc.xml
 .idea/misc.xml*
+dist/
+dist/*
+dist/**
+main.spec
+build/
+build/*
+build/**

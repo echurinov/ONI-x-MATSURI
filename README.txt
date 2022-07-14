@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 ONI x MATSURI
 Current Stage: Prototype
 
 --------------------------
 
-Build command: 
-Installation package executable link: 
+Build command:
+    Run the following script in the project root folder:
+        build.bat
+    The resulting main.exe will be located in the dist\main\ directory.
+    IF THE SCRIPT FAILS, run the following two commands manually (in command prompt as an administrator):
+        pip install -r requirements.txt
+        pyinstaller --onefile --add-data "assets;assets" main.py --windowed
 
 --------------------------
 
@@ -25,4 +31,4 @@ least one instance of much of the core functionality. This includes:
 - Taking and dealing damage
 - A level component builder (to be utilized in procedural generation)
 - Enemy system
-- Physics System
+- Physics system
