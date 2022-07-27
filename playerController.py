@@ -227,6 +227,7 @@ class PlayerController(Component):
                     self.__animation_state = "attack_L"
                 else:
                     self.__animation_state = "attack_R"
+            arcade.play_sound(self.attack_sound)
         else:
             if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A]:
                 self.__animation_state = "idle_L"
@@ -365,6 +366,7 @@ class PlayerController(Component):
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
         # Load sounds
+        self.attack_sound = arcade.load_sound("assets/sounds/player/player_attack.wav")
         self.damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
         self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump2.wav")
 
