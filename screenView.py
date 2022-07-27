@@ -6,11 +6,9 @@ import arcade.gui
 
 from backgroundResizer import BackgroundResizer
 from collider import Collider
-from enemyController import EnemyController
 from entity import Entity
 from gameManager import GameManager
 from eventManager import EventManager
-from physicsObject import PhysicsObject
 from playerController import PlayerController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
@@ -53,7 +51,6 @@ class StartView(arcade.View):
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
-
     def on_draw(self):
         # Draw this view
         self.clear()
@@ -89,6 +86,14 @@ class GameView(arcade.View):
             background_entity = Entity("Background", ["BackgroundTag"],
                                        [background_sprite_renderer, background_transform, background_resizer])
             GameManager.add_background_entity(background_entity)
+
+        # Create heart sprites
+        for i in range(3):
+            heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
+            heart_sprite_renderer = SpriteRenderer(heart_sprite)
+            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, (1.0, 1.0))
+            heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
+            GameManager.add_gui_entity(heart_entity)
 
     def __create_player(self):
         # Setup player
@@ -207,10 +212,10 @@ class LoseView(arcade.View):
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
 
         # Return button
-        button = QuitButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
-                                            texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
-                                            texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
-        box.add(button.with_space_around(top=100))
+        button = ReturnButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
+        box.add(button.with_space_around(top=450, right=50))
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
@@ -273,5 +278,5 @@ class ReturnButton(arcade.gui.UITextureButton):
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         start_view = StartView()
-        start_view.setup()
+        #start_view.setup()
         self.View.window.show_view(start_view)
