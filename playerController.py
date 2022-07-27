@@ -82,6 +82,16 @@ class PlayerController(Component):
         # CAN'T GET THIS OBJECT IN on_created() (CIRCULAR REFERENCE) (Need to create player first in screenView.setup())
         self.__sword_sprite_polygon = GameManager.get_entities_by_name("Sword")[0].get_component_by_name("Collider").polygon
 
+
+        # Disallow the player from moving past the edge of the screen
+        if self.__transform.position[0] <= self.__camera_min + 50:
+            self.__transform.position = (self.__camera_min + 51, self.__transform.position[1])
+
+
+        # Player dies if they fall off the level edge
+        if self.__transform.position[1] < -5:
+            self.__health = 0
+
         # For when the player is attacking
         if self.__is_attacking:
             self.__attack_time = ATTACK_TIME
