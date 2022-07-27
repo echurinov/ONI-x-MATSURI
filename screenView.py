@@ -6,11 +6,14 @@ import arcade.gui
 
 from backgroundResizer import BackgroundResizer
 from collider import Collider
+from enemyController import EnemyController
 from entity import Entity
 from gameManager import GameManager
 from eventManager import EventManager
+from physicsObject import PhysicsObject
 from playerController import PlayerController
 from spriteRenderer import SpriteRenderer
+from swordController import SwordController
 from transform import Transform
 import mapSections
 
@@ -102,7 +105,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
-        player_transform = Transform((50, 1000), 0, (1.0, 1.0))
+        player_transform = Transform((50, 1000), 0, (1.4, 1.4))
         # Create player controller component
         player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
@@ -121,9 +124,28 @@ class GameView(arcade.View):
 
         #GameManager.add_entity(sword_entity)
 
+    def __create_sword(self):
+        # Create an arcade.Sprite for the sword (it will be invisible, so it doesn't matter what it is)
+        sword_attack_sprite = arcade.Sprite(":resources:images/test_textures/test_texture.png")
+        # Create a sprite renderer component for the sword
+        sword_attack_sprite_renderer = SpriteRenderer(sword_attack_sprite)
+        # Create a transform component for the sword
+        sword_attack_transform = Transform((200, 110), 0, (1.0, 1.0))
+        # Create sword controller component
+        sword_attack_controller = SwordController()
+        # Create a collider component for the sword (Will autogenerate hitbox when entity is created)
+        sword_attack_collider = Collider(auto_generate_polygon="box")
+        # Create the sword entity and add all the components to it
+        sword_attack_entity = Entity("Sword", ["Sword"],
+                               [sword_attack_sprite_renderer, sword_attack_transform, sword_attack_controller, sword_attack_collider],
+                               static=False)
+        # Add the sword entity to the manager
+        GameManager.add_entity(sword_attack_entity)
+
     def setup(self):
         self.__create_player()
         self.__create_level()
+        self.__create_sword()
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # Trigger the "Start" event

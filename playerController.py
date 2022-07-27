@@ -79,6 +79,8 @@ class PlayerController(Component):
         # Get some stuff we'll need
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
+        # CAN'T GET THIS OBJECT IN on_created() (CIRCULAR REFERENCE) (Need to create player first in screenView.setup())
+        self.__sword_sprite_polygon = GameManager.get_entities_by_name("Sword")[0].get_component_by_name("Collider").polygon
 
         # For when the player is attacking
         if self.__is_attacking:
@@ -98,7 +100,7 @@ class PlayerController(Component):
                 if collider.parent is self:
                     continue
                 if "Enemy" in collider.parent.tags:
-                    if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
+                    if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
 
@@ -313,6 +315,7 @@ class PlayerController(Component):
         self.__transform = None
         self.__collider = None
         self.__sprite_renderer = None
+        self.__sword_sprite_polygon = None
 
         # Private variables for player health
         self.__health = 6
