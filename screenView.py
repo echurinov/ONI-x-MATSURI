@@ -109,6 +109,13 @@ class GameView(arcade.View):
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 
+        #Create a sword entity
+        #sword_transform = Transform((500,500), 0, (0.5, 0.5))
+        #sword_controller = PlayerController()
+        #sword_collider = Collider(auto_generate_polygon="box")
+
+        #GameManager.add_entity(sword_entity)
+
     def setup(self):
         self.__create_player()
         self.__create_level()
