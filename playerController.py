@@ -7,6 +7,15 @@ from eventManager import EventManager
 # A component that handles input for a player
 from gameManager import GameManager
 
+# Amount the player is knocked back when they attack
+KNOCK_BACK_ATTACK = 350
+
+# Amount the player is knocked back when they take damage
+KNOCK_BACK_DAMAGE = 2000
+
+# Timer for attack animation taking precedence over walking animation
+ATTACK_TIME = 0.1
+
 
 class PlayerController(Component):
     # Called when a key is pressed
@@ -49,6 +58,7 @@ class PlayerController(Component):
         self.__coyote_timer -= dt
         self.__jump_timer -= dt
         self.__invincibility_timer -= dt
+        self.__attack_time -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -68,6 +78,14 @@ class PlayerController(Component):
 
         # For when the player is attacking
         if self.__is_attacking:
+            self.__attack_time = ATTACK_TIME
+            self.__is_attacking = False
+            # implement attacking knock back
+            if self.__velocity[0] >= 0:
+                self.__velocity = (self.__velocity[0] - KNOCK_BACK_ATTACK, self.__velocity[1])
+            else:
+                self.__velocity = (self.__velocity[0] + KNOCK_BACK_ATTACK, self.__velocity[1])
+
             for collider in all_colliders:
                 if collider.parent is self:
                     continue
@@ -75,7 +93,13 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
-        self.__is_attacking = False
+
+        if self.__taking_damage:
+            # implement damage knock back
+            if self.__velocity[0] >= 0:
+                self.__velocity = (self.__velocity[0] - KNOCK_BACK_DAMAGE, self.__velocity[1])
+            else:
+                self.__velocity = (self.__velocity[0] + KNOCK_BACK_DAMAGE, self.__velocity[1])
 
         # For when the player is taking damage
         self.__taking_damage = False
@@ -96,9 +120,6 @@ class PlayerController(Component):
             self.__sprite_renderer.sprite.color = (255, 100, 100)
         else:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
-
-
-
 
         # Two cases here: moving up and moving down
         # Both have different physics and check for different things
@@ -209,26 +230,37 @@ class PlayerController(Component):
 
         # Animation states
         # If the player is attacking
+        attack_timer = self.__attack_time
         if self.__is_attacking:
-            # If the player is in the air
-            if not self.__touching_ground:
-                if not self.__keys_pressed[arcade.key.A]:
-                    self.__animation_state = "jump_attack_R"
-                elif not self.__keys_pressed[arcade.key.D]:
-                    self.__animation_state = "jump_attack_L"
-                else:
-                    self.__animation_state = "jump_attack_R"
+            self.__animation_frame = 0 # reset animation
+            # If the player is in the air //// THIS IS COMMENTED OUT BECAUSE "TOUCHING GROUND" ISN"T ACCURATE, UNCOMMENT ONCE IT IS
+            # if not self.__touching_ground:
+            #     if not self.__keys_pressed[arcade.key.A]:
+            #         self.__animation_state = "jump_attack_R"
+            #     elif not self.__keys_pressed[arcade.key.D]:
+            #         self.__animation_state = "jump_attack_L"
+            #     else:
+            #         self.__animation_state = "jump_attack_R"
+            #
+            # # Change attacking animation to be the one of on ground
+            # if self.__touching_ground:
+            #     if not self.__keys_pressed[arcade.key.A]:
+            #         self.__animation_state = "attack_R"
+            #     elif not self.__keys_pressed[arcade.key.D]:
+            #         self.__animation_state = "attack_L"
+            #     else:
+            #         self.__animation_state = "attack_R"
 
-            # Change attacking animation to be the one of on ground
-            if self.__touching_ground:
-                if not self.__keys_pressed[arcade.key.A]:
-                    self.__animation_state = "attack_R"
-                elif not self.__keys_pressed[arcade.key.D]:
-                    self.__animation_state = "attack_L"
-                else:
-                    self.__animation_state = "attack_R"
+            # DELETE FROM HERE
+            if not self.__keys_pressed[arcade.key.A]:
+                self.__animation_state = "attack_R"
+            else:
+                self.__animation_state = "attack_L"
+
+            # TO HERE ONCE THE ABOVE CODE IS FIXED
+
             arcade.play_sound(self.attack_sound)
-        else:
+        elif attack_timer < 0:
             if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A]:
                 self.__animation_state = "idle_L"
             elif self.__velocity[0] > 0 and not self.__keys_pressed[arcade.key.D]:
@@ -270,6 +302,7 @@ class PlayerController(Component):
 
         #Private variable for player attacking
         self.__is_attacking = False
+        self.__attack_time = ATTACK_TIME
 
         # Private variables for player movement
         self.__touching_ground = False
