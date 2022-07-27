@@ -88,6 +88,7 @@ class PlayerController(Component):
                     if self.__invincibility_timer < 0:
                         self.__invincibility_timer = 1.0
                         self.__health = self.__health - 1
+                        arcade.play_sound(self.damage_sound)
                         self.__taking_damage = True
                         self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
@@ -364,7 +365,8 @@ class PlayerController(Component):
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
         # Load sounds
-        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump.mp3")
+        self.damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
+        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump2.wav")
 
     # Called when parent entity is created
     def on_created(self):
