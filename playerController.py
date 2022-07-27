@@ -235,16 +235,14 @@ class PlayerController(Component):
         # Camera Movement Control:
         # 1) Camera does not move vertically
         # 2) Once the character reaches halfway across the screen, the camera moves forward with them again
-        # 3) Camera never moves forwards
+        # 3) Camera never moves backwards
 
         width, height = arcade.window_commands.get_display_size()
 
-        if self.__transform.position[0] > width / 2:
-            GameManager.main_camera.move_to(
-                (self.__transform.position[0] - width / 2, 0), 5 * dt)
+        if self.__transform.position[0] > (self.__camera_min + width / 2):
+            self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
-        else:
-            GameManager.main_camera.move_to((0, 0), 5 * dt)
+        GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
 
         # Animation states
         # If the player is attacking
@@ -324,6 +322,8 @@ class PlayerController(Component):
         #Private variable for player attacking
         self.__is_attacking = False
         self.__attack_time = ATTACK_TIME
+
+        self.__camera_min = 0
 
         # Private variables for player movement
         self.__touching_ground = False
