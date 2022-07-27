@@ -212,9 +212,9 @@ class LoseView(arcade.View):
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
 
         # Return button
-        button = ReturnButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
-                                            texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
-                                            texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
+        button = ReturnButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
+                                            texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
+                                            texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
         box.add(button.with_space_around(top=450, right=50))
 
     def on_show_view(self):
