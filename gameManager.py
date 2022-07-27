@@ -14,9 +14,6 @@ class GameManager:
     __background_entities = arcade.SpriteList()
     __gui_entities = arcade.SpriteList()
 
-    SCREEN_WIDTH = 1920
-    SCREEN_HEIGHT = 1080
-
     debug = False
 
     __paused = False
@@ -42,8 +39,9 @@ class GameManager:
     # Runs once the game is started and the window is created
     @staticmethod
     def start():
-        GameManager.main_camera = arcade.Camera(GameManager.SCREEN_WIDTH - 500, GameManager.SCREEN_HEIGHT- 500)
-        GameManager.gui_camera = arcade.Camera(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT)
+        width, height = arcade.window_commands.get_display_size()
+        GameManager.main_camera = arcade.Camera(width, height)
+        GameManager.gui_camera = arcade.Camera(width, height)
         GameManager.set_paused(False)
 
     @staticmethod
