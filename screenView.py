@@ -185,6 +185,18 @@ class GameView(arcade.View):
         self.clear()
         GameManager.draw()
 
+    def on_mouse_press(self, x, y, button, modifiers):
+        if 1417 < x < 1505 and 750 < y < 842:
+            print("pressed")
+            arcade.exit()
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        # DOESN'T WORK AND IDK HOW TO MAKE IT
+        if 1417 < x < 1505 and 750 < y < 842:
+            PlayerController.set_exit_sprite(PlayerController, arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
+        else:
+            PlayerController.set_exit_sprite(PlayerController, arcade.Sprite("assets/sprites/exit.png", 1.0))
+
 
 class WinView(arcade.View):
     def __init__(self):
@@ -302,3 +314,4 @@ class ReturnButton(arcade.gui.UITextureButton):
         start_view = StartView()
         #start_view.setup()
         self.View.window.show_view(start_view)
+

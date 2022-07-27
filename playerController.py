@@ -354,6 +354,7 @@ class PlayerController(Component):
         self.__animation_state = "idle"
         # Dictionary for frames for animations
 
+        self.__exit_sprite = arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0)
 
         self.__animation_data = {
             "idle_L": {
@@ -436,8 +437,13 @@ class PlayerController(Component):
     def set_gui(self):
         GameManager.clear_gui_sprite()
 
+        # Exit Button
+        exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
+        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, (1.0, 1.0))
+        exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
+        GameManager.add_gui_entity(exit_entity)
+
         if self.__health <= 2:
-            print(self.__health)
             if self.__health == 1:
                 self.make_heart_entity(0, "half")
             else:
@@ -471,6 +477,12 @@ class PlayerController(Component):
         heart_transform = Transform((num_heart * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, (1.0, 1.0))
         heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
         GameManager.add_gui_entity(heart_entity)
+
+    def get_exit_sprite(self):
+        return self.__exit_sprite
+
+    def set_exit_sprite(self, new_sprite):
+        self.__exit_sprite = new_sprite
 
     @property
     def touching_ground(self):
