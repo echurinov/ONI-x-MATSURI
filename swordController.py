@@ -17,10 +17,8 @@ class SwordController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
-        player_pos = self.__player_transform.position
-        player_vel = self.__player_controller.velocity
-        direction = 1 if player_vel[0] > 0 else -1
-        self.__transform.position = (player_pos[0] + (120 * direction), player_pos[1])
+        #Figured I should keep "movement" of the sword in physics updates
+        pass
 
 
     def __init__(self):
@@ -39,8 +37,9 @@ class SwordController(Component):
         self.__collider = self.parent.get_component_by_name("Collider")
         self.__transform = self.parent.get_component_by_name("Transform")
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
-        # Used to get player position and update sword pos
+        # Used to get player position and update sword position
         self.__player_transform = GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform")
+        # Used to get player velocity to determine which side the sword entity should be placed on (Velocity may not cover all cases)
         self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
 
     @property

@@ -79,6 +79,7 @@ class PlayerController(Component):
         # Get some stuff we'll need
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
+        # CAN'T GET THIS OBJECT IN on_created() (CIRCULAR REFERENCE) (Need to create player first in screenView.setup())
         self.__sword_sprite_polygon = GameManager.get_entities_by_name("Sword")[0].get_component_by_name("Collider").polygon
 
         # For when the player is attacking
