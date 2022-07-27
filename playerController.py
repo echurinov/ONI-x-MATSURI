@@ -405,7 +405,7 @@ class PlayerController(Component):
         # Load sounds
         self.attack_sound = arcade.load_sound("assets/sounds/player/player_attack.wav")
         self.damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
-        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump2.wav")
+        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump3.wav")
 
     # Called when parent entity is created
     def on_created(self):
