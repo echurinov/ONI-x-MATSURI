@@ -15,7 +15,6 @@ class GameWindow(arcade.Window):
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         GameManager.gui_camera.resize(width, height)
-        GameManager.main_camera.resize(width, height)
         EventManager.trigger_event("Resize", width, height)
 
 
