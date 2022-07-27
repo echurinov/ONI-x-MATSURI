@@ -81,10 +81,14 @@ class PlayerController(Component):
             self.__attack_time = ATTACK_TIME
             self.__is_attacking = False
             # implement attacking knock back
-            if self.__velocity[0] >= 0:
+            if(self.__velocity[0] >= KNOCK_BACK_ATTACK):
                 self.__velocity = (self.__velocity[0] - KNOCK_BACK_ATTACK, self.__velocity[1])
-            else:
+            elif self.__velocity[0] >= 0:
+                self.__velocity = (self.__velocity[0] - (self.__velocity[0] / 2), self.__velocity[1])
+            elif (self.__velocity[0] <= (-1 * KNOCK_BACK_ATTACK)):
                 self.__velocity = (self.__velocity[0] + KNOCK_BACK_ATTACK, self.__velocity[1])
+            elif self.__velocity[0] < 0:
+                self.__velocity = (self.__velocity[0] + (self.__velocity[0] / 2), self.__velocity[1])
 
             for collider in all_colliders:
                 if collider.parent is self:
