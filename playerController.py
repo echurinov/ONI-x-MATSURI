@@ -173,6 +173,7 @@ class PlayerController(Component):
         # If we're on the ground (or in coyote time) and the player has pressed the jump button, let them jump
         if (self.__jump_requested or self.__jump_timer > 0) and (self.__touching_ground or self.__coyote_timer > 0):
             self.__velocity = (self.__velocity[0], self.__jump_speed)
+            arcade.play_sound(self.jump_sound)
             # print(self.__velocity)
             self.__jump_requested = False
             self.__jump_timer = 0
@@ -361,6 +362,9 @@ class PlayerController(Component):
         EventManager.add_listener("KeyRelease",
                                   self.on_key_release)  # calls on_key_release every time a key is released
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+
+        # Load sounds
+        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump.mp3")
 
     # Called when parent entity is created
     def on_created(self):
