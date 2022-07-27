@@ -188,6 +188,11 @@ class GameManager:
     def get_entities():
         return GameManager.__entities
 
+    # Clears gui sprites for redraw
+    @staticmethod
+    def clear_gui_sprite():
+        GameManager.__gui_entities.clear()
+
     # Draw everything to screen
     @staticmethod
     def draw():

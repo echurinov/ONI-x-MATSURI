@@ -3,6 +3,10 @@ import arcade
 import enemyController
 from component import Component
 from eventManager import EventManager
+from spriteRenderer import SpriteRenderer
+from transform import Transform
+from entity import Entity
+
 
 # A component that handles input for a player
 from gameManager import GameManager
@@ -250,6 +254,9 @@ class PlayerController(Component):
             # Switch sprite
             self.__sprite_renderer.switch_sprite(self.__animation_data[self.__animation_state]["frames"][self.__animation_frame])
 
+        # Health
+        self.set_gui()
+
     def __init__(self):
         super().__init__("PlayerController")
         # Initialize the keys_pressed dictionary
@@ -375,6 +382,45 @@ class PlayerController(Component):
         self.__collider = self.parent.get_component_by_name("Collider")
         self.__transform = self.parent.get_component_by_name("Transform")
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
+
+    def set_gui(self):
+        GameManager.clear_gui_sprite()
+
+        if self.__health <= 2:
+            print(self.__health)
+            if self.__health == 1:
+                self.make_heart_entity(0, "half")
+            else:
+                self.make_heart_entity(0, "full")
+            self.make_heart_entity(1, "empty")
+            self.make_heart_entity(2, "empty")
+        elif self.__health <= 4:
+            if self.__health == 3:
+                self.make_heart_entity(1, "half")
+            else:
+                self.make_heart_entity(1, "full")
+            self.make_heart_entity(0, "full")
+            self.make_heart_entity(2, "empty")
+        else:
+            if self.__health == 5:
+                self.make_heart_entity(2, "half")
+            else:
+                self.make_heart_entity(2, "full")
+            self.make_heart_entity(0, "full")
+            self.make_heart_entity(1, "full")
+
+    def make_heart_entity(self, num_heart, state):
+        if state == "full":
+            heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
+        elif state == "half":
+            heart_sprite = arcade.Sprite("assets/sprites/heart_half.png", 1.0)
+        else:
+            heart_sprite = arcade.Sprite("assets/sprites/heart_empty.png", 1.0)
+
+        heart_sprite_renderer = SpriteRenderer(heart_sprite)
+        heart_transform = Transform((num_heart * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, (1.0, 1.0))
+        heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
+        GameManager.add_gui_entity(heart_entity)
 
     @property
     def touching_ground(self):
