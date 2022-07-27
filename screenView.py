@@ -114,6 +114,13 @@ class GameView(arcade.View):
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 
+        #Create a sword entity
+        #sword_transform = Transform((500,500), 0, (0.5, 0.5))
+        #sword_controller = PlayerController()
+        #sword_collider = Collider(auto_generate_polygon="box")
+
+        #GameManager.add_entity(sword_entity)
+
     def setup(self):
         self.__create_player()
         self.__create_level()
@@ -240,9 +247,11 @@ class StartButton(arcade.gui.UITextureButton):
         super().__init__(**keywords)
         self.View = current_view
         self.__start_pressed = False
+        self.press_sound = arcade.load_sound("assets/sounds/menu/button_press2.wav")
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         if not self.__start_pressed:
+            arcade.play_sound(self.press_sound)
             self.__start_pressed = True
             game_view = GameView()
             game_view.setup()
@@ -253,9 +262,11 @@ class QuitButton(arcade.gui.UITextureButton):
     def __init__(self, *args, **keywords):
         super().__init__(**keywords)
         self.__start_pressed = False
+        self.press_sound = arcade.load_sound("assets/sounds/menu/button_press.wav")
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         print("Quitting")
+        arcade.play_sound(self.press_sound)
         arcade.exit()
 
 
