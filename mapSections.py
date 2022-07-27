@@ -4,11 +4,7 @@ import arcade
 
 from collider import Collider
 from entity import Entity
-from gameManager import GameManager
 from enemyController import EnemyController
-from eventManager import EventManager
-from physicsObject import PhysicsObject
-from playerController import PlayerController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
 

@@ -6,11 +6,9 @@ import arcade.gui
 
 from backgroundResizer import BackgroundResizer
 from collider import Collider
-from enemyController import EnemyController
 from entity import Entity
 from gameManager import GameManager
 from eventManager import EventManager
-from physicsObject import PhysicsObject
 from playerController import PlayerController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
@@ -52,7 +50,6 @@ class StartView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
-
 
     def on_draw(self):
         # Draw this view
@@ -203,7 +200,7 @@ class LoseView(arcade.View):
         button = QuitButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/quit_button.png'),
                                             texture_hovered=arcade.load_texture('assets/sprites/quit_button_highlighted.png'),
                                             texture_pressed=arcade.load_texture('assets/sprites/quit_button_pressed.png'))
-        box.add(button.with_space_around(top=100))
+        box.add(button.with_space_around(top=450, right=50))
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
