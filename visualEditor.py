@@ -21,7 +21,7 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=False)
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
         self.mouse_sprite = arcade.Sprite(":resources:onscreen_controls/shaded_light/unchecked.png", 0.125)
-        self.background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 0.5)
+        self.background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
         self.background_sprite.center_x = self.background_sprite.width / 2
         self.background_sprite.center_y = self.background_sprite.height / 2
 
@@ -76,14 +76,14 @@ class MyGame(arcade.Window):
         if symbol == arcade.key.P:
             with open("level.dat", "w") as file:
                 for sprite in self.static_sprite_list:
-                    file.write(sprite.name + ":" + str(sprite.center_x) + ":" + str(sprite.center_y) + "\n")
+                    file.write(sprite.name + ":" + str(sprite.center_x) + ":" + str(sprite.center_y) + ":" + str(sprite.scale) +"\n" )
         # Load
         if symbol == arcade.key.O:
             with open("level.dat", "r") as file:
                 self.static_sprite_list = arcade.SpriteList()
                 for line in file:
-                    name, x, y = line.split(":")
-                    sprite = arcade.Sprite("assets/visual_editor_sprites/" + name, 0.5)
+                    name, x, y, scale = line.split(":")
+                    sprite = arcade.Sprite("assets/visual_editor_sprites/" + name, float(scale))
                     sprite.name = name
                     sprite.center_x = float(x)
                     sprite.center_y = float(y)
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
             if len(collisions) > 0:
                 print("Grabbed")
                 self.grabbed_sprite = copy.deepcopy(collisions[0])
-                self.grabbed_sprite.scale = 0.5
+                self.grabbed_sprite.scale = 1.0
         elif button == arcade.MOUSE_BUTTON_RIGHT:
             print("Right Clicked")
             self.mouse_sprite.center_x += self.main_camera.position[0]

@@ -31,10 +31,7 @@ class Transform(Component):
         self.__scale = value
         sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         if sprite_renderer is not None:
-            sprite_renderer.sprite._scale = self.__scale
-        collider = self.parent.get_component_by_name("Collider")
-        if collider is not None:
-            collider.set_scale(self.__scale)
+            sprite_renderer.sprite.scale = self.__scale
 
 
     @property

@@ -108,6 +108,7 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 entities.append(Enemy((float(line[1]), float(line[2]))))
             elif line[0] == "cottoncandy.png":
                 entities.append(PowerUpHealth((float(line[1]), float(line[2]))))
+            entities[-1].transform.scale = float(line[3])  # Apply scale
     for entity in entities:
         if offset != (0,0):
             entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
