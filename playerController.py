@@ -66,6 +66,9 @@ class PlayerController(Component):
         self.__invincibility_timer -= dt
         self.__attack_time -= dt
         self.__attack_timer -= dt
+        self.__health_up_timer -= dt
+        self.__jump_timer -= dt
+        self.__speed_timer -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -156,7 +159,7 @@ class PlayerController(Component):
 
         if self.__invincibility_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)
-        else:
+        elif not self.__health_up and not self.__speed and not self.__jump:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
 
         # Two cases here: moving up and moving down
@@ -197,6 +200,38 @@ class PlayerController(Component):
             # Deal with vertical deceleration
             self.__velocity = (self.__velocity[0], self.__velocity[1] + (self.__gravity * dt))
 
+        #FLASHES PINK when you get HEALTH-UP
+        if self.__health_up_timer < 0 and self.__flash_count == 0 and self.__health_up:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__health_up_timer = 0.1
+            self.__flash_count += 1
+
+        if self.__health_up_timer < 0 and self.__flash_count == 1 and self.__health_up:
+            self.__sprite_renderer.sprite.color = arcade.color.PINK
+            self.__health_up_timer = 0.1
+            self.__flash_count += 1
+
+        if self.__health_up_timer < 0 and self.__flash_count == 2 and self.__health_up:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = 0
+            self.__health_up = False
+
+        if self.__speed_timer < 0 and self.__speed:
+            self.__speed = False
+            self.__flash_count = 0
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            print(self.__max_velocity)
+            self.__max_velocity = (self.__max_velocity[0] - 350, self.__max_velocity[1] - 350)
+
+        #FLASHES BLUE when you get SPEED-BOOST
+        if self.__speed:
+            if self.__flash_count % 16 == 0:
+                self.__sprite_renderer.sprite.color = (100, 100, 255)
+            elif self.__flash_count % 8 == 0:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = (self.__flash_count + 1) % 80
+
+
         # Second case: moving down
         # Check for collision with ground and platforms
         # Deal with vertical acceleration
@@ -210,9 +245,26 @@ class PlayerController(Component):
 
                 if "PowerUp" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
-                        collider.parent.on_collection()
-                        if self.__power_up_type == "Health-Up":
-                            self.__power_up_timer = 0.5
+                        temp = collider.parent.on_collection()
+                        if temp == "Health-Up":
+                            print("this :D")
+                            self.__health_up_timer = 0.1
+                            self.__sprite_renderer.sprite.color = arcade.color.PINK
+                            self.__health_up = True
+
+                        if temp == "Speed":
+                            self.__sprite_renderer.sprite.color = (100,100,255)
+                            self.__speed = True
+                            self.__speed_timer = 5
+                            #CHANGE
+                            self.__max_velocity = (self.__max_velocity[0] + 350, self.__max_velocity[1] + 350)
+                            self.__velocity = (self.__velocity[0] + 100, self.__velocity[1] + 100)
+
+                            #Make player speed
+
+                        if self.__power_up_type == "Jump":
+                            self.__jump_timer = 5
+                            #make player jump high
 
 
                 # Only checking for objects tagged with "Ground" or "Platform" (solid objects and platforms)
@@ -382,15 +434,18 @@ class PlayerController(Component):
         self.__jump_buffer_time = 0.1
         self.__jump_timer = 0
 
+        # Variables for the powerups
         self.__health_up = False
-        self.__big = False
+        self.__speed = False
         self.__jump = False
         self.__fast = False
 
         self.__power_up_type = None
         self.__health_up_timer = 0.5
-        self.__big_timer = 7
+        self.__speed_timer = 7
         self.__jump_timer = 7
+
+        self.__flash_count = 0
 
         self.__horizontal_acceleration = 700  # How quickly you accelerate when moving sideways
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed

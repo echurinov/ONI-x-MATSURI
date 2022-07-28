@@ -7,7 +7,7 @@ from entity import Entity
 from enemyController import EnemyController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
-from powerUps import PowerUpHealth
+from powerUps import PowerUpHealth, PowerUpSpeed
 
 
 
@@ -141,10 +141,11 @@ def section3(): #section for working on enemy movement
     entities.append(tutorial_entity)
     for i in range(50):
         entities.append(SimpleBlock(((1 * i * 187), 93)))
-    # Enemies at the base floor
-    for i in range(3):
-        entities.append(Enemy((300 + (i * 300), 266, 0)))
-
-    entities.append(PowerUpHealth((600, 500)))
+    # #Enemies at the base floor
+    # for i in range(3):
+    #     entities.append(Enemy((300 + (i * 300), 266, 0)))
+    #
+    # entities.append(PowerUpHealth((300, 300)))
+    entities.append(PowerUpSpeed((700, 300)))
 
     return entities
