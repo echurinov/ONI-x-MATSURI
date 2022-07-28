@@ -1,8 +1,12 @@
+"""Background music taken from https://api.arcade.academy/en/2.5.7/examples/background_music.html"""
+
 import random
 
 import arcade
 
 import arcade.gui
+
+import time
 
 from backgroundResizer import BackgroundResizer
 from collider import Collider
@@ -16,6 +20,9 @@ from spriteRenderer import SpriteRenderer
 from swordController import SwordController
 from transform import Transform
 import mapSections
+
+#Default volume of all songs played in-game
+MUSIC_VOLUME = 0.5
 
 
 class StartView(arcade.View):
@@ -70,6 +77,12 @@ class StartView(arcade.View):
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
+
+        # Set up variable to manage music for the GameView
+        self.music_list = []
+        self.current_song_index = 0
+        self.current_player = None
+        self.music = None
 
     def __create_level(self):
         # Setup level
@@ -145,12 +158,41 @@ class GameView(arcade.View):
                                static=False)
         # Add the sword entity to the manager
         GameManager.add_entity(sword_attack_entity)
+    
+    def advance_song(self):
+        """ Advance our pointer to the next song. This does NOT start the song. """
+        self.current_song_index += 1
+        if self.current_song_index >= len(self.music_list):
+            self.current_song_index = 0
+        print(f"Advancing song to {self.current_song_index}.")
+
+    def play_song(self):
+        """ Play the song. """
+        # Stop what is currently playing.
+        if self.music:
+            self.music.stop()
+
+        # Play the next song
+        print(f"Playing {self.music_list[self.current_song_index]}")
+        self.music = arcade.Sound(self.music_list[self.current_song_index], streaming=True)
+        self.current_player = self.music.play(MUSIC_VOLUME)
+        # This is a quick delay. If we don't do this, our elapsed time is 0.0
+        # and on_update will think the music is over and advance us to the next
+        # song before starting this one.
+        time.sleep(0.03)
 
     def setup(self):
         self.__create_player()
         self.__create_level()
         self.__create_sword()
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
+
+        # List of music
+        self.music_list = ["assets/sounds/music/main_stage_music.mp3"]
+        # Array index of what to play
+        self.current_song_index = 0
+        # Play the song
+        self.play_song()
 
         # Trigger the "Start" event
         EventManager.trigger_event("Start")
@@ -164,6 +206,14 @@ class GameView(arcade.View):
             return
         EventManager.trigger_event("PhysicsUpdate", dt)
         EventManager.trigger_event("GravityUpdate", -9.8, dt)
+
+        position = self.music.get_stream_position(self.current_player)
+        # The position pointer is reset to 0 right after we finish the song.
+        # This makes it very difficult to figure out if we just started playing
+        # or if we are doing playing.
+        if position == 0.0:
+            self.advance_song()
+            self.play_song()
 
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:

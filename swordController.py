@@ -45,6 +45,7 @@ class SwordController(Component):
         # Used to get player velocity to determine which side the sword entity should be placed on (Velocity may not cover all cases)
         self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
 
+    # CAN PROBABLY REMOVE THIS
     @property
     def velocity(self):
         return self.__velocity
