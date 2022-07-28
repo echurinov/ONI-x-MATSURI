@@ -7,6 +7,7 @@ import sys
 # From arcade online docs
 from eventManager import EventManager
 from gameManager import GameManager
+from musicManager import MusicManager
 from screenView import GameView
 from screenView import StartView
 
@@ -25,6 +26,7 @@ def main():
     GameManager.set_paused(True)
     # window = GameView(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT, SCREEN_TITLE)
     window = GameWindow(500, 500, SCREEN_TITLE, resizable=True, fullscreen=True)
+    MusicManager.start()
     start_view = StartView()
     window.show_view(start_view)
     GameManager.start()
