@@ -132,7 +132,6 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
-
         if self.__taking_damage:
             # implement damage knock back
             if self.__velocity[0] >= 0:
