@@ -36,7 +36,7 @@ class MyGame(arcade.Window):
 
         self.grabbed_sprite = None
         self.grid_size = 32
-        self.grid_offset = (0, 15)
+        self.grid_offset = (0, 0)
         self.point_grid = []
         self.drawer_open = False
         self.scroll_amount = 0
