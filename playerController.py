@@ -103,7 +103,7 @@ class PlayerController(Component):
 
         # For when the player is attacking
         if self.__is_attacking and self.__attack_timer < 0:
-            arcade.play_sound(self.attack_sound)
+            arcade.play_sound(self.__attack_sound)
             self.__attack_time = ATTACK_TIME
             self.__attack_timer = ATTACK_COOL_DOWN
             self.__is_attacking = False
@@ -153,7 +153,7 @@ class PlayerController(Component):
                     if self.__invincibility_timer < 0:
                         self.__invincibility_timer = 1.0
                         self.__health = self.__health - 1
-                        arcade.play_sound(self.damage_sound)
+                        arcade.play_sound(self.__damage_sound)
                         self.__taking_damage = True
                         self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
@@ -294,7 +294,7 @@ class PlayerController(Component):
         # If we're on the ground (or in coyote time) and the player has pressed the jump button, let them jump
         if (self.__jump_requested or self.__jump_timer > 0) and (self.__touching_ground or self.__coyote_timer > 0):
             self.__velocity = (self.__velocity[0], self.__jump_speed)
-            arcade.play_sound(self.jump_sound)
+            arcade.play_sound(self.__jump_sound)
             # print(self.__velocity)
             self.__jump_requested = False
             self.__jump_timer = 0
@@ -528,9 +528,9 @@ class PlayerController(Component):
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
         # Load sounds
-        self.attack_sound = arcade.load_sound("assets/sounds/player/player_attack.wav")
-        self.damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
-        self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump3.wav")
+        self.__attack_sound = arcade.load_sound("assets/sounds/player/player_attack.wav")
+        self.__damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
+        self.__jump_sound = arcade.load_sound("assets/sounds/player/player_jump3.wav")
 
     def set_health(self, health):
         self.__health = health

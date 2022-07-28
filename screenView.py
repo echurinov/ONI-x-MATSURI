@@ -79,10 +79,10 @@ class GameView(arcade.View):
         super().__init__()
 
         # Set up variable to manage music for the GameView
-        self.music_list = []
-        self.current_song_index = 0
-        self.current_player = None
-        self.music = None
+        self.__music_list = []
+        self.__current_song_index = 0
+        self.__current_player = None
+        self.__music = None
 
     def __create_level(self):
         # Setup level
@@ -161,25 +161,28 @@ class GameView(arcade.View):
     
     def advance_song(self):
         """ Advance our pointer to the next song. This does NOT start the song. """
-        self.current_song_index += 1
-        if self.current_song_index >= len(self.music_list):
-            self.current_song_index = 0
-        print(f"Advancing song to {self.current_song_index}.")
+        self.__current_song_index += 1
+        if self.__current_song_index >= len(self.__music_list):
+            self.__current_song_index = 0
+        print(f"Advancing song to {self.__current_song_index}.")
 
     def play_song(self):
         """ Play the song. """
         # Stop what is currently playing.
-        if self.music:
-            self.music.stop()
+        self.stop_song()
 
         # Play the next song
-        print(f"Playing {self.music_list[self.current_song_index]}")
-        self.music = arcade.Sound(self.music_list[self.current_song_index], streaming=True)
-        self.current_player = self.music.play(MUSIC_VOLUME)
+        print(f"Playing {self.__music_list[self.__current_song_index]}")
+        self.__music = arcade.Sound(self.__music_list[self.__current_song_index], streaming=True)
+        self.__current_player = self.__music.play(MUSIC_VOLUME)
         # This is a quick delay. If we don't do this, our elapsed time is 0.0
         # and on_update will think the music is over and advance us to the next
         # song before starting this one.
         time.sleep(0.03)
+
+    def stop_song(self):
+        if self.__music:
+            self.__music.stop(self.__current_player)
 
     def setup(self):
         self.__create_player()
@@ -188,9 +191,9 @@ class GameView(arcade.View):
         arcade.set_background_color(arcade.color_from_hex_string("#172040"))
 
         # List of music
-        self.music_list = ["assets/sounds/music/main_stage_music.mp3"]
+        self.__music_list = ["assets/sounds/music/main_stage_music.mp3"]
         # Array index of what to play
-        self.current_song_index = 0
+        self.__current_song_index = 0
         # Play the song
         self.play_song()
 
@@ -207,7 +210,7 @@ class GameView(arcade.View):
         EventManager.trigger_event("PhysicsUpdate", dt)
         EventManager.trigger_event("GravityUpdate", -9.8, dt)
 
-        position = self.music.get_stream_position(self.current_player)
+        position = self.__music.get_stream_position(self.__current_player)
         # The position pointer is reset to 0 right after we finish the song.
         # This makes it very difficult to figure out if we just started playing
         # or if we are doing playing.
@@ -218,6 +221,7 @@ class GameView(arcade.View):
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
             lose_view = LoseView()
+            self.stop_song()
             self.window.show_view(lose_view)
 
     def on_key_press(self, key, modifiers):
@@ -304,6 +308,10 @@ class LoseView(arcade.View):
                                             texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
         box.add(button.with_space_around(top=450, right=50))
 
+        # Probably don't want this song to loop since it's short (?)
+        # Not fully set up like the background music in GameView
+        self.__lose_music = arcade.load_sound("assets/sounds/music/J 3ds3 24 Btl Lose 3ds.mp3")
+
     def on_show_view(self):
         """ This is run once when we switch to this view """
         GameManager.remove_all_entities()
@@ -321,6 +329,7 @@ class LoseView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         GameManager.main_camera.move((0, 0))
+        arcade.play_sound(self.__lose_music)
 
     def on_draw(self):
         # Draw this view
