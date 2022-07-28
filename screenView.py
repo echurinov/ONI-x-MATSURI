@@ -107,12 +107,12 @@ class GameView(arcade.View):
         # Create a transform component for the player
         player_transform = Transform((50, 1000), 0, (1.0, 1.0))
         # Create player controller component
-        player_controller = PlayerController()
+        self.player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
         player_collider = Collider(auto_generate_polygon="box")
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
-                               [player_sprite_renderer, player_transform, player_controller, player_collider],
+                               [player_sprite_renderer, player_transform, self.player_controller, player_collider],
                                static=False)
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
@@ -190,15 +190,14 @@ class GameView(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if 1417 < x < 1505 and 750 < y < 842:
-            print("pressed")
             arcade.exit()
 
     def on_mouse_motion(self, x, y, dx, dy):
         # DOESN'T WORK AND IDK HOW TO MAKE IT
         if 1417 < x < 1505 and 750 < y < 842:
-            PlayerController.set_exit_sprite(PlayerController, arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
+            self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
         else:
-            PlayerController.set_exit_sprite(PlayerController, arcade.Sprite("assets/sprites/exit.png", 1.0))
+            self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit.png", 1.0))
 
 
 class WinView(arcade.View):

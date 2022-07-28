@@ -384,7 +384,7 @@ class PlayerController(Component):
         self.__animation_state = "idle"
         # Dictionary for frames for animations
 
-        self.__exit_sprite = arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0)
+        self.__exit_sprite = arcade.Sprite("assets/sprites/pause.png", 1.0)
 
         self.__animation_data = {
             "idle_L": {
