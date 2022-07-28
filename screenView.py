@@ -105,7 +105,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
-        player_transform = Transform((50, 1000), 0, (1.4, 1.4))
+        player_transform = Transform((50, 1000), 0, (1.0, 1.0))
         # Create player controller component
         player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
@@ -126,7 +126,10 @@ class GameView(arcade.View):
 
     def __create_sword(self):
         # Create an arcade.Sprite for the sword (it will be invisible, so it doesn't matter what it is)
-        sword_attack_sprite = arcade.Sprite(":resources:images/test_textures/test_texture.png")
+        # Using a rectangle that covers the player character and extends in front
+        sword_attack_sprite = arcade.Sprite(":resources:onscreen_controls/flat_dark/select.png", scale=3, image_height=48, image_width=80)
+        # Set the texture to be invisible
+        sword_attack_sprite.alpha = 0
         # Create a sprite renderer component for the sword
         sword_attack_sprite_renderer = SpriteRenderer(sword_attack_sprite)
         # Create a transform component for the sword

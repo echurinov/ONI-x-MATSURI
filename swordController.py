@@ -15,7 +15,7 @@ class SwordController(Component):
         player_left = self.__player_controller.is_moving_left
 
         direction = -1 if player_left else 1
-        self.__transform.position = (player_pos[0] + (120 * direction), player_pos[1])
+        self.__transform.position = (player_pos[0] + (80 * direction), player_pos[1])
 
     # Gets called every frame
     # dt is the time taken since the last frame
