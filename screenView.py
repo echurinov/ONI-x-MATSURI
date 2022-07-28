@@ -44,7 +44,7 @@ class StartView(arcade.View):
         # Load background
         background_sprite = arcade.Sprite("assets/backgrounds/start_screen.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
-        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
         background_resizer = BackgroundResizer()
         background_entity = Entity("Background", ["BackgroundTag"],
                                    [background_sprite_renderer, background_transform, background_resizer])
@@ -85,7 +85,7 @@ class GameView(arcade.View):
         for i in range(10):
             background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
             background_sprite_renderer = SpriteRenderer(background_sprite)
-            background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, (1.0, 1.0))
+            background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, 1.0)
             background_resizer = BackgroundResizer()
             background_entity = Entity("Background", ["BackgroundTag"],
                                        [background_sprite_renderer, background_transform, background_resizer])
@@ -95,7 +95,7 @@ class GameView(arcade.View):
         for i in range(3):
             heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
             heart_sprite_renderer = SpriteRenderer(heart_sprite)
-            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, (1.0, 1.0))
+            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
             heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
             GameManager.add_gui_entity(heart_entity)
 
@@ -106,7 +106,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
-        player_transform = Transform((50, 1000), 0, (1.0, 1.0))
+        player_transform = Transform((50, 1000), 0, 1.0)
         # Create player controller component
         self.player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
@@ -134,7 +134,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component for the sword
         sword_attack_sprite_renderer = SpriteRenderer(sword_attack_sprite)
         # Create a transform component for the sword
-        sword_attack_transform = Transform((200, 110), 0, (1.0, 1.0))
+        sword_attack_transform = Transform((200, 110), 0, 1.0)
         # Create sword controller component
         sword_attack_controller = SwordController()
         # Create a collider component for the sword (Will autogenerate hitbox when entity is created)
@@ -222,7 +222,7 @@ class WinView(arcade.View):
         # Load background
         background_sprite = arcade.Sprite("assets/backgrounds/win_screen.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
-        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
         background_resizer = BackgroundResizer()
         background_entity = Entity("Background", ["BackgroundTag"],
                                    [background_sprite_renderer, background_transform, background_resizer])
@@ -261,7 +261,7 @@ class LoseView(arcade.View):
         # Load background
         background_sprite = arcade.Sprite("assets/backgrounds/lose_screen.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
-        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, (1.0, 1.0))
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
         background_resizer = BackgroundResizer()
         background_entity = Entity("Background", ["BackgroundTag"],
                                    [background_sprite_renderer, background_transform, background_resizer])

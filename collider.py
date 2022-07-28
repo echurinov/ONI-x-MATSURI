@@ -21,7 +21,7 @@ class Collider(Component):
     def __init__(self, auto_generate_polygon="simple"):
         super().__init__("Collider")
         self.__polygon = None  # The polygon that represents the hitbox, lines up with the sprite
-        self.__base_polygon = None  # The base polygon that represents the hitbox, not transformed/rotated
+        self.__base_polygon = None  # The base polygon that represents the hitbox, not transformed/rotated/scaled
         self.__auto_generate_polygon = auto_generate_polygon
         # Components attached to the parent, cached here for ease of use
         self.__transform = None
@@ -29,6 +29,13 @@ class Collider(Component):
 
         self.__height = None  # Height of the polygon, cached for performance
         self.__width = None  # Width of the polygon, cached for performance
+
+    @staticmethod
+    def scale_polygon(polygon, scale):
+        new_polygon = []
+        for index, point in enumerate(polygon):
+            new_polygon.append((point[0] * scale, point[1] * scale))
+        return new_polygon
 
     @property
     def auto_generate_polygon(self):
@@ -58,8 +65,9 @@ class Collider(Component):
     def polygon(self):
         if self.__transform is None:
             self.__transform = self.parent.get_component_by_name("Transform")
+        scaled_polygon = Collider.scale_polygon(self.__base_polygon, self.transform.scale)
         new_polygon = []
-        for index, point in enumerate(self.__base_polygon):
+        for index, point in enumerate(scaled_polygon):
             new_polygon.append((point[0] + self.transform.position[0],
                                 point[1] + self.transform.position[1]))
         self.__polygon = new_polygon

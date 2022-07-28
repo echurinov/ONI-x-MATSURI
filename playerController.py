@@ -494,7 +494,7 @@ class PlayerController(Component):
 
         # Exit Button
         exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
-        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, (1.0, 1.0))
+        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, 1.0)
         exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
         GameManager.add_gui_entity(exit_entity)
 
@@ -529,7 +529,7 @@ class PlayerController(Component):
             heart_sprite = arcade.Sprite("assets/sprites/heart_empty.png", 1.0)
 
         heart_sprite_renderer = SpriteRenderer(heart_sprite)
-        heart_transform = Transform((num_heart * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, (1.0, 1.0))
+        heart_transform = Transform((num_heart * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
         heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
         GameManager.add_gui_entity(heart_entity)
 

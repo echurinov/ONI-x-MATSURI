@@ -1,3 +1,5 @@
+import arcade
+
 from component import Component
 
 
@@ -6,7 +8,7 @@ from gameManager import GameManager
 
 
 class Transform(Component):
-    def __init__(self, position=(0, 0), rotation=0, scale=(1.0, 1.0)):
+    def __init__(self, position=(0, 0), rotation=0, scale=1.0):
         super().__init__("Transform")
         self.__position = position
         self.__rotation = rotation
@@ -18,6 +20,22 @@ class Transform(Component):
         if sprite_renderer is not None:
             sprite_renderer.sprite.center_x = self.position[0]
             sprite_renderer.sprite.center_y = self.position[1]
+            sprite_renderer.sprite.scale = self.__scale
+
+    @property
+    def scale(self):
+        return self.__scale
+
+    @scale.setter
+    def scale(self, value):
+        self.__scale = value
+        sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
+        if sprite_renderer is not None:
+            sprite_renderer.sprite._scale = self.__scale
+        collider = self.parent.get_component_by_name("Collider")
+        if collider is not None:
+            collider.set_scale(self.__scale)
+
 
     @property
     def rotation(self):
