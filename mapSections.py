@@ -95,17 +95,19 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 continue
             line = line.split(":")
             if line[0] == "ground_tile.png":
-                entities.append(SimpleBlock((int(line[1]), int(line[2]))))
+                entities.append(SimpleBlock((float(line[1]), float(line[2]))))
             elif line[0] == "food_stalls.png":
-                entities.append(FoodStalls((int(line[1]), int(line[2]))))
+                entities.append(FoodStalls((float(line[1]), float(line[2]))))
             elif line[0] == "ground_pit_tile.png":
-                entities.append(GroundPit((int(line[1]), int(line[2]))))
+                entities.append(GroundPit((float(line[1]), float(line[2]))))
             elif line[0] == "bench.png":
-                entities.append(Bench((int(line[1]), int(line[2]))))
+                entities.append(Bench((float(line[1]), float(line[2]))))
             elif line[0] == "wooden_platform.png":
-                entities.append(Platform((int(line[1]), int(line[2]))))
+                entities.append(Platform((float(line[1]), float(line[2]))))
             elif line[0] == "oni_idle_1.png":
-                entities.append(Enemy((int(line[1]), int(line[2]))))
+                entities.append(Enemy((float(line[1]), float(line[2]))))
+            elif line[0] == "cottoncandy.png":
+                entities.append(PowerUpHealth((float(line[1]), float(line[2]))))
     for entity in entities:
         if offset != (0,0):
             entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
