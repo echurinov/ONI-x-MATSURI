@@ -15,7 +15,7 @@ class SimpleBlock(Entity):
     def __init__(self, position):
         floor_sprite = arcade.Sprite("assets/tiles/ground_tile.png")
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
-        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_transform = Transform(position, 0, 1.0)
         floor_collider = Collider(auto_generate_polygon="simple")
         super(SimpleBlock, self).__init__("Block", ["Ground"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=True)
@@ -25,7 +25,7 @@ class FoodStalls(Entity):
     def __init__(self, position):
         food_stall_sprite = arcade.Sprite("assets/tiles/food_stalls.png")
         food_stall_sprite_renderer = SpriteRenderer(food_stall_sprite)
-        food_stall_transform = Transform(position, 0, (0.25, 0.25))
+        food_stall_transform = Transform(position, 0, 1.0)
         food_stall_collider = Collider(auto_generate_polygon="simple")
         super(FoodStalls, self).__init__("FoodStall", ["Ground"],
                                          [food_stall_sprite_renderer, food_stall_transform, food_stall_collider],
@@ -36,7 +36,7 @@ class GroundPit(Entity):
     def __init__(self, position):
         ground_pit_sprite = arcade.Sprite("assets/tiles/ground_pit_tile.png")
         ground_pit_sprite_renderer = SpriteRenderer(ground_pit_sprite)
-        ground_pit_transform = Transform(position, 0, (0.25, 0.25))
+        ground_pit_transform = Transform(position, 0, 1.0)
         ground_pit_collider = Collider(auto_generate_polygon="simple")
         super(GroundPit, self).__init__("Block", ["Ground"],
                                         [ground_pit_sprite_renderer, ground_pit_transform, ground_pit_collider],
@@ -47,7 +47,7 @@ class Bench(Entity):
     def __init__(self, position):
         bench_sprite = arcade.Sprite("assets/tiles/bench.png")
         bench_sprite_renderer = SpriteRenderer(bench_sprite)
-        bench_transform = Transform(position, 0, (0.25, 0.25))
+        bench_transform = Transform(position, 0, 1.0)
         bench_collider = Collider(auto_generate_polygon="simple")
         super(Bench, self).__init__("Block", ["Ground"], [bench_sprite_renderer, bench_transform, bench_collider],
                                     static=True)
@@ -57,7 +57,7 @@ class Platform(Entity):
     def __init__(self, position):
         platform_sprite = arcade.Sprite("assets/tiles/wooden_platform.png")
         platform_sprite_renderer = SpriteRenderer(platform_sprite)
-        platform_transform = Transform(position, 0, (0.25, 0.25))
+        platform_transform = Transform(position, 0, 1.0)
         platform_collider = Collider(auto_generate_polygon="simple")
         super(Platform, self).__init__("Block", ["Ground"],
                                        [platform_sprite_renderer, platform_transform, platform_collider], static=True)
@@ -72,7 +72,7 @@ class Enemy(Entity):
         # Create a sprite renderer component
         enemy_sprite_renderer = SpriteRenderer(enemy_sprite)
         # Create a transform component for the enemy
-        enemy_transform = Transform(position, 0, (1.0, 1.0))
+        enemy_transform = Transform(position, 0, 1.0)
         # Create enemy controller component
         enemy_controller = EnemyController()
         # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
@@ -81,6 +81,44 @@ class Enemy(Entity):
         super(Enemy, self).__init__("Enemy", ["Enemy"],
                                     [enemy_sprite_renderer, enemy_transform, enemy_controller, enemy_collider],
                                     static=False)
+
+
+# Load a map section from a file created by the visual editor
+# All entities from this section will have their position offset by the given amount,
+# and will be tagged with the given tag
+def load_from_file(path, offset=(0, 0), tag=...):
+    entities = []
+    with open(path, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line == "":
+                continue
+            line = line.split(":")
+            if line[0] == "ground_tile.png":
+                entities.append(SimpleBlock((float(line[1]), float(line[2]))))
+            elif line[0] == "food_stalls.png":
+                entities.append(FoodStalls((float(line[1]), float(line[2]))))
+            elif line[0] == "ground_pit_tile.png":
+                entities.append(GroundPit((float(line[1]), float(line[2]))))
+            elif line[0] == "bench.png":
+                entities.append(Bench((float(line[1]), float(line[2]))))
+            elif line[0] == "wooden_platform.png":
+                entities.append(Platform((float(line[1]), float(line[2]))))
+            elif line[0] == "oni_idle_1.png":
+                entities.append(Enemy((float(line[1]), float(line[2]))))
+            elif line[0] == "cottoncandy.png":
+                entities.append(PowerUpHealth((float(line[1]), float(line[2]))))
+            entities[-1].transform.scale = float(line[3])  # Apply scale
+    for entity in entities:
+        if offset != (0,0):
+            entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
+
+        if tag is not None:
+            entity.tags.append(tag)
+        elif tag is ...:
+            entity.tags.append(path)
+        # Only omit adding tags if the function was explicitly passed None
+    return entities
 
 
 def tutorial():  # this is the section which will contain the tutorial sign

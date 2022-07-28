@@ -12,6 +12,7 @@ class Entity:
         self.__children = []
         self.__parent = None
         self.__active = active
+        self.__transform = None
         # Call on_added_to_entity on all child components
         for item in components:
             if hasattr(item, 'on_added_to_entity'):
@@ -47,6 +48,14 @@ class Entity:
     @parent.setter
     def parent(self, value):
         self.__parent = value
+
+    # TODO: this will search for no reason if the entity has no transform component
+    # Nearly all entities have them, but this will be slow on entities that don't
+    @property
+    def transform(self):
+        if self.__transform is None:
+            self.__transform = self.get_component_by_name("Transform")
+        return self.__transform
 
     # Adds an entity as a child of this entity
     def add_child(self, entity):
