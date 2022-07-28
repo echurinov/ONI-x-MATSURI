@@ -208,6 +208,14 @@ class PlayerController(Component):
                 # Ignore the player's own collider
                 if collider.parent is self:
                     continue
+
+                if "PowerUp" in collider.parent.tags:
+                    if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
+                        collider.parent.on_collection()
+                        if self.__power_up_type == "Health-Up":
+                            self.__power_up_timer = 0.5
+
+
                 # Only checking for objects tagged with "Ground" or "Platform" (solid objects and platforms)
                 if "Ground" in collider.parent.tags or "Platform" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
@@ -343,6 +351,7 @@ class PlayerController(Component):
 
         # Private variables for player health
         self.__health = 6
+        self.__max_health = 6
         self.__taking_damage = False
         self.__invincibility_timer = 0.0
 
@@ -374,9 +383,20 @@ class PlayerController(Component):
         self.__jump_buffer_time = 0.1
         self.__jump_timer = 0
 
+        self.__health_up = False
+        self.__big = False
+        self.__jump = False
+        self.__fast = False
+
+        self.__power_up_type = None
+        self.__health_up_timer = 0.5
+        self.__big_timer = 7
+        self.__jump_timer = 7
+
         self.__horizontal_acceleration = 700  # How quickly you accelerate when moving sideways
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed
         self.__horizontal_turnaround_acceleration = 4000  # How quickly you decelerate when changing direction
+
 
         # Sprite switching (animation)
         self.__animation_timer = 0  # Frames since last change
@@ -457,6 +477,12 @@ class PlayerController(Component):
         self.damage_sound = arcade.load_sound("assets/sounds/player/player_damage.wav")
         self.jump_sound = arcade.load_sound("assets/sounds/player/player_jump3.wav")
 
+    def set_health(self, health):
+        self.__health = health
+
+    def set_power_up(self, power_up):
+        self.__power_up_type = power_up
+
     # Called when parent entity is created
     def on_created(self):
         self.__collider = self.parent.get_component_by_name("Collider")
@@ -502,6 +528,7 @@ class PlayerController(Component):
         heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
         GameManager.add_gui_entity(heart_entity)
 
+
     @property
     def touching_ground(self):
         return self.__touching_ground
@@ -515,6 +542,10 @@ class PlayerController(Component):
         return self.__health
 
     @property
+    def max_health(self):
+        return self.__max_health
+
+    @property
     def taking_damage(self):
         return self.__taking_damage
 
@@ -525,3 +556,7 @@ class PlayerController(Component):
     @property
     def is_moving_left(self):
         return self.__moving_left
+
+    @property
+    def sprite_renderer(self):
+        return self.__sprite_renderer

@@ -7,6 +7,8 @@ from entity import Entity
 from enemyController import EnemyController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
+from powerUps import PowerUpHealth
+
 
 
 class SimpleBlock(Entity):
@@ -142,4 +144,7 @@ def section3(): #section for working on enemy movement
     # Enemies at the base floor
     for i in range(3):
         entities.append(Enemy((300 + (i * 300), 266, 0)))
+
+    entities.append(PowerUpHealth((600, 500)))
+
     return entities
