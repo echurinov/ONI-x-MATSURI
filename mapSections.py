@@ -81,6 +81,41 @@ class Enemy(Entity):
                                     static=False)
 
 
+# Load a map section from a file created by the visual editor
+# All entities from this section will have their position offset by the given amount,
+# and will be tagged with the given tag
+def load_from_file(path, offset=(0, 0), tag=...):
+    entities = []
+    with open(path, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line == "":
+                continue
+            line = line.split(":")
+            if line[0] == "ground_tile.png":
+                entities.append(SimpleBlock((int(line[1]), int(line[2]))))
+            elif line[0] == "food_stalls.png":
+                entities.append(FoodStalls((int(line[1]), int(line[2]))))
+            elif line[0] == "ground_pit_tile.png":
+                entities.append(GroundPit((int(line[1]), int(line[2]))))
+            elif line[0] == "bench.png":
+                entities.append(Bench((int(line[1]), int(line[2]))))
+            elif line[0] == "wooden_platform.png":
+                entities.append(Platform((int(line[1]), int(line[2]))))
+            elif line[0] == "oni_idle_1.png":
+                entities.append(Enemy((int(line[1]), int(line[2]))))
+    for entity in entities:
+        if offset != (0,0):
+            entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
+
+        if tag is not None:
+            entity.tags.append(tag)
+        elif tag is ...:
+            entity.tags.append(path)
+        # Only omit adding tags if the function was explicitly passed None
+    return entities
+
+
 def tutorial():  # this is the section which will contain the tutorial sign
     entities = []
     tutorial_sprite = arcade.Sprite("assets/tiles/tutorial.PNG", 0.5)
