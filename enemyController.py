@@ -4,6 +4,9 @@ from component import Component
 from eventManager import EventManager
 from gameManager import GameManager
 
+IDLE_TIMER = 1
+WALKING_TIMER = 2
+WALKING_SPEED = 3
 
 class EnemyController(Component):
     def take_damage(self, amount):
@@ -21,9 +24,36 @@ class EnemyController(Component):
     # Called every time physics get updated (currently every frame)
     # Deals with all enemy movement and collision
     def on_physics_update(self, dt):
+        #Update walking/standing timers
+        if self.__walking_timer < 0:
+            self.__idle_timer = IDLE_TIMER
+            self.__walking_timer = WALKING_TIMER
+            self.__standing = True
+            self.__walking = False
 
-        # Update timer
+        if self.__idle_timer < 0:
+            self.__walking_timer = WALKING_TIMER
+            self.__idle_timer = IDLE_TIMER
+            self.__walking = True
+            self.__standing = False
+            self.__direction = self.__direction * -1
+
+        if self.__walking:
+            self.__walking_timer -= dt
+
+        if self.__standing:
+            self.__idle_timer -=dt
+
+        # Update damage timer
         self.__damage_timer -= dt
+
+        # Walk oni to the right
+        if self.__walking and self.__direction == 1:
+            self.__transform.position = (self.__transform.position[0] - WALKING_SPEED, self.__transform.position[1])
+
+        #Walk oni to the left
+        if self.__walking and self.__direction == -1:
+            self.__transform.position = (self.__transform.position[0] + WALKING_SPEED, self.__transform.position[1])
 
     # Gets called every frame
     # dt is the time taken since the last frame
@@ -33,8 +63,14 @@ class EnemyController(Component):
         else:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
 
+        if self.__standing:
+            self.__animation_state = "idle"
 
-        self.__animation_state = "idle"
+        if self.__walking and self.__direction == 1: # Walking to the right
+            self.__animation_state = "walk_L"
+
+        if self.__walking and self.__direction == -1: # Walking to the left
+            self.__animation_state = "walk_R"
 
         # Animation
         self.__animation_timer += 1
@@ -54,6 +90,10 @@ class EnemyController(Component):
         self.__collider = None
         self.__sprite_renderer = None
 
+        # Timers for enemy walking
+        self.__walking_timer = WALKING_TIMER
+        self.__idle_timer = IDLE_TIMER
+
         # Private variables for enemy health
         self.__health = 1
         self.__taking_damage = False
@@ -63,6 +103,11 @@ class EnemyController(Component):
         self.__animation_timer = 0  # Frames since last change
         self.__animation_frame = 0  # Which frame we're in
         self.__animation_state = "idle"
+
+        self.__walking = False
+        self.__standing = True
+        self.__direction = 1 # Direction is 1 for right, -1 for left
+
         # Dictionary for frames for animations
 
         self.__animation_data = {

@@ -11,8 +11,11 @@ class SwordController(Component):
     def on_physics_update(self, dt):
         player_pos = self.__player_transform.position
         player_vel = self.__player_controller.velocity
-        direction = 1 if player_vel[0] > 0 else -1
-        self.__transform.position = (player_pos[0] + (120 * direction), player_pos[1])
+
+        player_left = self.__player_controller.is_moving_left
+
+        direction = -1 if player_left else 1
+        self.__transform.position = (player_pos[0] + (80 * direction), player_pos[1])
 
     # Gets called every frame
     # dt is the time taken since the last frame

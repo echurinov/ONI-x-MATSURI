@@ -14,7 +14,7 @@ class SimpleBlock(Entity):
         floor_sprite = arcade.Sprite("assets/tiles/ground_tile.png")
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
         floor_transform = Transform(position, 0, (0.25, 0.25))
-        floor_collider = Collider(auto_generate_polygon="box")
+        floor_collider = Collider(auto_generate_polygon="simple")
         super(SimpleBlock, self).__init__("Block", ["Ground"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=True)
 
@@ -24,7 +24,7 @@ class FoodStalls(Entity):
         food_stall_sprite = arcade.Sprite("assets/tiles/food_stalls.png")
         food_stall_sprite_renderer = SpriteRenderer(food_stall_sprite)
         food_stall_transform = Transform(position, 0, (0.25, 0.25))
-        food_stall_collider = Collider(auto_generate_polygon="box")
+        food_stall_collider = Collider(auto_generate_polygon="simple")
         super(FoodStalls, self).__init__("FoodStall", ["Ground"],
                                          [food_stall_sprite_renderer, food_stall_transform, food_stall_collider],
                                          static=True)
@@ -35,7 +35,7 @@ class GroundPit(Entity):
         ground_pit_sprite = arcade.Sprite("assets/tiles/ground_pit_tile.png")
         ground_pit_sprite_renderer = SpriteRenderer(ground_pit_sprite)
         ground_pit_transform = Transform(position, 0, (0.25, 0.25))
-        ground_pit_collider = Collider(auto_generate_polygon="box")
+        ground_pit_collider = Collider(auto_generate_polygon="simple")
         super(GroundPit, self).__init__("Block", ["Ground"],
                                         [ground_pit_sprite_renderer, ground_pit_transform, ground_pit_collider],
                                         static=True)
@@ -46,7 +46,7 @@ class Bench(Entity):
         bench_sprite = arcade.Sprite("assets/tiles/bench.png")
         bench_sprite_renderer = SpriteRenderer(bench_sprite)
         bench_transform = Transform(position, 0, (0.25, 0.25))
-        bench_collider = Collider(auto_generate_polygon="box")
+        bench_collider = Collider(auto_generate_polygon="simple")
         super(Bench, self).__init__("Block", ["Ground"], [bench_sprite_renderer, bench_transform, bench_collider],
                                     static=True)
 
@@ -56,7 +56,7 @@ class Platform(Entity):
         platform_sprite = arcade.Sprite("assets/tiles/wooden_platform.png")
         platform_sprite_renderer = SpriteRenderer(platform_sprite)
         platform_transform = Transform(position, 0, (0.25, 0.25))
-        platform_collider = Collider(auto_generate_polygon="box")
+        platform_collider = Collider(auto_generate_polygon="simple")
         super(Platform, self).__init__("Block", ["Ground"],
                                        [platform_sprite_renderer, platform_transform, platform_collider], static=True)
 
@@ -124,4 +124,22 @@ def section2():
     # Enemies on top of the tents
     for i in range(2):
         entities.append(Enemy((1300 + (i * 500), 714, 0)))
+    return entities
+
+def section3(): #section for working on enemy movement
+    entities = []
+    # Set stalls to be behind the floor (So that they dont clip over the floor)
+    # Create floor
+    tutorial_sprite = arcade.Sprite("assets/tiles/tutorial_board.png")
+    tutorial_sprite_renderer = SpriteRenderer(tutorial_sprite)
+    tutorial_transform = Transform((80, 415))
+    tutorial_collider = Collider(auto_generate_polygon="box")
+    tutorial_entity = Entity("Tutorial Block", ["Tutorial"],
+                             [tutorial_sprite_renderer, tutorial_transform, tutorial_collider], static=True)
+    entities.append(tutorial_entity)
+    for i in range(50):
+        entities.append(SimpleBlock(((1 * i * 187), 93)))
+    # Enemies at the base floor
+    for i in range(3):
+        entities.append(Enemy((300 + (i * 300), 266, 0)))
     return entities
