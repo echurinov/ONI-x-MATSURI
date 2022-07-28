@@ -8,8 +8,8 @@ SCREEN_HEIGHT = 700
 SCREEN_TITLE = "Visual Editor"
 
 
-def myround(x, base=5):
-    return base * round(float(x) / base)
+def myround(x, base=5, grid_offset=0):
+    return base * round(float(x) / base) + grid_offset
 
 
 def round_camera_to_world(x, base, camera_pos, world_camera_pos):
@@ -22,6 +22,8 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
         self.mouse_sprite = arcade.Sprite(":resources:onscreen_controls/shaded_light/unchecked.png", 0.125)
         self.background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 0.5)
+        self.background_sprite.center_x = self.background_sprite.width / 2
+        self.background_sprite.center_y = self.background_sprite.height / 2
 
         self.static_sprite_list = arcade.SpriteList()
         self.gui_sprite_list = arcade.SpriteList()
@@ -34,6 +36,7 @@ class MyGame(arcade.Window):
 
         self.grabbed_sprite = None
         self.grid_size = 32
+        self.grid_offset = (0, 15)
         self.point_grid = []
         self.drawer_open = False
         self.scroll_amount = 0
@@ -51,17 +54,16 @@ class MyGame(arcade.Window):
         }
 
         for i in range(-75, 75):
-            self.point_grid.append((i * self.grid_size, -SCREEN_HEIGHT * 5))
-            self.point_grid.append((i * self.grid_size, SCREEN_HEIGHT * 5))
+            self.point_grid.append((i * self.grid_size + self.grid_offset[0], -SCREEN_HEIGHT * 5 + self.grid_offset[1]))
+            self.point_grid.append((i * self.grid_size + self.grid_offset[0], SCREEN_HEIGHT * 5 + self.grid_offset[1]))
 
         for i in range(-75, 75):
-            self.point_grid.append((-SCREEN_WIDTH * 5, i * self.grid_size))
-            self.point_grid.append((SCREEN_WIDTH * 5, i * self.grid_size))
+            self.point_grid.append((-SCREEN_WIDTH * 5 + self.grid_offset[0], i * self.grid_size + self.grid_offset[1]))
+            self.point_grid.append((SCREEN_WIDTH * 5 +  self.grid_offset[0], i * self.grid_size + self.grid_offset[1]))
 
     def open_details(self, sprite):
         self.details_open = True
         self.detail_position = (sprite.center_x, sprite.center_y)
-
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ESCAPE:
@@ -127,8 +129,8 @@ class MyGame(arcade.Window):
         self.grabbed_sprite.center_x = x + self.main_camera.position[0]
         self.grabbed_sprite.center_y = y + self.main_camera.position[1]
         if not (self.keys[arcade.key.LSHIFT] or self.keys[arcade.key.RSHIFT]):
-            self.grabbed_sprite.center_x = myround(self.grabbed_sprite.center_x, self.grid_size)
-            self.grabbed_sprite.center_y = myround(self.grabbed_sprite.center_y, self.grid_size)
+            self.grabbed_sprite.center_x = myround(self.grabbed_sprite.center_x, self.grid_size, self.grid_offset[0])
+            self.grabbed_sprite.center_y = myround(self.grabbed_sprite.center_y, self.grid_size, self.grid_offset[1])
 
         # print("Dropped:", (self.grabbed_sprite.center_x, self.grabbed_sprite.center_y))
         self.static_sprite_list.append(copy.deepcopy(self.grabbed_sprite))
@@ -161,8 +163,8 @@ class MyGame(arcade.Window):
             self.grabbed_sprite.center_y += self.main_camera.position[1]
 
             if not (self.keys[arcade.key.LSHIFT] or self.keys[arcade.key.RSHIFT]):
-                self.grabbed_sprite.center_x = myround(self.grabbed_sprite.center_x, self.grid_size)
-                self.grabbed_sprite.center_y = myround(self.grabbed_sprite.center_y, self.grid_size)
+                self.grabbed_sprite.center_x = myround(self.grabbed_sprite.center_x, self.grid_size, self.grid_offset[0])
+                self.grabbed_sprite.center_y = myround(self.grabbed_sprite.center_y, self.grid_size, self.grid_offset[1])
 
         if self.drawer_open:
             self.drawer_camera.move_to((-300, 0), 0.25)
