@@ -132,7 +132,6 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(1)
 
-
         if self.__taking_damage:
             # implement damage knock back
             if self.__velocity[0] >= 0:
@@ -404,6 +403,7 @@ class PlayerController(Component):
         self.__animation_state = "idle"
         # Dictionary for frames for animations
 
+        self.__exit_sprite = arcade.Sprite("assets/sprites/pause.png", 1.0)
 
         self.__animation_data = {
             "idle_L": {
@@ -492,8 +492,13 @@ class PlayerController(Component):
     def set_gui(self):
         GameManager.clear_gui_sprite()
 
+        # Exit Button
+        exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
+        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, (1.0, 1.0))
+        exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
+        GameManager.add_gui_entity(exit_entity)
+
         if self.__health <= 2:
-            print(self.__health)
             if self.__health == 1:
                 self.make_heart_entity(0, "half")
             else:
@@ -528,6 +533,12 @@ class PlayerController(Component):
         heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
         GameManager.add_gui_entity(heart_entity)
 
+    def get_exit_sprite(self):
+        return self.__exit_sprite
+
+    def set_exit_sprite(self, new_sprite):
+        self.__exit_sprite = new_sprite
+
 
     @property
     def touching_ground(self):
@@ -556,7 +567,3 @@ class PlayerController(Component):
     @property
     def is_moving_left(self):
         return self.__moving_left
-
-    @property
-    def sprite_renderer(self):
-        return self.__sprite_renderer

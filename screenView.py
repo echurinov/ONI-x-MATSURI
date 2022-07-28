@@ -107,12 +107,12 @@ class GameView(arcade.View):
         # Create a transform component for the player
         player_transform = Transform((50, 1000), 0, (1.0, 1.0))
         # Create player controller component
-        player_controller = PlayerController()
+        self.player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
         player_collider = Collider(auto_generate_polygon="box")
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
-                               [player_sprite_renderer, player_transform, player_controller, player_collider],
+                               [player_sprite_renderer, player_transform, self.player_controller, player_collider],
                                static=False)
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
@@ -188,6 +188,17 @@ class GameView(arcade.View):
         self.clear()
         GameManager.draw()
 
+    def on_mouse_press(self, x, y, button, modifiers):
+        if 1417 < x < 1505 and 750 < y < 842:
+            arcade.exit()
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        # DOESN'T WORK AND IDK HOW TO MAKE IT
+        if 1417 < x < 1505 and 750 < y < 842:
+            self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
+        else:
+            self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit.png", 1.0))
+
 
 class WinView(arcade.View):
     def __init__(self):
@@ -218,7 +229,7 @@ class WinView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        #arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_draw(self):
         # Draw this view
@@ -258,7 +269,7 @@ class LoseView(arcade.View):
         background_resizer.on_resize(self.window.width, self.window.height)
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        #GameManager.main_camera.move((0, 0))
+        GameManager.main_camera.move((0, 0))
 
     def on_draw(self):
         # Draw this view
@@ -305,3 +316,4 @@ class ReturnButton(arcade.gui.UITextureButton):
         start_view = StartView()
         #start_view.setup()
         self.View.window.show_view(start_view)
+
