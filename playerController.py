@@ -103,7 +103,7 @@ class PlayerController(Component):
         if self.__transform.position[1] < -5:
             self.__health = self.__health - 1
             self.__invincibility_timer = 1.0
-            arcade.play_sound(self.__damage_sound)
+            SoundManager.play_sound("player", "damage")
             self.__taking_damage = True
             self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
             self.__is_falling = True
