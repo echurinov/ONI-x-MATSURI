@@ -78,5 +78,62 @@ class PowerUpSpeed(Entity):
         return "Speed"
 
 
+class PowerUpJump(Entity):
+    def __init__(self, position):
+        self.__floor_sprite = arcade.Sprite("assets/sprites/squid.png")
+        floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
+        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_collider = Collider(auto_generate_polygon="box")
+        super(PowerUpJump, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
+                                          static=False)
+        self.__position = position
+        self.__bounce_timer = BOUNCE_TIME
+        self.__bounce_amount = BOUNCE_AMOUNT
+
+        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+            "PlayerController")
+
+        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+
+
+    def on_physics_update(self, dt):
+        self.__bounce_timer -= dt
+        if self.__bounce_timer < 0:
+            self.__bounce_timer = BOUNCE_TIME
+            self.__bounce_amount = self.__bounce_amount * -1
+            self.__floor_sprite.set_position(self.__floor_sprite.position[0], self.__floor_sprite.position[1] + self.__bounce_amount)
+
+    def on_collection(self):
+        GameManager.remove_entity(self)
+        return "Jump"
+
+class PowerUpAttack(Entity):
+    def __init__(self, position):
+        self.__floor_sprite = arcade.Sprite("assets/sprites/squid.png")
+        floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
+        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_collider = Collider(auto_generate_polygon="box")
+        super(PowerUpAttack, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
+                                          static=False)
+        self.__position = position
+        self.__bounce_timer = BOUNCE_TIME
+        self.__bounce_amount = BOUNCE_AMOUNT
+
+        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+            "PlayerController")
+
+        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+
+
+    def on_physics_update(self, dt):
+        self.__bounce_timer -= dt
+        if self.__bounce_timer < 0:
+            self.__bounce_timer = BOUNCE_TIME
+            self.__bounce_amount = self.__bounce_amount * -1
+            self.__floor_sprite.set_position(self.__floor_sprite.position[0], self.__floor_sprite.position[1] + self.__bounce_amount)
+
+    def on_collection(self):
+        GameManager.remove_entity(self)
+        return "Attack"
 
 

@@ -67,8 +67,9 @@ class PlayerController(Component):
         self.__attack_time -= dt
         self.__attack_timer -= dt
         self.__health_up_timer -= dt
-        self.__jump_timer -= dt
+        self.__jumping_timer -= dt
         self.__speed_timer -= dt
+        self.__mad_timer -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -159,7 +160,7 @@ class PlayerController(Component):
 
         if self.__invincibility_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)
-        elif not self.__health_up and not self.__speed and not self.__jump:
+        elif not self.__health_up and not self.__speed and not self.__jump and not self.__mad:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
 
         # Two cases here: moving up and moving down
@@ -200,38 +201,6 @@ class PlayerController(Component):
             # Deal with vertical deceleration
             self.__velocity = (self.__velocity[0], self.__velocity[1] + (self.__gravity * dt))
 
-        #FLASHES PINK when you get HEALTH-UP
-        if self.__health_up_timer < 0 and self.__flash_count == 0 and self.__health_up:
-            self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__health_up_timer = 0.1
-            self.__flash_count += 1
-
-        if self.__health_up_timer < 0 and self.__flash_count == 1 and self.__health_up:
-            self.__sprite_renderer.sprite.color = arcade.color.PINK
-            self.__health_up_timer = 0.1
-            self.__flash_count += 1
-
-        if self.__health_up_timer < 0 and self.__flash_count == 2 and self.__health_up:
-            self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__flash_count = 0
-            self.__health_up = False
-
-        if self.__speed_timer < 0 and self.__speed:
-            self.__speed = False
-            self.__flash_count = 0
-            self.__sprite_renderer.sprite.color = (255, 255, 255)
-            print(self.__max_velocity)
-            self.__max_velocity = (self.__max_velocity[0] - 350, self.__max_velocity[1] - 350)
-
-        #FLASHES BLUE when you get SPEED-BOOST
-        if self.__speed:
-            if self.__flash_count % 16 == 0:
-                self.__sprite_renderer.sprite.color = (100, 100, 255)
-            elif self.__flash_count % 8 == 0:
-                self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__flash_count = (self.__flash_count + 1) % 80
-
-
         # Second case: moving down
         # Check for collision with ground and platforms
         # Deal with vertical acceleration
@@ -247,7 +216,6 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         temp = collider.parent.on_collection()
                         if temp == "Health-Up":
-                            print("this :D")
                             self.__health_up_timer = 0.1
                             self.__sprite_renderer.sprite.color = arcade.color.PINK
                             self.__health_up = True
@@ -262,9 +230,21 @@ class PlayerController(Component):
 
                             #Make player speed
 
-                        if self.__power_up_type == "Jump":
-                            self.__jump_timer = 5
-                            #make player jump high
+                        if temp == "Jump":
+                            self.__jumping_timer = 7
+                            self.__jump = True
+                            self.__jumping_timer = 7
+                            self.__sprite_renderer.sprite.color = (100, 255, 100)
+                            #CHANGE
+                            self.__gravity = -1000
+                            self.__max_velocity = (self.__max_velocity[0], self.__max_velocity[1] + 100)
+                            self.__velocity = (self.__velocity[0], self.__velocity[1] + 100)
+                            # make player jump high
+
+                        if temp == "Attack":
+                            self.__mad = True
+                            self.__mad_timer = 5
+                            #make self stronger somehow
 
 
                 # Only checking for objects tagged with "Ground" or "Platform" (solid objects and platforms)
@@ -322,6 +302,8 @@ class PlayerController(Component):
             self.__velocity = (self.__velocity[0] * (1 - self.__horizontal_deceleration_multiplier * dt), self.__velocity[1])
 
         self.__jump_requested = False
+
+        self.power_up_effects()
 
     # Gets called every frame
     # dt is the time taken since the last frame
@@ -438,12 +420,13 @@ class PlayerController(Component):
         self.__health_up = False
         self.__speed = False
         self.__jump = False
-        self.__fast = False
+        self.__mad = False
 
         self.__power_up_type = None
         self.__health_up_timer = 0.5
         self.__speed_timer = 7
-        self.__jump_timer = 7
+        self.__jumping_timer = 7
+        self.__mad_timer = 5
 
         self.__flash_count = 0
 
@@ -593,6 +576,74 @@ class PlayerController(Component):
 
     def set_exit_sprite(self, new_sprite):
         self.__exit_sprite = new_sprite
+
+    def power_up_effects(self):
+
+
+        # FLASHES PINK when you get HEALTH-UP
+        if self.__health_up_timer < 0 and self.__flash_count == 0 and self.__health_up:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__health_up_timer = 0.1
+            self.__flash_count += 1
+
+        if self.__health_up_timer < 0 and self.__flash_count == 1 and self.__health_up:
+            self.__sprite_renderer.sprite.color = arcade.color.PINK
+            self.__health_up_timer = 0.1
+            self.__flash_count += 1
+
+        if self.__health_up_timer < 0 and self.__flash_count == 2 and self.__health_up:
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = 0
+            self.__health_up = False
+
+        # Undoes the effect of the speed-boost power-up
+        if self.__speed_timer < 0 and self.__speed:
+            self.__speed = False
+            self.__flash_count = 0
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__max_velocity = (self.__max_velocity[0] - 350, self.__max_velocity[1] - 350)
+
+        # Undoes the effect of the jump power-up
+        if self.__jumping_timer < 0 and self.__jump:
+            # undoes the effect of the powerup
+            self.__jump = False
+            self.__flash_count = 0
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__gravity = -1700
+            self.__max_velocity = (self.__max_velocity[0], self.__max_velocity[1] - 100)
+            self.__velocity = (self.__velocity[0], self.__velocity[1] - 100)
+
+        # Undoes the effect of the attack power-up
+        if self.__mad_timer < 0 and self.__mad:
+            # undoes the effect of the powerup
+            self.__mad = False
+            self.__flash_count = 0
+            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            # undoes whatever mad does
+
+        # FLASHES BLUE when you get SPEED-BOOST
+        if self.__speed:
+            if self.__flash_count % 16 == 0:
+                self.__sprite_renderer.sprite.color = (100, 100, 255)
+            elif self.__flash_count % 8 == 0:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = (self.__flash_count + 1) % 80
+
+        # FLASHES GREEN when you get JUMP-BOOST
+        if self.__jump:
+            if self.__flash_count % 16 == 0:
+                self.__sprite_renderer.sprite.color = (100, 255, 100)
+            elif self.__flash_count % 8 == 0:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = (self.__flash_count + 1) % 80
+
+        # FLASHES PURPLE when you get ATTACK-BOOST
+        if self.__mad:
+            if self.__flash_count % 16 == 0:
+                self.__sprite_renderer.sprite.color = (255, 100, 255)
+            elif self.__flash_count % 8 == 0:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__flash_count = (self.__flash_count + 1) % 80
 
 
     @property
