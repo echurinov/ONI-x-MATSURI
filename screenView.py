@@ -15,6 +15,7 @@ from eventManager import EventManager
 from musicManager import MusicManager
 from physicsObject import PhysicsObject
 from playerController import PlayerController
+from soundManager import SoundManager
 from spriteRenderer import SpriteRenderer
 from swordController import SwordController
 from transform import Transform
@@ -296,7 +297,8 @@ class StartButton(arcade.gui.UITextureButton):
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         if not self.__start_pressed:
-            arcade.play_sound(self.press_sound)
+            #arcade.play_sound(self.press_sound)
+            SoundManager.play_sound("user_interface", "start_button_press")
             self.__start_pressed = True
             game_view = GameView()
             game_view.setup()
@@ -311,7 +313,8 @@ class QuitButton(arcade.gui.UITextureButton):
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         print("Quitting")
-        arcade.play_sound(self.press_sound)
+        #arcade.play_sound(self.press_sound)
+        SoundManager.play_sound("user_interface", "quit_button_press")
         arcade.exit()
 
 

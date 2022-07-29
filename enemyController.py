@@ -3,6 +3,7 @@ import arcade
 from component import Component
 from eventManager import EventManager
 from gameManager import GameManager
+from soundManager import SoundManager
 
 IDLE_TIMER = 1
 WALKING_TIMER = 2
@@ -15,10 +16,12 @@ class EnemyController(Component):
         self.__damage_timer = 1.0
         self.__health = self.health - amount
         if self.__health < 0:
-            arcade.play_sound(self.death_sound)
+            #arcade.play_sound(self.death_sound)
+            SoundManager.play_sound("enemy_oni", "death")
             GameManager.remove_entity(self.parent)
         else:
-            arcade.play_sound(self.damage_sound)
+            #arcade.play_sound(self.damage_sound)
+            SoundManager.play_sound("enemy_oni", "death")
         self.__taking_damage = True
 
     # Called every time physics get updated (currently every frame)

@@ -156,7 +156,8 @@ class PlayerController(Component):
                     if self.__invincibility_timer < 0:
                         self.__invincibility_timer = 1.0
                         self.__health = self.__health - 1
-                        arcade.play_sound(self.__damage_sound)
+                        #arcade.play_sound(self.__damage_sound)
+                        SoundManager.play_sound("player", "damage")
                         self.__taking_damage = True
                         self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
@@ -276,7 +277,8 @@ class PlayerController(Component):
         # If we're on the ground (or in coyote time) and the player has pressed the jump button, let them jump
         if (self.__jump_requested or self.__jump_timer > 0) and (self.__touching_ground or self.__coyote_timer > 0):
             self.__velocity = (self.__velocity[0], self.__jump_speed)
-            arcade.play_sound(self.__jump_sound)
+            #arcade.play_sound(self.__jump_sound)
+            SoundManager.play_sound("player", "jump")
             # print(self.__velocity)
             self.__jump_requested = False
             self.__jump_timer = 0
