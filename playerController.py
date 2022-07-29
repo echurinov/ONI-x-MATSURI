@@ -3,6 +3,7 @@ import arcade
 import enemyController
 from component import Component
 from eventManager import EventManager
+from soundManager import SoundManager
 from spriteRenderer import SpriteRenderer
 from transform import Transform
 from entity import Entity
@@ -104,7 +105,8 @@ class PlayerController(Component):
 
         # For when the player is attacking
         if self.__is_attacking and self.__attack_timer < 0:
-            arcade.play_sound(self.__attack_sound)
+            #arcade.play_sound(self.__attack_sound)
+            SoundManager.play_sound("player", "attack")
             self.__attack_time = ATTACK_TIME
             self.__attack_timer = ATTACK_COOL_DOWN
             self.__is_attacking = False

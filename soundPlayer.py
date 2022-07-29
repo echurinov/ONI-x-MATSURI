@@ -1,6 +1,5 @@
 import arcade
 import pyglet
-import time
 
 # This class bundles the arcade.Sound and pyglet.media.player.Player classes to handle stopping sounds
 # A pyglet.media.player.Player created from an arcade.Sound is needed to stop the arcade.Sound
@@ -11,10 +10,10 @@ class SoundPlayer:
         self.__sound = sound
         self.__player = player
 
-@property
-def player(self):
-    return self.__player
+    @property
+    def player(self):
+        return self.__player
 
-@property
-def sound(self):
-    return self.__sound
+    @property
+    def sound(self):
+        return self.__sound
