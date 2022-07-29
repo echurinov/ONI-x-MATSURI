@@ -43,6 +43,13 @@ class SoundManager:
         player = arcade.play_sound(sound, sound_volume)
         sound_player = SoundPlayer(sound, player)
         SoundManager.__active_sounds.append(sound_player)
+    
+    @staticmethod
+    def test_play_sound(relative_file_path: str):
+        sound = arcade.load_sound(relative_file_path)
+        player = arcade.play_sound(sound)
+        sound_player = SoundPlayer(sound, player)
+        SoundManager.__active_sounds.append(sound_player)
 
     @staticmethod
     def stop_active_sounds():

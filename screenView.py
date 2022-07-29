@@ -175,6 +175,7 @@ class GameView(arcade.View):
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
             lose_view = LoseView()
+            SoundManager.stop_active_sounds()
             MusicManager.change_list("lose_view", loop=False)
             MusicManager.play_song()
             self.window.show_view(lose_view)
@@ -293,11 +294,9 @@ class StartButton(arcade.gui.UITextureButton):
         super().__init__(**keywords)
         self.View = current_view
         self.__start_pressed = False
-        self.press_sound = arcade.load_sound("assets/sounds/menu/button_press2.wav")
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         if not self.__start_pressed:
-            #arcade.play_sound(self.press_sound)
             SoundManager.play_sound("user_interface", "start_button_press")
             self.__start_pressed = True
             game_view = GameView()
@@ -309,11 +308,9 @@ class QuitButton(arcade.gui.UITextureButton):
     def __init__(self, *args, **keywords):
         super().__init__(**keywords)
         self.__start_pressed = False
-        self.press_sound = arcade.load_sound("assets/sounds/menu/button_press.wav")
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         print("Quitting")
-        #arcade.play_sound(self.press_sound)
         SoundManager.play_sound("user_interface", "quit_button_press")
         arcade.exit()
 

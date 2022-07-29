@@ -16,11 +16,9 @@ class EnemyController(Component):
         self.__damage_timer = 1.0
         self.__health = self.health - amount
         if self.__health < 0:
-            #arcade.play_sound(self.death_sound)
             SoundManager.play_sound("enemy_oni", "death")
             GameManager.remove_entity(self.parent)
         else:
-            #arcade.play_sound(self.damage_sound)
             SoundManager.play_sound("enemy_oni", "death")
         self.__taking_damage = True
 
@@ -139,11 +137,6 @@ class EnemyController(Component):
 
         EventManager.add_listener("Update", self.on_update)
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)
-
-        # Load sounds
-        self.damage_sound = arcade.load_sound("assets/sounds/enemy/enemy_oni_damage_2.wav")
-        self.death_sound = arcade.load_sound("assets/sounds/enemy/enemy_oni_death.wav")
-
 
     # Called when parent entity is created
     def on_created(self):
