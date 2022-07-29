@@ -134,7 +134,7 @@ class PlayerController(Component):
                     continue
                 if "Enemy" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
-                        collider.parent.get_component_by_name("EnemyController").take_damage(1)
+                        collider.parent.get_component_by_name("EnemyController").take_damage(self.__attack_power)
 
         if self.__taking_damage:
             # implement damage knock back
@@ -244,7 +244,7 @@ class PlayerController(Component):
                         if temp == "Attack":
                             self.__mad = True
                             self.__mad_timer = 5
-                            #make self stronger somehow
+                            self.__attack_power = 10
 
 
                 # Only checking for objects tagged with "Ground" or "Platform" (solid objects and platforms)
@@ -392,6 +392,7 @@ class PlayerController(Component):
         self.__is_attacking = False
         self.__attack_time = ATTACK_TIME
         self.__attack_timer = ATTACK_COOL_DOWN
+        self.__attack_power = 1
 
         # Variable used for camera movement, stores the left most edge of the visable screen
         self.__camera_min = 0
@@ -605,7 +606,6 @@ class PlayerController(Component):
 
         # Undoes the effect of the jump power-up
         if self.__jumping_timer < 0 and self.__jump:
-            # undoes the effect of the powerup
             self.__jump = False
             self.__flash_count = 0
             self.__sprite_renderer.sprite.color = (255, 255, 255)
@@ -615,11 +615,10 @@ class PlayerController(Component):
 
         # Undoes the effect of the attack power-up
         if self.__mad_timer < 0 and self.__mad:
-            # undoes the effect of the powerup
             self.__mad = False
             self.__flash_count = 0
             self.__sprite_renderer.sprite.color = (255, 255, 255)
-            # undoes whatever mad does
+            self.__attack_power = 1
 
         # FLASHES BLUE when you get SPEED-BOOST
         if self.__speed:
@@ -673,3 +672,7 @@ class PlayerController(Component):
     @property
     def is_moving_left(self):
         return self.__moving_left
+
+    @property
+    def attack_power(self):
+        return self.__attack_power
