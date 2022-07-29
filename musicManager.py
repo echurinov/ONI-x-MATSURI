@@ -8,7 +8,7 @@ from eventManager import EventManager
 MUSIC_VOLUME = 0.3
 MUSIC_PATH = "assets/sounds/music/"
 
-# Handles all loading and playing music for all views in the game (Main Menu, Game View, Lose Screen, Win Screen, etc)
+# Handles all loading and playing of music for all views in the game (Main Menu, Game View, Lose Screen, Win Screen, etc)
 # Everything in this class is static
 
 
@@ -17,7 +17,7 @@ class MusicManager:
         "start_view" : [],
         "game_view" : [],
         "lose_view" : [],
-        "win_view" : [],
+        "win_view" : []
     }
     __current_list = None
     __current_song_index = 0
@@ -70,7 +70,7 @@ class MusicManager:
         MusicManager.set_song()
 
     def __on_update(self):
-        if MusicManager.__current_list == None:
+        if MusicManager.__current_list is None:
             print("No music list has been selected.")
             return
         elif len(MusicManager.__current_list) == 0:
