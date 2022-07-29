@@ -100,7 +100,14 @@ class PlayerController(Component):
 
         # Player dies if they fall off the level edge
         if self.__transform.position[1] < -5:
-            self.__health = 0
+            self.__health = self.__health - 1
+            self.__invincibility_timer = 1.0
+            arcade.play_sound(self.__damage_sound)
+            self.__taking_damage = True
+            self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+            self.__is_falling = True
+            self.__transform.position = (50, self.__camera_min + 55)
+
 
         # For when the player is attacking
         if self.__is_attacking and self.__attack_timer < 0:
@@ -136,7 +143,7 @@ class PlayerController(Component):
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(self.__attack_power)
 
-        if self.__taking_damage:
+        if self.__taking_damage and not self.__is_falling:
             # implement damage knock back
             if self.__velocity[0] >= 0:
                 self.__velocity = (self.__velocity[0] - KNOCK_BACK_DAMAGE, self.__velocity[1])
@@ -160,7 +167,10 @@ class PlayerController(Component):
 
         if self.__invincibility_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)
-        elif not self.__health_up and not self.__speed and not self.__jump and not self.__mad:
+        else:
+            self.__is_falling = False
+
+        if self.__invincibility_timer <= 0 and not self.__health_up and not self.__speed and not self.__jump and not self.__mad:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
 
         # Two cases here: moving up and moving down
@@ -411,6 +421,7 @@ class PlayerController(Component):
         self.__falling_speed_multiplier = 1.5  # Fall faster than you go up (makes jumps feel better)
         self.__coyote_time = 0.1  # Period after walking off a platform where you can still jump (another QOL feature)
         self.__coyote_timer = 0  # Temporary variable to keep track of the coyote time
+        self.__is_falling = False # variable changes to true once you fall off an edge and false once you respawn
 
         # Pressing jump within this amount of time before touching the ground
         # will make you jump when you land, avoiding missed inputs.
