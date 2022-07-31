@@ -19,11 +19,6 @@ class SoundManager:
     # __sound_lists will store the pre-loaded sounds
     # This class will create a pyglet.media.player.Player when play_sound() is invoked
     __sound_lists = {
-        "player" : {
-            "attack": arcade.load_sound(SOUND_PATH + "player/player_attack.wav"),
-            "damage": arcade.load_sound(SOUND_PATH + "player/player_damage.wav"),
-            "jump": arcade.load_sound(SOUND_PATH + "player/player_jump3.wav")
-        },
         "enemy_oni" : {
             "damage": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_damage_2.wav"),
             "death": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_death.wav")
@@ -31,9 +26,17 @@ class SoundManager:
         "enemy_oni_boss" : {
 
         },
+        "player" : {
+            "attack" : arcade.load_sound(SOUND_PATH + "player/player_attack.wav"),
+            "damage" : arcade.load_sound(SOUND_PATH + "player/player_damage.wav"),
+            "jump" : arcade.load_sound(SOUND_PATH + "player/player_jump3.wav")
+        },
+        "powerups" : {
+            "heal" : arcade.load_sound(SOUND_PATH + "powerups/cotton_candy.wav")
+        },
         "user_interface" : {
-            "start_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press2.wav"),
-            "quit_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press.wav")
+            "start_button_press" : arcade.load_sound(SOUND_PATH + "menu/button_press2.wav"),
+            "quit_button_press" : arcade.load_sound(SOUND_PATH + "menu/button_press.wav")
         }
     }
 

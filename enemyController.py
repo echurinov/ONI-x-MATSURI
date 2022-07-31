@@ -43,7 +43,7 @@ class EnemyController(Component):
             self.__walking_timer -= dt
 
         if self.__standing:
-            self.__idle_timer -=dt
+            self.__idle_timer -= dt
 
         # Update damage timer
         self.__damage_timer -= dt

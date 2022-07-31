@@ -6,6 +6,7 @@ from spriteRenderer import SpriteRenderer
 from transform import Transform
 from eventManager import EventManager
 from gameManager import GameManager
+from soundManager import SoundManager
 
 
 BOUNCE_TIME = 0.3
@@ -45,6 +46,7 @@ class PowerUpHealth(Entity):
         if self.__player_controller.health < self.__player_controller.max_health:
             self.__player_controller.set_health(self.__player_controller.health + 1)
 
+        SoundManager.play_sound("powerups", "heal")
         GameManager.remove_entity(self)
         return "Health-Up"
 

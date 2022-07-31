@@ -180,6 +180,42 @@ class GameView(arcade.View):
             MusicManager.play_song()
             self.window.show_view(lose_view)
 
+    def begin_boss(self):
+        # Remove all entities except Player elements and GUI
+        bg_entities = GameManager.get_background_entities
+        for entity in bg_entities:
+            GameManager.remove_entity(entity)
+
+        static_entities = GameManager.get_static_entities
+        for entity in static_entities:
+            GameManager.remove_entity(entity)
+
+        enemy_entities = GameManager.get_entities_by_tag("Enemy")
+        for entity in enemy_entities:
+            GameManager.remove_entity(entity)
+
+        # Set up new level layout
+        background_sprite = arcade.Sprite("assets/backgrounds/boss_background.png", 1.0)
+        background_sprite_renderer = SpriteRenderer(background_sprite)
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
+        background_resizer = BackgroundResizer()
+        background_entity = Entity("Background", ["BackgroundTag"],
+                                   [background_sprite_renderer, background_transform, background_resizer])
+        GameManager.add_background_entity(background_entity)
+
+        # Create boss
+
+
+        # Reset player position
+        self.player_controller.set_transform((50, 1000))
+
+        # Reset and freeze camera
+        GameManager.main_camera.move((0, 0))
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        self.player_controller.toggle_camera_movement()
+
+        # Change music
+
     def on_key_press(self, key, modifiers):
         # Don't do anything if we're paused
         if GameManager.get_paused():

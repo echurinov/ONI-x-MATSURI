@@ -46,7 +46,6 @@ class PlayerController(Component):
         if key == arcade.key.SPACE:
             self.__is_attacking = True
 
-
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
@@ -330,7 +329,8 @@ class PlayerController(Component):
         if self.__transform.position[0] > (self.__camera_min + width / 2):
             self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
-        GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
+        if not self.__freeze_camera:
+            GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
 
         # Animation states
         # If the player is attacking
@@ -408,6 +408,7 @@ class PlayerController(Component):
 
         # Variable used for camera movement, stores the left most edge of the visable screen
         self.__camera_min = 0
+        self.__freeze_camera = False
 
         # Variable used for sword positioning, stores the direction the player is facing
         self.__moving_left = False
@@ -524,6 +525,9 @@ class PlayerController(Component):
                                   self.on_key_release)  # calls on_key_release every time a key is released
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
+    def set_transform(self, pos):
+        self.__transform.position = pos
+
     def set_health(self, health):
         self.__health = health
 
@@ -587,8 +591,6 @@ class PlayerController(Component):
         self.__exit_sprite = new_sprite
 
     def power_up_effects(self):
-
-
         # FLASHES PINK when you get HEALTH-UP
         if self.__health_up_timer < 0 and self.__flash_count == 0 and self.__health_up:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
@@ -652,6 +654,8 @@ class PlayerController(Component):
                 self.__sprite_renderer.sprite.color = (255, 255, 255)
             self.__flash_count = (self.__flash_count + 1) % 80
 
+    def toggle_camera_movement(self):
+        self.__freeze_camera = not self.__freeze_camera
 
     @property
     def touching_ground(self):
@@ -684,3 +688,4 @@ class PlayerController(Component):
     @property
     def attack_power(self):
         return self.__attack_power
+
