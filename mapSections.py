@@ -7,7 +7,7 @@ from entity import Entity
 from enemyController import EnemyController
 from spriteRenderer import SpriteRenderer
 from transform import Transform
-from powerUps import PowerUpHealth, PowerUpSpeed
+from powerUps import PowerUpHealth, PowerUpSpeed, PowerUpJump, PowerUpAttack
 
 
 
@@ -107,6 +107,12 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 entities.append(Enemy((float(line[1]), float(line[2]))))
             elif line[0] == "cottoncandy.png":
                 entities.append(PowerUpHealth((float(line[1]), float(line[2]))))
+            elif line[0] == "onigiri.png":
+                entities.append(PowerUpSpeed((float(line[1]), float(line[2]))))
+            elif line[0] == "squid.png":
+                entities.append(PowerUpJump((float(line[1]), float(line[2]))))
+            elif line[0] == "dango.png":
+                entities.append(PowerUpAttack((float(line[1]), float(line[2]))))
             entities[-1].transform.scale = float(line[3])  # Apply scale
     for entity in entities:
         if offset != (0, 0):

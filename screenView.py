@@ -135,7 +135,7 @@ class GameView(arcade.View):
     def __create_sword(self):
         # Create an arcade.Sprite for the sword (it will be invisible, so it doesn't matter what it is)
         # Using a rectangle that covers the player character and extends in front
-        sword_attack_sprite = arcade.Sprite(":resources:onscreen_controls/flat_dark/select.png", scale=3, image_height=48, image_width=35)
+        sword_attack_sprite = arcade.Sprite(":resources:onscreen_controls/flat_dark/select.png", scale=3, image_height=48, image_width=40)
         # Set the texture to be invisible
         sword_attack_sprite.alpha = 0
         # Create a sprite renderer component for the sword
