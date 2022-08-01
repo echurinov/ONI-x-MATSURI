@@ -391,6 +391,7 @@ class PlayerController(Component):
 
         # Get the screen width and height just once when the game starts
         self.__screen_width, self.__screen_height = arcade.window_commands.get_display_size()
+        print("Screen resolution: " + str(self.__screen_width) + "x" + str(self.__screen_height))
 
         # Store some components here (set when the program starts), so we don't have to look for them each time
         self.__transform = None

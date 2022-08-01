@@ -16,7 +16,7 @@ class SimpleBlock(Entity):
         floor_sprite = arcade.Sprite("assets/tiles/ground_tile.png")
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
         floor_transform = Transform(position, 0, 1.0)
-        floor_collider = Collider(auto_generate_polygon="simple")
+        floor_collider = Collider(auto_generate_polygon="box")
         super(SimpleBlock, self).__init__("Block", ["Ground"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=True)
 
@@ -37,9 +37,8 @@ class GroundPit(Entity):
         ground_pit_sprite = arcade.Sprite("assets/tiles/ground_pit_tile.png")
         ground_pit_sprite_renderer = SpriteRenderer(ground_pit_sprite)
         ground_pit_transform = Transform(position, 0, 1.0)
-        ground_pit_collider = Collider(auto_generate_polygon="simple")
-        super(GroundPit, self).__init__("Block", ["Ground"],
-                                        [ground_pit_sprite_renderer, ground_pit_transform, ground_pit_collider],
+        super(GroundPit, self).__init__("GroundPit", [],
+                                        [ground_pit_sprite_renderer, ground_pit_transform],
                                         static=True)
 
 
@@ -49,7 +48,7 @@ class Bench(Entity):
         bench_sprite_renderer = SpriteRenderer(bench_sprite)
         bench_transform = Transform(position, 0, 1.0)
         bench_collider = Collider(auto_generate_polygon="simple")
-        super(Bench, self).__init__("Block", ["Ground"], [bench_sprite_renderer, bench_transform, bench_collider],
+        super(Bench, self).__init__("Bench", ["Ground"], [bench_sprite_renderer, bench_transform, bench_collider],
                                     static=True)
 
 
@@ -59,7 +58,7 @@ class Platform(Entity):
         platform_sprite_renderer = SpriteRenderer(platform_sprite)
         platform_transform = Transform(position, 0, 1.0)
         platform_collider = Collider(auto_generate_polygon="simple")
-        super(Platform, self).__init__("Block", ["Ground"],
+        super(Platform, self).__init__("Platform", ["Ground", "Platform"],
                                        [platform_sprite_renderer, platform_transform, platform_collider], static=True)
 
 
@@ -110,7 +109,7 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 entities.append(PowerUpHealth((float(line[1]), float(line[2]))))
             entities[-1].transform.scale = float(line[3])  # Apply scale
     for entity in entities:
-        if offset != (0,0):
+        if offset != (0, 0):
             entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
 
         if tag is not None:

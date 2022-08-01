@@ -16,9 +16,9 @@ class PowerUpHealth(Entity):
     def __init__(self, position):
         self.__floor_sprite = arcade.Sprite("assets/sprites/cottoncandy.png")
         floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
-        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_transform = Transform(position, 0, 0.25)
         floor_collider = Collider(auto_generate_polygon="box")
-        super(PowerUpHealth, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
+        super(PowerUpHealth, self).__init__("PowerUpHealth", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=False)
         self.__position = position
         self.__bounce_timer = BOUNCE_TIME
