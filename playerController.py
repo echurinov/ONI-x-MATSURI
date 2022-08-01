@@ -324,7 +324,8 @@ class PlayerController(Component):
         # 2) Once the character reaches halfway across the screen, the camera moves forward with them again
         # 3) Camera never moves backwards
 
-        width, height = arcade.window_commands.get_display_size()
+        # Can't just get them here again because that crashes for some reason
+        width, height = self.__screen_width, self.__screen_height
 
         if self.__transform.position[0] > (self.__camera_min + width / 2):
             self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
@@ -387,6 +388,9 @@ class PlayerController(Component):
             arcade.key.A: False,
             arcade.key.D: False
         }
+
+        # Get the screen width and height just once when the game starts
+        self.__screen_width, self.__screen_height = arcade.window_commands.get_display_size()
 
         # Store some components here (set when the program starts), so we don't have to look for them each time
         self.__transform = None

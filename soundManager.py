@@ -59,6 +59,9 @@ class SoundManager:
         if SoundManager.__active_sounds is None:
             return
         for sound_player in SoundManager.__active_sounds:
+            # Hacky workaround for crash. This should never be None but it is sometimes
+            if sound_player.player is None:
+                continue
             sound_player.sound.stop(sound_player.player)
 
     def __on_update(self):
@@ -67,6 +70,9 @@ class SoundManager:
         # Remove sounds that have finished playing
         list_copy = SoundManager.__active_sounds
         for sound_player in list_copy:
+            # Hacky workaround for crash
+            if sound_player.player is None:
+                continue
             if sound_player.sound.get_stream_position(sound_player.player) == 0.0:
                 SoundManager.__active_sounds.remove(sound_player)
 
