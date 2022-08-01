@@ -83,8 +83,9 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        entities = mapSections.load_from_file("level.dat")
+        level_length, entities = mapSections.load_from_file("level.dat")
         #entities = mapSections.section3()
+        print("Loaded level with", len(entities), "entities and length", level_length)
         for i in entities:
             GameManager.add_entity(i)
 

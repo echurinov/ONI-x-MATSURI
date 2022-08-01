@@ -85,10 +85,16 @@ class Enemy(Entity):
 # Load a map section from a file created by the visual editor
 # All entities from this section will have their position offset by the given amount,
 # and will be tagged with the given tag
+# Returns (level_length, entities)
 def load_from_file(path, offset=(0, 0), tag=...):
     entities = []
+    level_length = -1
     with open(path, "r") as file:
-        for line in file:
+        for index, line in enumerate(file):
+            # First line is length of level
+            if index == 0:
+                level_length = float(line)
+                continue
             line = line.strip()
             if line == "":
                 continue
@@ -123,7 +129,7 @@ def load_from_file(path, offset=(0, 0), tag=...):
         elif tag is ...:
             entity.tags.append(path)
         # Only omit adding tags if the function was explicitly passed None
-    return entities
+    return level_length, entities
 
 
 def tutorial():  # this is the section which will contain the tutorial sign

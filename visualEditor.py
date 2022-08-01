@@ -65,6 +65,20 @@ class MyGame(arcade.Window):
         self.details_open = True
         self.detail_position = (sprite.center_x, sprite.center_y)
 
+    # Returns the length of the level
+    # Length is measured from the left edge of the leftmost sprite to the right edge of the rightmost sprite
+    def get_level_length(self):
+        left_sprite = None
+        right_sprite = None
+        for sprite in self.static_sprite_list:
+            if left_sprite is None or sprite.center_x < left_sprite.center_x:
+                left_sprite = sprite
+            if right_sprite is None or sprite.center_x > right_sprite.center_x:
+                right_sprite = sprite
+        left_pos = left_sprite.center_x - left_sprite.width / 2
+        right_pos = right_sprite.center_x + right_sprite.width / 2
+        return right_pos - left_pos
+
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ESCAPE:
             arcade.exit()
@@ -75,13 +89,16 @@ class MyGame(arcade.Window):
         # Save
         if symbol == arcade.key.P:
             with open("level.dat", "w") as file:
+                file.write(str(self.get_level_length()) + "\n")
                 for sprite in self.static_sprite_list:
                     file.write(sprite.name + ":" + str(sprite.center_x) + ":" + str(sprite.center_y) + ":" + str(sprite.scale) +"\n" )
         # Load
         if symbol == arcade.key.O:
             with open("level.dat", "r") as file:
                 self.static_sprite_list = arcade.SpriteList()
-                for line in file:
+                for index, line in enumerate(file):
+                    if index == 0:  # Ignore length line
+                        continue
                     name, x, y, scale = line.split(":")
                     sprite = arcade.Sprite("assets/visual_editor_sprites/" + name, float(scale))
                     sprite.name = name
