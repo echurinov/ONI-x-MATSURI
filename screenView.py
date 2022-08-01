@@ -54,6 +54,9 @@ class StartView(arcade.View):
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
 
+        # Shouldn't need this, but it won't resize otherwise for some reason
+        background_resizer.on_resize(self.window.width, self.window.height)
+
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         # arcade.set_viewport(0, self.window.width, 0, self.window.height)
@@ -158,7 +161,6 @@ class GameView(arcade.View):
 
         MusicManager.change_list("game_view")
         MusicManager.play_song()
-
         # Trigger the "Start" event
         EventManager.trigger_event("Start")
 

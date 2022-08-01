@@ -13,10 +13,12 @@ class Entity:
         self.__parent = None
         self.__active = active
         self.__transform = None
-        # Call on_added_to_entity on all child components
+        # Call on_added_to_entity and on_created on all child components
         for item in components:
             if hasattr(item, 'on_added_to_entity'):
                 item.on_added_to_entity()
+            if hasattr(item, 'on_created'):
+                item.on_created()
 
     # Add a component to an entity
     def add_component(self, component):
