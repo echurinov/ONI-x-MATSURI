@@ -63,6 +63,25 @@ class GameManager:
         return GameManager.__gui_entities
 
     @staticmethod
+    def remove_tagged_entities(tag):
+        for entity in GameManager.__entities:
+            if tag in entity.tags:
+                GameManager.__entities.remove(entity)
+                if entity.get_component_by_name("SpriteRenderer"):
+                    sprite = entity.get_component_by_name("SpriteRenderer").sprite
+                    if sprite in GameManager.__static_entities:
+                        GameManager.__static_entities.remove(sprite)
+                    if sprite in GameManager.__dynamic_entities:
+                        GameManager.__dynamic_entities.remove(sprite)
+                    if sprite in GameManager.__background_entities:
+                        GameManager.__background_entities.remove(sprite)
+                    if sprite in GameManager.__gui_entities:
+                        GameManager.__gui_entities.remove(sprite)
+                else:
+                    print("Entity", entity.name, "has no SpriteRenderer")
+
+
+    @staticmethod
     def remove_all_entities():
         GameManager.__entities = []
         GameManager.__dynamic_entities = arcade.SpriteList()
@@ -73,7 +92,9 @@ class GameManager:
     @staticmethod
     def remove_entity(entity):
         if entity in GameManager.__entities:
+            #print("before removing", entity.name,len(GameManager.__entities))
             GameManager.__entities.remove(entity)
+            #print(len(GameManager.__entities))
         else:
             print("Entity", entity.name, "not found in GameManager.__entities")
 
@@ -90,8 +111,6 @@ class GameManager:
         else:
             print("Entity", entity.name, "has no SpriteRenderer")
 
-
-
     # Adds a background entity (draws below everything else, has no collision)
     @staticmethod
     def add_background_entity(entity):
@@ -104,6 +123,9 @@ class GameManager:
         for component in entity.components:
             if hasattr(component, 'on_created'):
                 component.on_created()
+        # Call on_created on the entity if it has it (behaviour should be in components, but whatever)
+        if hasattr(entity, "on_created"):
+            entity.on_created()
 
     # Adds a new entity.
     # Handles adding it to sprite lists so it gets rendered
@@ -121,6 +143,9 @@ class GameManager:
         for component in entity.components:
             if hasattr(component, 'on_created'):
                 component.on_created()
+        # Call on_created on the entity if it has it (behaviour should be in components, but whatever)
+        if hasattr(entity, "on_created"):
+            entity.on_created()
 
     # Adds a new GUI entity.
     # Handles adding it to sprite lists so it gets rendered
@@ -135,6 +160,9 @@ class GameManager:
         for component in entity.components:
             if hasattr(component, 'on_created'):
                 component.on_created()
+        # Call on_created on the entity if it has it (behaviour should be in components, but whatever)
+        if hasattr(entity, "on_created"):
+            entity.on_created()
 
     # Sets an entity to be static (True) or dynamic (False) and assigns it to the relevant SpriteList
     @staticmethod

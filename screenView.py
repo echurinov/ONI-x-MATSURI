@@ -12,6 +12,7 @@ from enemyController import EnemyController
 from entity import Entity
 from gameManager import GameManager
 from eventManager import EventManager
+from levelSectionLoader import LevelSectionLoader
 from musicManager import MusicManager
 from physicsObject import PhysicsObject
 from playerController import PlayerController
@@ -83,11 +84,11 @@ class GameView(arcade.View):
 
         # Create box entities for a somewhat random floor
 
-        level_length, entities = mapSections.load_from_file("level.dat")
+        #level_length, entities = mapSections.load_from_file("level.dat")
         #entities = mapSections.section3()
-        print("Loaded level with", len(entities), "entities and length", level_length)
-        for i in entities:
-            GameManager.add_entity(i)
+        #print("Loaded level with", len(entities), "entities and length", level_length)
+        #for i in entities:
+        #    GameManager.add_entity(i)
 
         # Create entities for background (tiled)
         for i in range(10):
@@ -119,10 +120,12 @@ class GameView(arcade.View):
         self.player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
         player_collider = Collider(auto_generate_polygon="box")
+        # Create a level section loader component for the player. This handles loading the level sections
+        level_section_loader = LevelSectionLoader()
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
-                               [player_sprite_renderer, player_transform, self.player_controller, player_collider],
-                               static=False)
+                               [player_sprite_renderer, player_transform, self.player_controller, player_collider,
+                                level_section_loader], static=False)
         # Add the player entity to the manager
         GameManager.add_entity(player_entity)
 

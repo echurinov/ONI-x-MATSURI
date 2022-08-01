@@ -26,12 +26,14 @@ class PowerUpHealth(Entity):
 
         self.__collection_timer = 0.3
 
-        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
-            "PlayerController")
+        self.__player_controller = None  # Will set this later
 
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
+        if self.__player_controller is None:
+            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+                "PlayerController")
         self.__collection_timer -= dt
         if self.__collection_timer < 0:
             self.__color_done = True
@@ -64,12 +66,14 @@ class PowerUpSpeed(Entity):
         self.__bounce_timer = BOUNCE_TIME
         self.__bounce_amount = BOUNCE_AMOUNT
 
-        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
-            "PlayerController")
+        self.__player_controller = None
 
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
+        if self.__player_controller is None:
+            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+                "PlayerController")
         self.__bounce_timer -= dt
         if self.__bounce_timer < 0:
             self.__bounce_timer = BOUNCE_TIME
@@ -95,12 +99,14 @@ class PowerUpJump(Entity):
         self.__bounce_timer = BOUNCE_TIME
         self.__bounce_amount = BOUNCE_AMOUNT
 
-        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
-            "PlayerController")
+        self.__player_controller = None
 
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
+        if self.__player_controller is None:
+            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+                "PlayerController")
         self.__bounce_timer -= dt
         if self.__bounce_timer < 0:
             self.__bounce_timer = BOUNCE_TIME
@@ -126,12 +132,14 @@ class PowerUpAttack(Entity):
         self.__bounce_timer = BOUNCE_TIME
         self.__bounce_amount = BOUNCE_AMOUNT
 
-        self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
-            "PlayerController")
+        self.__player_controller = None
 
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
+        if self.__player_controller is None:
+            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+                "PlayerController")
         self.__bounce_timer -= dt
         if self.__bounce_timer < 0:
             self.__bounce_timer = BOUNCE_TIME
