@@ -54,7 +54,7 @@ class PowerUpSpeed(Entity):
     def __init__(self, position):
         self.__floor_sprite = arcade.Sprite("assets/sprites/onigiri.png")
         floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
-        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_transform = Transform(position, 0, 0.25)
         floor_collider = Collider(auto_generate_polygon="box")
         super(PowerUpSpeed, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=False)
@@ -84,7 +84,7 @@ class PowerUpJump(Entity):
     def __init__(self, position):
         self.__floor_sprite = arcade.Sprite("assets/sprites/squid.png")
         floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
-        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_transform = Transform(position, 0, 0.25)
         floor_collider = Collider(auto_generate_polygon="box")
         super(PowerUpJump, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=False)
@@ -113,7 +113,7 @@ class PowerUpAttack(Entity):
     def __init__(self, position):
         self.__floor_sprite = arcade.Sprite("assets/sprites/squid.png")
         floor_sprite_renderer = SpriteRenderer(self.__floor_sprite)
-        floor_transform = Transform(position, 0, (0.25, 0.25))
+        floor_transform = Transform(position, 0, 0.25)
         floor_collider = Collider(auto_generate_polygon="box")
         super(PowerUpAttack, self).__init__("Block", ["PowerUp"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=False)
