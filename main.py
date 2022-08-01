@@ -26,7 +26,7 @@ def main():
     SCREEN_TITLE = "ONI x MATSURI"
     GameManager.set_paused(True)
     # window = GameView(GameManager.SCREEN_WIDTH, GameManager.SCREEN_HEIGHT, SCREEN_TITLE)
-    window = GameWindow(1000, 700, SCREEN_TITLE, resizable=True, fullscreen=False)
+    window = GameWindow(1000, 700, SCREEN_TITLE, resizable=True, fullscreen=True)
     SoundManager.start()
     MusicManager.start()
     start_view = StartView()

@@ -36,19 +36,22 @@ class LevelSectionLoader(Component):
             entity.transform.move(offset)
 
     def on_created(self):
-        # Load a copy of the first section
-        section = deepcopy(random.choice(self.level_sections))
-        # Add the section to the scene
-        for entity in section[2]:
-            GameManager.add_entity(entity)
-        # Set current_section
-        self.current_section = section
+        if self.current_section is None:
+            print("Loading first section")
+            # Load a copy of the first section
+            section = deepcopy(random.choice(self.level_sections))
+            # Add the section to the scene
+            for entity in section[2]:
+                GameManager.add_entity(entity)
+            # Set current_section
+            self.current_section = section
 
 
     def on_physics_update(self, dt):
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
+
 
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section

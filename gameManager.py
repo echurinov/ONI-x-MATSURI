@@ -80,7 +80,6 @@ class GameManager:
                 else:
                     print("Entity", entity.name, "has no SpriteRenderer")
 
-
     @staticmethod
     def remove_all_entities():
         GameManager.__entities = []
@@ -92,9 +91,9 @@ class GameManager:
     @staticmethod
     def remove_entity(entity):
         if entity in GameManager.__entities:
-            #print("before removing", entity.name,len(GameManager.__entities))
+            print("before removing", entity.name,len(GameManager.__entities))
             GameManager.__entities.remove(entity)
-            #print(len(GameManager.__entities))
+            print(len(GameManager.__entities))
         else:
             print("Entity", entity.name, "not found in GameManager.__entities")
 
@@ -246,7 +245,8 @@ class GameManager:
             player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
             string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
             string_to_print2 = "Vel: " + str(player_cont.velocity)
+
             arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
             arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
             arcade.draw_text("Frame time: " + str(GameManager.dt), 0, 530, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
-
+            arcade.draw_text(str(len(GameManager.get_entities())) + " entities", 0, 550, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")

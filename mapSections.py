@@ -124,10 +124,10 @@ def load_from_file(path, offset=(0, 0), tag=...):
         if offset != (0, 0):
             entity.transform.position = (entity.transform.position[0] + offset[0], entity.transform.position[1] + offset[1])
 
-        if tag is not None:
-            entity.tags.append(tag)
-        elif tag is ...:
+        if tag is ...:
             entity.tags.append(path)
+        elif tag is not None:
+            entity.tags.append(tag)
         # Only omit adding tags if the function was explicitly passed None
     return level_length, entities
 

@@ -31,9 +31,6 @@ class PowerUpHealth(Entity):
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
-        if self.__player_controller is None:
-            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
-                "PlayerController")
         self.__collection_timer -= dt
         if self.__collection_timer < 0:
             self.__color_done = True
@@ -45,6 +42,9 @@ class PowerUpHealth(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
+        if self.__player_controller is None:
+            self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
+                "PlayerController")
         if self.__player_controller.health < self.__player_controller.max_health:
             self.__player_controller.set_health(self.__player_controller.health + 1)
 

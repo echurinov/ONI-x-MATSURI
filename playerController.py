@@ -530,6 +530,25 @@ class PlayerController(Component):
                                   self.on_key_release)  # calls on_key_release every time a key is released
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
+        # UI entities
+        self.__exit_entity = None
+        self.__heart_entities = []
+        for i in range(3):
+            heart_sprite = arcade.Sprite("assets/sprites/heart_full.png")
+            heart_sprite_renderer = SpriteRenderer(heart_sprite)
+            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0,
+                                        1.0)
+            heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
+            self.__heart_entities.append(heart_entity)
+            GameManager.add_gui_entity(heart_entity)
+
+
+        # Exit Button
+        exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
+        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, 1.0)
+        exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
+        GameManager.add_gui_entity(exit_entity)
+
     def set_transform(self, pos):
         self.__transform.position = pos
 
@@ -546,13 +565,7 @@ class PlayerController(Component):
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
 
     def set_gui(self):
-        GameManager.clear_gui_sprite()
-
-        # Exit Button
-        exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
-        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, 1.0)
-        exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
-        GameManager.add_gui_entity(exit_entity)
+        #ddddGameManager.clear_gui_sprite()
 
         if self.__health <= 2:
             if self.__health == 1:
@@ -583,11 +596,7 @@ class PlayerController(Component):
             heart_sprite = arcade.Sprite("assets/sprites/heart_half.png", 1.0)
         else:
             heart_sprite = arcade.Sprite("assets/sprites/heart_empty.png", 1.0)
-
-        heart_sprite_renderer = SpriteRenderer(heart_sprite)
-        heart_transform = Transform((num_heart * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
-        heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
-        GameManager.add_gui_entity(heart_entity)
+        self.__heart_entities[num_heart].get_component_by_name("SpriteRenderer").switch_sprite(heart_sprite)
 
     def get_exit_sprite(self):
         return self.__exit_sprite
