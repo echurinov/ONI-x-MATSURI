@@ -1,6 +1,8 @@
 import arcade
 import time
 
+import pyglet
+
 from eventManager import EventManager
 from gameManager import GameManager
 from soundPlayer import SoundPlayer
