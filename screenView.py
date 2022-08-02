@@ -181,6 +181,7 @@ class GameView(arcade.View):
 
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
+            MusicManager.stop_song()
             self.begin_boss()
             GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health = 5
             #lose_view = LoseView()
@@ -232,6 +233,8 @@ class GameView(arcade.View):
         self.player_controller.toggle_camera_movement()
 
         # Change music
+        MusicManager.change_list("boss_view")
+        MusicManager.play_song()
 
     def on_key_press(self, key, modifiers):
         # Don't do anything if we're paused

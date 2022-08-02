@@ -14,10 +14,11 @@ MUSIC_PATH = "assets/sounds/music/"
 
 class MusicManager:
     __music_lists = {
-        "start_view" : [],
-        "game_view" : [],
-        "lose_view" : [],
-        "win_view" : []
+        "boss_view": [],
+        "game_view": [],
+        "lose_view": [],
+        "start_view": [],
+        "win_view": []
     }
     __current_list = None
     __current_song_index = 0
@@ -62,7 +63,7 @@ class MusicManager:
         MusicManager.__current_player = MusicManager.__current_song.play(MUSIC_VOLUME)
 
     @staticmethod
-    def change_list(list_name: str, loop = True):
+    def change_list(list_name: str, loop=True):
         MusicManager.__loop = loop
         MusicManager.stop_song()
         MusicManager.__current_list = MusicManager.__music_lists[list_name]
@@ -86,9 +87,10 @@ class MusicManager:
 
     @staticmethod
     def start():
-        MusicManager.__music_lists["start_view"] = []
+        MusicManager.__music_lists["boss_view"] = [MUSIC_PATH + "jingle bk map3.mp3"]
         MusicManager.__music_lists["game_view"] = [MUSIC_PATH + "main_stage_music.mp3"]
         MusicManager.__music_lists["lose_view"] = [MUSIC_PATH + "J 3ds3 24 Btl Lose 3ds.mp3"]
+        MusicManager.__music_lists["start_view"] = []
         MusicManager.__music_lists["win_view"] = []
 
         EventManager.add_listener("Update", MusicManager.__on_update)
