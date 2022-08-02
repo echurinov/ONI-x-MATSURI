@@ -21,6 +21,16 @@ KNOCK_BACK_DAMAGE = 2000
 # Timer for attack animation taking precedence over walking animation
 ATTACK_TIME = 0.1
 ATTACK_COOL_DOWN = 0.2
+ATTACK_ANIMATION = 0.25
+
+# Constants for animation
+RIGHT_FACING = 1
+LEFT_FACING = 0
+
+# DEFAULT SPEED VALUES
+GRAVITY = -2000
+MAX_SPEED = 500
+MAX_JUMP = 2500
 
 
 class PlayerController(Component):
@@ -33,6 +43,7 @@ class PlayerController(Component):
             self.__jump_requested = True
             self.__jump_timer = self.__jump_buffer_time
             self.__touching_floor = False
+            self.current_texture = 0
 
         # Toggle debug
         if key == arcade.key.F:
@@ -46,6 +57,7 @@ class PlayerController(Component):
         # Attacking
         if key == arcade.key.SPACE:
             self.__is_attacking = True
+            self.current_texture = 0
 
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
@@ -71,6 +83,7 @@ class PlayerController(Component):
         self.__jumping_timer -= dt
         self.__speed_timer -= dt
         self.__mad_timer -= dt
+        self.__attack_animation_timer -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -122,6 +135,8 @@ class PlayerController(Component):
             #SoundManager.test_play_sound("assets/sounds/music/main_stage_music.mp3") """Used to test if sounds will stop playing on death"""
             self.__attack_time = ATTACK_TIME
             self.__attack_timer = ATTACK_COOL_DOWN
+            self.__attack_animation_timer = ATTACK_ANIMATION
+            self.__attack_animation = True
             self.__is_attacking = False
             # implement attacking knock back
             if self.__velocity[1] == 0:
@@ -180,6 +195,9 @@ class PlayerController(Component):
 
         if self.__invincibility_timer <= 0 and not self.__health_up and not self.__speed and not self.__jump and not self.__mad:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
+
+        if self.__attack_animation_timer < 0:
+            self.__attack_animation = False
 
         # Two cases here: moving up and moving down
         # Both have different physics and check for different things
@@ -306,12 +324,16 @@ class PlayerController(Component):
         self.__transform.move((self.__velocity[0] * dt, 0))
         if self.__keys_pressed[arcade.key.D]:
             self.__moving_left = False
+            self.__holding_left = False
+            self.__holding_right = True
             if self.__velocity[0] > 0:  # Moving right (accelerating)
                 self.__velocity = (self.__velocity[0] + self.__horizontal_acceleration * dt, self.__velocity[1])
             else:  # Moving left (decelerating)
                 self.__velocity = (self.__velocity[0] + self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
         elif self.__keys_pressed[arcade.key.A]:
             self.__moving_left = True
+            self.__holding_left = True
+            self.__holding_right = False
             if self.__velocity[0] > 0:  # Moving right (decelerating)
                 self.__velocity = (self.__velocity[0] - self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
             else:  # Moving left (accelerating)
@@ -340,50 +362,8 @@ class PlayerController(Component):
         if not self.__freeze_camera:
             GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
 
-        # Animation states
-        # If the player is attacking
-        attack_timer = self.__attack_time
-        if self.__is_attacking:
-            self.__animation_frame = 0 # reset animation
-            # If the player is in the air
-            if not self.__touching_floor:
-                if not self.__keys_pressed[arcade.key.A]:
-                    self.__animation_state = "jump_attack_R"
-                elif not self.__keys_pressed[arcade.key.D]:
-                    self.__animation_state = "jump_attack_L"
-                else:
-                    self.__animation_state = "jump_attack_R"
-
-            # Change attacking animation to be the one of on ground
-            if self.__touching_floor:
-                if not self.__keys_pressed[arcade.key.A]:
-                    self.__animation_state = "attack_R"
-                elif not self.__keys_pressed[arcade.key.D]:
-                    self.__animation_state = "attack_L"
-                else:
-                    self.__animation_state = "attack_R"
-
-        elif attack_timer < 0:
-            if self.__velocity[0] < 0 and not self.__keys_pressed[arcade.key.A] and not self.__moving_left:
-                self.__animation_state = "idle_L"
-            elif self.__velocity[0] >= 0 and not self.__keys_pressed[arcade.key.D]:
-                self.__animation_state = "idle_R"
-            elif self.__keys_pressed[arcade.key.A]:
-                self.__animation_state = "walk_L"
-            elif self.__keys_pressed[arcade.key.D]:
-                self.__animation_state = "walk_R"
-            else:
-                self.__animation_state = "idle"
-
-        # Animation
-        self.__animation_timer += 1
-        if self.__animation_timer > self.__animation_data[self.__animation_state]["frame_delay"]:
-            # Reset timer
-            self.__animation_timer = 0
-            # Increment counter
-            self.__animation_frame = (self.__animation_frame + 1) % self.__animation_data[self.__animation_state]["num_frames"]
-            # Switch sprite
-            self.__sprite_renderer.switch_sprite(self.__animation_data[self.__animation_state]["frames"][self.__animation_frame])
+        # Animation update
+        self.update_animation()
 
         # Health
         self.set_gui()
@@ -461,74 +441,45 @@ class PlayerController(Component):
         self.__horizontal_deceleration_multiplier = 10  # How quickly you decelerate when no button is pressed
         self.__horizontal_turnaround_acceleration = 4000  # How quickly you decelerate when changing direction
 
-
-        # Sprite switching (animation)
-        self.__animation_timer = 0  # Frames since last change
-        self.__animation_frame = 0  # Which frame we're in
-        self.__animation_state = "idle"
-        # Dictionary for frames for animations
-
         self.__exit_sprite = arcade.Sprite("assets/sprites/exit.png", 1.0)
 
-        self.__animation_data = {
-            "idle_L": {
-                "name_prefix": "player_idle_L_",  # Prefix for the filenames of the animation (not including the number)
-                "num_frames": 2,  # Numbers of frames in the animation
-                "frame_delay": 30,  # Frames between animation frames
-                "frames": []  # All the sprites, loaded at runtime
-            },
-            "idle_R": {
-                "name_prefix": "player_idle_R_",
-                "num_frames": 2,
-                "frame_delay": 30,
-                "frames": []
-            },
-            "idle": {
-                "name_prefix": "player_idle_",
-                "num_frames": 2,
-                "frame_delay": 30,
-                "frames": []
-            },
-            "walk_L": {
-                "name_prefix": "player_walk_L_",
-                "num_frames": 4,
-                "frame_delay": 5,
-                "frames": []
-            },
-            "walk_R": {
-                "name_prefix": "player_walk_R_",
-                "num_frames": 4,
-                "frame_delay": 5,
-                "frames": []
-            },
-            "attack_L": {
-                "name_prefix": "player_attack_L_",  # Prefix for the filenames of the animation (not including the number)
-                "num_frames": 2,  # Numbers of frames in the animation
-                "frame_delay": 5,  # Frames between animation frames
-                "frames": []  # All the sprites, loaded at runtime
-            },
-            "attack_R": {
-                "name_prefix": "player_attack_R_",
-                "num_frames": 2,
-                "frame_delay": 5,
-                "frames": []
-            },
-            "jump_attack_L": {
-                "name_prefix": "player_jump_attack_L_",
-                "num_frames": 2,
-                "frame_delay": 5,
-                "frames": []
-            },
-            "jump_attack_R": {
-                "name_prefix": "player_jump_attack_R_",
-                "num_frames": 2,
-                "frame_delay": 5,
-                "frames": []
-            }
-        }
-        for animation_name, animation in self.__animation_data.items():
-            for i in range(animation["num_frames"]):
-                animation["frames"].append(arcade.Sprite("assets/sprites/player/" + animation["name_prefix"] + str(i+1) +".png", 0.5))
+        # Animation
+        # I USED THE FOLLOWING LINK AS REFERENCE: https://api.arcade.academy/en/latest/examples/platform_tutorial/step_12.html#platformer-part-twelve
+        self.character_face_direction = RIGHT_FACING
+        self.current_texture = 0
+
+        self.__holding_left = False
+        self.__holding_right = False
+
+        self.__attack_animation_timer = 0
+        self.__attack_animation = False
+
+        idle_1 = (arcade.load_texture("assets/sprites/player/player_idle_1.png"), arcade.load_texture("assets/sprites/player/player_idle_1.png"))
+        idle_2 = (arcade.load_texture("assets/sprites/player/player_idle_2.png"), arcade.load_texture("assets/sprites/player/player_idle_2.png"))
+        self.idle_texture_pair = (idle_1, idle_2)
+
+        idle_side_1 = (arcade.load_texture("assets/sprites/player/player_idle_L_1.png"), arcade.load_texture("assets/sprites/player/player_idle_R_1.png"))
+        idle_side_2 = (arcade.load_texture("assets/sprites/player/player_idle_L_2.png"), arcade.load_texture("assets/sprites/player/player_idle_R_2.png"))
+        self.idle_side_texture_pair = (idle_side_1, idle_side_2)
+
+        attack_1 = (arcade.load_texture("assets/sprites/player/player_attack_L_1.png"), arcade.load_texture("assets/sprites/player/player_attack_R_1.png"))
+        attack_2 = (arcade.load_texture("assets/sprites/player/player_attack_L_2.png"), arcade.load_texture("assets/sprites/player/player_attack_R_2.png"))
+        self.attack_texture_pair = (attack_1, attack_2)
+
+        jump_attack_1 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_1.png"), arcade.load_texture("assets/sprites/player/player_jump_attack_R_1.png"))
+        jump_attack_2 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_2.png"), arcade.load_texture("assets/sprites/player/player_jump_attack_R_2.png"))
+        self.jump_attack_texture_pair = (jump_attack_1, jump_attack_2)
+
+        jump_1 = (arcade.load_texture("assets/sprites/player/player_jump_L.png"), arcade.load_texture("assets/sprites/player/player_jump_R.png"))
+        self.jump_texture_pair = (jump_1)
+
+        walk_1 = (arcade.load_texture("assets/sprites/player/player_walk_L_1.png"), arcade.load_texture("assets/sprites/player/player_walk_R_1.png"))
+        walk_2 = (arcade.load_texture("assets/sprites/player/player_walk_L_2.png"), arcade.load_texture("assets/sprites/player/player_walk_R_2.png"))
+        walk_3 = (arcade.load_texture("assets/sprites/player/player_walk_L_3.png"), arcade.load_texture("assets/sprites/player/player_walk_R_3.png"))
+        walk_4 = (arcade.load_texture("assets/sprites/player/player_walk_L_4.png"), arcade.load_texture("assets/sprites/player/player_walk_R_4.png"))
+        self.walk_texture_pair = (walk_1, walk_2, walk_3, walk_4)
+
+        self.texture = self.idle_texture_pair
 
         # Add listeners for all the events
         EventManager.add_listener("Update", self.on_update)  # calls on_update every frame
@@ -586,7 +537,6 @@ class PlayerController(Component):
 
     def set_gui(self):
         #GameManager.clear_gui_sprite()
-
         if self.__health <= 2:
             if self.__health == 1:
                 self.make_heart_entity(0, "half")
@@ -646,7 +596,7 @@ class PlayerController(Component):
             self.__speed = False
             self.__flash_count = 0
             self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__max_velocity = (self.__max_velocity[0] - 350, self.__max_velocity[1] - 350)
+            self.__max_velocity = (MAX_SPEED, MAX_JUMP)
 
         # Undoes the effect of the jump power-up
         if self.__jumping_timer < 0 and self.__jump:
@@ -654,8 +604,7 @@ class PlayerController(Component):
             self.__flash_count = 0
             self.__sprite_renderer.sprite.color = (255, 255, 255)
             self.__gravity = -1700
-            self.__max_velocity = (self.__max_velocity[0], self.__max_velocity[1] - 100)
-            self.__velocity = (self.__velocity[0], self.__velocity[1] - 100)
+            self.__max_velocity = (self.__max_velocity[0], MAX_JUMP)
 
         # Undoes the effect of the attack power-up
         if self.__mad_timer < 0 and self.__mad:
@@ -690,6 +639,69 @@ class PlayerController(Component):
 
     def toggle_camera_movement(self):
         self.__freeze_camera = not self.__freeze_camera
+
+    # Update the player's animation
+    # THE FOLLOWING LINK WAS USED AS REFERENCE: https://api.arcade.academy/en/latest/examples/platform_tutorial/step_12.html#platformer-part-twelve
+    def update_animation(self, delta_time: float = 1 / 30):
+        speed = 18
+        if self.__velocity[0] > 100 or self.__velocity[0] < -100:
+            speed = 13
+        if self.__velocity[0] > 300 or self.__velocity[0] < -300:
+            speed = 9
+        if self.__velocity[0] > 500 or self.__velocity[0] < -500:
+            speed = 7
+        if self.__velocity[0] > 600 or self.__velocity[0] < -700:
+            speed = 3
+
+        # Determine if the character is facing right or left
+        if self.__moving_left:
+            self.character_face_direction = LEFT_FACING
+        else:
+            self.character_face_direction = RIGHT_FACING
+
+        # If player is currently attacking
+        if self.__attack_animation:
+            # Update frame
+            self.current_texture += 1
+            if self.current_texture > (2 * speed) - 1:
+                self.current_texture = 0
+            frame = self.current_texture // speed
+            if not self.__touching_floor: # If you are attacking in air
+                self.__sprite_renderer.set_texture(self.jump_attack_texture_pair[frame][self.character_face_direction])
+                return
+            else:
+                self.__sprite_renderer.set_texture(self.attack_texture_pair[frame][self.character_face_direction])
+                return
+
+        # Walking animation:
+        if speed < 9:
+            # Update frame
+            self.current_texture += 1
+            if self.current_texture > (4 * speed) - 1:
+                self.current_texture = 0
+            frame = self.current_texture // speed
+            self.__sprite_renderer.set_texture(self.walk_texture_pair[frame][self.character_face_direction])
+            return
+
+        if self.__velocity != 0:
+            # Update frame
+            self.current_texture += 1
+            if self.current_texture > (2 * speed) - 1:
+                self.current_texture = 0
+            frame = self.current_texture // speed
+            self.__sprite_renderer.set_texture(self.idle_side_texture_pair[frame][self.character_face_direction])
+            return
+
+        # Idle animation:
+        # Update frame
+        self.current_texture += 1
+        if self.current_texture > (2 * speed) - 1:
+            self.current_texture = 0
+        frame = self.current_texture // speed
+        self.__sprite_renderer.set_texture(self.idle_texture_pair[frame][self.character_face_direction])
+
+        return
+
 
     @property
     def touching_ground(self):
