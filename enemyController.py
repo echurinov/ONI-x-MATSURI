@@ -20,7 +20,7 @@ class EnemyController(Component):
             SoundManager.play_sound("enemy_oni", "death")
             GameManager.remove_entity(self.parent)
         else:
-            SoundManager.play_sound("enemy_oni", "death")
+            SoundManager.play_sound("enemy_oni", "damage")
         self.__taking_damage = True
 
     # Called every time physics get updated (currently every frame)

@@ -14,10 +14,10 @@ MUSIC_PATH = "assets/sounds/music/"
 
 class MusicManager:
     __music_lists = {
-        "boss_view": [],
-        "game_view": [],
-        "lose_view": [],
-        "start_view": [],
+        "boss_view": [MUSIC_PATH + "boss_stage_music.mp3"],
+        "game_view": [MUSIC_PATH + "main_stage_music.mp3"],
+        "lose_view": [MUSIC_PATH + "J 3ds3 24 Btl Lose 3ds.mp3"],
+        "start_view": [MUSIC_PATH + "main_menu_music.mp3"],
         "win_view": []
     }
     __current_list = None
@@ -87,10 +87,5 @@ class MusicManager:
 
     @staticmethod
     def start():
-        MusicManager.__music_lists["boss_view"] = [MUSIC_PATH + "boss_stage_music.mp3"]
-        MusicManager.__music_lists["game_view"] = [MUSIC_PATH + "main_stage_music.mp3"]
-        MusicManager.__music_lists["lose_view"] = [MUSIC_PATH + "J 3ds3 24 Btl Lose 3ds.mp3"]
-        MusicManager.__music_lists["start_view"] = [MUSIC_PATH + "main_menu_music.mp3"]
-        MusicManager.__music_lists["win_view"] = []
-
+        # Updates used to monitor the position in the current song
         EventManager.add_listener("Update", MusicManager.__on_update)

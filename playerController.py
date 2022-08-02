@@ -175,8 +175,7 @@ class PlayerController(Component):
                 if "Enemy" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(self.__attack_power)
-
-                if "Boss" in collider.parent.tags:
+                elif "Boss" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("BossController").take_damage(self.__attack_power)
 
@@ -374,7 +373,8 @@ class PlayerController(Component):
         width, height = self.__screen_width, self.__screen_height
 
         if self.__transform.position[0] > (self.__camera_min + width / 2):
-            self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
+            if self.__transform.position[0] < 1920 * 9 - width / 2:
+                self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
         if not self.__freeze_camera:
             GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
@@ -543,6 +543,9 @@ class PlayerController(Component):
     def set_transform(self, pos):
         self.__transform.position = pos
 
+    def get_transform_x(self):
+        return self.__transform.position[0]
+
     def set_health(self, health):
         self.__health = health
 
@@ -647,7 +650,7 @@ class PlayerController(Component):
                 self.__sprite_renderer.sprite.color = (100, 255, 100)
             elif self.__flash_count % 8 == 0:
                 self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__flash_count = (self.__flash_count + 1) % 80
+            self.__flash_count = (self.__flash_count + 1) % 8e0
 
         # FLASHES PURPLE when you get ATTACK-BOOST
         if self.__mad:
@@ -726,7 +729,6 @@ class PlayerController(Component):
         frame = self.current_texture // speed
         self.__sprite_renderer.set_texture(self.walk_texture_pair[frame][self.character_face_direction])
         return
-
 
     @property
     def touching_ground(self):

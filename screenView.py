@@ -80,6 +80,9 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        # Load here as it takes a while for some reason
+        self.__boss_ground_sprite_preloaded = arcade.Sprite("assets/sprites/boss_ground.png")
+
     def __create_level(self):
         # Setup level
 
@@ -92,7 +95,7 @@ class GameView(arcade.View):
         #    GameManager.add_entity(i)
 
         # Create entities for background (tiled)
-        for i in range(10):
+        for i in range(5):
             background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
             background_sprite_renderer = SpriteRenderer(background_sprite)
             background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, 1.0)
@@ -184,13 +187,16 @@ class GameView(arcade.View):
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
             MusicManager.stop_song()
+            lose_view = LoseView()
+            SoundManager.stop_active_sounds()
+            MusicManager.change_list("lose_view", loop=False)
+            MusicManager.play_song()
+            self.window.show_view(lose_view)
+
+        # Check to see if the player meets the parameters to proceed to the boss level
+        if self.player_controller.get_transform_x() >= 1920 * 9 + 50:
+            MusicManager.stop_song()
             self.begin_boss()
-            GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health = 5
-            #lose_view = LoseView()
-            #SoundManager.stop_active_sounds()
-            #MusicManager.change_list("lose_view", loop=False)
-            #MusicManager.play_song()
-            #self.window.show_view(lose_view)
 
     def begin_boss(self):
 
@@ -224,7 +230,7 @@ class GameView(arcade.View):
 
 
         # Invisible floor collider
-        floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
+        floor_sprite = self.__boss_ground_sprite_preloaded
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
         floor_transform = Transform((floor_sprite.width / 2, floor_sprite.height / 2 + 1080), 0, 1.0)
         floor_collider = Collider(auto_generate_polygon="box")
@@ -340,7 +346,7 @@ class LoseView(arcade.View):
         button = ReturnButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
                                             texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
                                             texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
-        box.add(button.with_space_around(top=450, right=50))
+        box.add(button.with_space_around(top=550, right=50))
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
