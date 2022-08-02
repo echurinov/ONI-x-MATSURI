@@ -16,7 +16,7 @@ class PowerUpHealth(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/cottoncandy.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0, 0.25)
+        transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpHealth, self).__init__("PowerUpHealth", ["PowerUp"], [sprite_renderer, transform, collider],
                                             static=False)
@@ -65,7 +65,7 @@ class PowerUpSpeed(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/onigiri.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0, 0.25)
+        transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpSpeed, self).__init__("PowerUpSpeed", ["PowerUp"],
                                            [sprite_renderer, transform, collider],
@@ -106,7 +106,7 @@ class PowerUpJump(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/squid.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0, 0.25)
+        transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpJump, self).__init__("PowerUpJump", ["PowerUp"],
                                           [sprite_renderer, transform, collider],
@@ -147,7 +147,7 @@ class PowerUpAttack(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/dango.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0, 0.25)
+        transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpAttack, self).__init__("PowerUpAttack", ["PowerUp"],
                                             [sprite_renderer, transform, collider],
