@@ -70,6 +70,7 @@ class PlayerController(Component):
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
         self.__idle_timer = IDLE_TIME
+        self.__idle = False
 
     # Called every time physics get updated (currently every frame)
     # Deals with all player movement and collision
@@ -692,6 +693,11 @@ class PlayerController(Component):
                 self.__sprite_renderer.set_texture(self.attack_texture_pair[frame][self.character_face_direction])
                 return
 
+        # If the player is jumping
+        if not self.__touching_floor:
+            self.__sprite_renderer.set_texture(self.jump_texture_pair[self.character_face_direction])
+            return
+
         # Idle animation:
         # Update frame
         if 0.1 > self.__velocity[0] > -0.1:
@@ -719,9 +725,6 @@ class PlayerController(Component):
             self.current_texture = 0
         frame = self.current_texture // speed
         self.__sprite_renderer.set_texture(self.walk_texture_pair[frame][self.character_face_direction])
-        return
-
-
         return
 
 
