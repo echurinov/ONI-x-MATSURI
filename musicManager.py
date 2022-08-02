@@ -87,10 +87,10 @@ class MusicManager:
 
     @staticmethod
     def start():
-        MusicManager.__music_lists["boss_view"] = [MUSIC_PATH + "boss_stage_music2.mp3"]
+        MusicManager.__music_lists["boss_view"] = [MUSIC_PATH + "boss_stage_music.mp3"]
         MusicManager.__music_lists["game_view"] = [MUSIC_PATH + "main_stage_music.mp3"]
         MusicManager.__music_lists["lose_view"] = [MUSIC_PATH + "J 3ds3 24 Btl Lose 3ds.mp3"]
-        MusicManager.__music_lists["start_view"] = []
+        MusicManager.__music_lists["start_view"] = [MUSIC_PATH + "main_menu_music.mp3"]
         MusicManager.__music_lists["win_view"] = []
 
         EventManager.add_listener("Update", MusicManager.__on_update)
