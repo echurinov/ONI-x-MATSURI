@@ -9,6 +9,7 @@ IDLE_TIMER = 1
 WALKING_TIMER = 2
 WALKING_SPEED = 3
 
+
 class EnemyController(Component):
     def take_damage(self, amount):
         if self.__damage_timer > 0:
@@ -28,7 +29,7 @@ class EnemyController(Component):
         # Don't do physics if it isn't active yet
         if not self.parent.in_scene:
             return
-        #Update walking/standing timers
+        # Update walking/standing timers
         if self.__walking_timer < 0:
             self.__idle_timer = IDLE_TIMER
             self.__walking_timer = WALKING_TIMER
@@ -55,7 +56,7 @@ class EnemyController(Component):
         if self.__walking and self.__direction == 1:
             self.__transform.position = (self.__transform.position[0] - WALKING_SPEED, self.__transform.position[1])
 
-        #Walk oni to the left
+        # Walk oni to the left
         if self.__walking and self.__direction == -1:
             self.__transform.position = (self.__transform.position[0] + WALKING_SPEED, self.__transform.position[1])
 
@@ -73,10 +74,10 @@ class EnemyController(Component):
         if self.__standing:
             self.__animation_state = "idle"
 
-        if self.__walking and self.__direction == 1: # Walking to the right
+        if self.__walking and self.__direction == 1:  # Walking to the right
             self.__animation_state = "walk_L"
 
-        if self.__walking and self.__direction == -1: # Walking to the left
+        if self.__walking and self.__direction == -1:  # Walking to the left
             self.__animation_state = "walk_R"
 
         # Animation
@@ -85,9 +86,11 @@ class EnemyController(Component):
             # Reset timer
             self.__animation_timer = 0
             # Increment counter
-            self.__animation_frame = (self.__animation_frame + 1) % self.__animation_data[self.__animation_state]["num_frames"]
+            self.__animation_frame = (self.__animation_frame + 1) % self.__animation_data[self.__animation_state][
+                "num_frames"]
             # Switch sprite
-            self.__sprite_renderer.switch_sprite(self.__animation_data[self.__animation_state]["frames"][self.__animation_frame])
+            self.__sprite_renderer.switch_sprite(
+                self.__animation_data[self.__animation_state]["frames"][self.__animation_frame])
 
     def __init__(self):
         super().__init__("EnemyController")
@@ -113,7 +116,7 @@ class EnemyController(Component):
 
         self.__walking = False
         self.__standing = True
-        self.__direction = 1 # Direction is 1 for right, -1 for left
+        self.__direction = 1  # Direction is 1 for right, -1 for left
 
         # Dictionary for frames for animations
 
@@ -139,16 +142,21 @@ class EnemyController(Component):
         }
         for animation_name, animation in self.__animation_data.items():
             for i in range(animation["num_frames"]):
-                animation["frames"].append(arcade.Sprite("assets/sprites/enemy/" + animation["name_prefix"] + str(i+1) +".png", 0.5))
+                animation["frames"].append(
+                    arcade.Sprite("assets/sprites/enemy/" + animation["name_prefix"] + str(i + 1) + ".png", 0.5))
 
-        EventManager.add_listener("Update", self.on_update)
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
+        EventManager.remove_listener("Update", self.on_update)
 
     # Called when parent entity is created
     def on_created(self):
         self.__collider = self.parent.get_component_by_name("Collider")
         self.__transform = self.parent.get_component_by_name("Transform")
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
+        EventManager.add_listener("Update", self.on_update)
+        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)
+
 
     @property
     def touching_ground(self):

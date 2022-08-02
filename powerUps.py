@@ -34,6 +34,9 @@ class PowerUpHealth(Entity):
         if self.in_scene:
             EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
+
     def on_physics_update(self, dt):
         self.__collection_timer -= dt
         if self.__collection_timer < 0:
@@ -79,6 +82,9 @@ class PowerUpSpeed(Entity):
         if self.in_scene:
             EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
+
     def on_physics_update(self, dt):
         if self.__player_controller is None:
             self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
@@ -117,6 +123,9 @@ class PowerUpJump(Entity):
         if self.in_scene:
             EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
+
     def on_physics_update(self, dt):
         if self.__player_controller is None:
             self.__player_controller = GameManager.get_entities_by_name("Player")[0].get_component_by_name(
@@ -154,6 +163,9 @@ class PowerUpAttack(Entity):
     def on_created(self):
         if self.in_scene:
             EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
 
     def on_physics_update(self, dt):
         if self.__player_controller is None:
