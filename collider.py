@@ -30,6 +30,14 @@ class Collider(Component):
         self.__height = None  # Height of the polygon, cached for performance
         self.__width = None  # Width of the polygon, cached for performance
 
+        self.__cached_polygon = None  # Cache polygon so it doesn't need to be recalculated
+        self.__old_scale = None
+        self.__old_pos = None
+
+    def on_created(self):
+        self.__old_pos = self.transform.position
+        self.__old_scale = self.transform.scale
+
     @staticmethod
     def scale_polygon(polygon, scale):
         new_polygon = []
@@ -65,13 +73,23 @@ class Collider(Component):
     def polygon(self):
         if self.__transform is None:
             self.__transform = self.parent.get_component_by_name("Transform")
-        scaled_polygon = Collider.scale_polygon(self.__base_polygon, self.transform.scale)
-        new_polygon = []
-        for index, point in enumerate(scaled_polygon):
-            new_polygon.append((point[0] + self.transform.position[0],
-                                point[1] + self.transform.position[1]))
-        self.__polygon = new_polygon
-        return self.__polygon
+
+        # Avoid redoing the expensive calculation if the polygon hasn't changed position or scale
+        if not (self.__old_scale == self.transform.scale) or not (self.__old_pos == self.transform.position) or self.__cached_polygon is None:
+            scaled_polygon = Collider.scale_polygon(self.__base_polygon, self.transform.scale)
+
+            new_polygon = []
+            for index, point in enumerate(scaled_polygon):
+                new_polygon.append((point[0] + self.transform.position[0],
+                                    point[1] + self.transform.position[1]))
+            self.__polygon = new_polygon
+            self.__cached_polygon = new_polygon
+
+            self.__old_scale = self.transform.scale
+            self.__old_pos = self.transform.position
+            return self.__polygon
+        else:
+            return self.__cached_polygon
 
     @property
     def height(self):
