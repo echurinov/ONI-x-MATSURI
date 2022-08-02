@@ -533,6 +533,7 @@ class PlayerController(Component):
         # UI entities
         self.__exit_entity = None
         self.__heart_entities = []
+        print("Creating heart entities")
         for i in range(3):
             heart_sprite = arcade.Sprite("assets/sprites/heart_full.png")
             heart_sprite_renderer = SpriteRenderer(heart_sprite)
@@ -542,6 +543,9 @@ class PlayerController(Component):
             self.__heart_entities.append(heart_entity)
             GameManager.add_gui_entity(heart_entity)
 
+        self.sprite_full = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
+        self.sprite_half = arcade.Sprite("assets/sprites/heart_half.png", 1.0)
+        self.sprite_empty = arcade.Sprite("assets/sprites/heart_empty.png", 1.0)
 
         # Exit Button
         exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
@@ -591,11 +595,11 @@ class PlayerController(Component):
 
     def make_heart_entity(self, num_heart, state):
         if state == "full":
-            heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
+            heart_sprite = self.sprite_full
         elif state == "half":
-            heart_sprite = arcade.Sprite("assets/sprites/heart_half.png", 1.0)
+            heart_sprite = self.sprite_half
         else:
-            heart_sprite = arcade.Sprite("assets/sprites/heart_empty.png", 1.0)
+            heart_sprite = self.sprite_empty
         self.__heart_entities[num_heart].get_component_by_name("SpriteRenderer").switch_sprite(heart_sprite)
 
     def get_exit_sprite(self):

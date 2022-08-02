@@ -159,6 +159,7 @@ class GameManager:
         # Only add to sprite lists if entity has a sprite component
         if sprite is not None:
             GameManager.__gui_entities.append(sprite.sprite)
+            print("Added sprite for", entity.name)
         # Call on_created for all components attached to this entity
         for component in entity.components:
             if hasattr(component, 'on_created'):

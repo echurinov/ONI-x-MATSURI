@@ -101,12 +101,13 @@ class GameView(arcade.View):
             GameManager.add_background_entity(background_entity)
 
         # Create heart sprites
-        for i in range(3):
-            heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
-            heart_sprite_renderer = SpriteRenderer(heart_sprite)
-            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
-            heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
-            GameManager.add_gui_entity(heart_entity)
+        # Heart sprites are handled in the player controller now
+        #for i in range(3):
+        #    heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
+        #    heart_sprite_renderer = SpriteRenderer(heart_sprite)
+        #    heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
+        #    heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
+        #    GameManager.add_gui_entity(heart_entity)
 
     def __create_player(self):
         # Setup player
