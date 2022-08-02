@@ -59,6 +59,10 @@ class PlayerController(Component):
             self.__is_attacking = True
             self.current_texture = 0
 
+        # Suicide (debugging)
+        #if key == arcade.key.K:
+            #self.__health = 0
+
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
