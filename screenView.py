@@ -271,6 +271,9 @@ class GameView(arcade.View):
         # Trigger key press events
         EventManager.trigger_event("KeyPress", key, modifiers)
 
+        if key == 98: #B
+            self.begin_boss()
+
     def on_key_release(self, key, modifiers):
         # Don't do anything if we're paused
         if GameManager.get_paused():
