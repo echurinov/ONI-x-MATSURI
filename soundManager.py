@@ -34,11 +34,14 @@ class SoundManager:
             "jump": arcade.load_sound(SOUND_PATH + "player/player_jump3_16bit.wav")
         },
         "powerups": {
-            "heal": arcade.load_sound(SOUND_PATH + "powerups/cotton_candy.wav")
+            "attack-boost": arcade.load_sound(SOUND_PATH + "powerups/attack-boost.wav"),
+            "heal": arcade.load_sound(SOUND_PATH + "powerups/heal.wav"),
+            "jump-boost": arcade.load_sound(SOUND_PATH + "powerups/jump-boost.wav"),
+            "speed-boost": arcade.load_sound(SOUND_PATH + "powerups/speed-boost.wav")
         },
         "user_interface": {
-            "start_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press2.wav"),
-            "quit_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press.wav")
+            "quit_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press.wav"),
+            "start_button_press": arcade.load_sound(SOUND_PATH + "menu/button_press2.wav")
         }
     }
 

@@ -97,6 +97,7 @@ class PowerUpSpeed(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
+        SoundManager.play_sound("powerups", "speed-boost")
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Speed"
@@ -138,6 +139,7 @@ class PowerUpJump(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
+        SoundManager.play_sound("powerups", "jump-boost")
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Jump"
@@ -179,6 +181,7 @@ class PowerUpAttack(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
+        SoundManager.play_sound("powerups", "attack-boost")
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Attack"
