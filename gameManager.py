@@ -9,10 +9,10 @@ from collider import Collider
 class GameManager:
     __entities = []
     # Setup sprite lists for drawing stuff to the screen
-    __dynamic_entities = arcade.SpriteList()
-    __static_entities = arcade.SpriteList()
-    __background_entities = arcade.SpriteList()
-    __gui_entities = arcade.SpriteList()
+    __dynamic_entities_spritelist = arcade.SpriteList()
+    __static_entities_spritelist = arcade.SpriteList()
+    __background_entities_spritelist = arcade.SpriteList()
+    __gui_entities_spritelist = arcade.SpriteList()
 
     SCREEN_WIDTH = 1920
     SCREEN_HEIGHT = 1080
@@ -48,19 +48,19 @@ class GameManager:
 
     @staticmethod
     def get_dynamic_entities():
-        return GameManager.__dynamic_entities
+        return GameManager.__dynamic_entities_spritelist
 
     @staticmethod
     def get_static_entities():
-        return GameManager.__static_entities
+        return GameManager.__static_entities_spritelist
 
     @staticmethod
     def get_background_entities():
-        return GameManager.__background_entities
+        return GameManager.__background_entities_spritelist
 
     @staticmethod
     def get_gui_entities():
-        return GameManager.__gui_entities
+        return GameManager.__gui_entities_spritelist
 
     @staticmethod
     def remove_tagged_entities(tag):
@@ -75,14 +75,14 @@ class GameManager:
                 entity.in_scene = False
                 if entity.get_component_by_name("SpriteRenderer"):
                     sprite = entity.get_component_by_name("SpriteRenderer").sprite
-                    if sprite in GameManager.__static_entities:
-                        GameManager.__static_entities.remove(sprite)
-                    if sprite in GameManager.__dynamic_entities:
-                        GameManager.__dynamic_entities.remove(sprite)
-                    if sprite in GameManager.__background_entities:
-                        GameManager.__background_entities.remove(sprite)
-                    if sprite in GameManager.__gui_entities:
-                        GameManager.__gui_entities.remove(sprite)
+                    if sprite in GameManager.__static_entities_spritelist:
+                        GameManager.__static_entities_spritelist.remove(sprite)
+                    if sprite in GameManager.__dynamic_entities_spritelist:
+                        GameManager.__dynamic_entities_spritelist.remove(sprite)
+                    if sprite in GameManager.__background_entities_spritelist:
+                        GameManager.__background_entities_spritelist.remove(sprite)
+                    if sprite in GameManager.__gui_entities_spritelist:
+                        GameManager.__gui_entities_spritelist.remove(sprite)
                 else:
                     print("Entity", entity.name, "has no SpriteRenderer")
 
@@ -95,18 +95,30 @@ class GameManager:
             if hasattr(entity, "on_remove"):
                 entity.on_remove()
         GameManager.__entities = []
-        GameManager.__dynamic_entities = arcade.SpriteList()
-        GameManager.__static_entities = arcade.SpriteList()
-        GameManager.__background_entities = arcade.SpriteList()
-        GameManager.__gui_entities = arcade.SpriteList()
+        GameManager.__dynamic_entities_spritelist = arcade.SpriteList()
+        GameManager.__static_entities_spritelist = arcade.SpriteList()
+        GameManager.__background_entities_spritelist = arcade.SpriteList()
+        GameManager.__gui_entities_spritelist = arcade.SpriteList()
 
     @staticmethod
     def remove_background_entities():
-        GameManager.__background_entities.clear()
+        for entity in GameManager.__entities:
+            if entity.get_component_by_name("SpriteRenderer"):
+                sprite = entity.get_component_by_name("SpriteRenderer").sprite
+                if sprite in GameManager.__background_entities_spritelist:
+                    GameManager.__background_entities_spritelist.remove(sprite)
+                    GameManager.remove_entity(entity)
+        GameManager.__background_entities_spritelist = arcade.SpriteList()  # Clear the spritelist
 
     @staticmethod
     def remove_static_entities():
-        GameManager.__static_entities.clear()
+        for entity in GameManager.__entities:
+            if entity.get_component_by_name("SpriteRenderer"):
+                sprite = entity.get_component_by_name("SpriteRenderer").sprite
+                if sprite in GameManager.__static_entities_spritelist:
+                    GameManager.__static_entities_spritelist.remove(sprite)
+                    GameManager.remove_entity(entity)
+        GameManager.__static_entities_spritelist.clear()
 
     @staticmethod
     def remove_entity(entity):
@@ -124,14 +136,14 @@ class GameManager:
 
         if entity.get_component_by_name("SpriteRenderer"):
             sprite = entity.get_component_by_name("SpriteRenderer").sprite
-            if sprite in GameManager.__static_entities:
-                GameManager.__static_entities.remove(sprite)
-            if sprite in GameManager.__dynamic_entities:
-                GameManager.__dynamic_entities.remove(sprite)
-            if sprite in GameManager.__background_entities:
-                GameManager.__background_entities.remove(sprite)
-            if sprite in GameManager.__gui_entities:
-                GameManager.__gui_entities.remove(sprite)
+            if sprite in GameManager.__static_entities_spritelist:
+                GameManager.__static_entities_spritelist.remove(sprite)
+            if sprite in GameManager.__dynamic_entities_spritelist:
+                GameManager.__dynamic_entities_spritelist.remove(sprite)
+            if sprite in GameManager.__background_entities_spritelist:
+                GameManager.__background_entities_spritelist.remove(sprite)
+            if sprite in GameManager.__gui_entities_spritelist:
+                GameManager.__gui_entities_spritelist.remove(sprite)
         else:
             print("Entity", entity.name, "has no SpriteRenderer")
 
@@ -143,7 +155,7 @@ class GameManager:
         # Add sprite to list so it gets drawn
         sprite = entity.get_component_by_name("SpriteRenderer")
         if sprite is not None:
-            GameManager.__background_entities.append(sprite.sprite)
+            GameManager.__background_entities_spritelist.append(sprite.sprite)
         # Call on_created for all components attached to this entity
         for component in entity.components:
             if hasattr(component, 'on_created'):
@@ -162,9 +174,9 @@ class GameManager:
         # Only add to sprite lists if entity has a sprite component
         if sprite is not None:
             if entity.static:
-                GameManager.__static_entities.append(sprite.sprite)
+                GameManager.__static_entities_spritelist.append(sprite.sprite)
             else:
-                GameManager.__dynamic_entities.append(sprite.sprite)
+                GameManager.__dynamic_entities_spritelist.append(sprite.sprite)
         # Call on_created for all components attached to this entity
         for component in entity.components:
             if hasattr(component, 'on_created'):
@@ -182,7 +194,7 @@ class GameManager:
         sprite = entity.get_component_by_name("SpriteRenderer")
         # Only add to sprite lists if entity has a sprite component
         if sprite is not None:
-            GameManager.__gui_entities.append(sprite.sprite)
+            GameManager.__gui_entities_spritelist.append(sprite.sprite)
         # Call on_created for all components attached to this entity
         for component in entity.components:
             if hasattr(component, 'on_created'):
@@ -198,14 +210,14 @@ class GameManager:
         if sprite is not None:
             # Remove entity from existing sprite lists
             if entity.static:
-                GameManager.__static_entities.remove(sprite.sprite)
+                GameManager.__static_entities_spritelist.remove(sprite.sprite)
             else:
-                GameManager.__dynamic_entities.remove(sprite.sprite)
+                GameManager.__dynamic_entities_spritelist.remove(sprite.sprite)
             # Add entity to new sprite list
             if static:
-                GameManager.__static_entities.append(sprite.sprite)
+                GameManager.__static_entities_spritelist.append(sprite.sprite)
             else:
-                GameManager.__dynamic_entities.append(sprite.sprite)
+                GameManager.__dynamic_entities_spritelist.append(sprite.sprite)
         # Set the static flag if it isn't already set
         entity.static = static
 
@@ -246,15 +258,15 @@ class GameManager:
     # Clears gui sprites for redraw
     @staticmethod
     def clear_gui_sprite():
-        GameManager.__gui_entities.clear()
+        GameManager.__gui_entities_spritelist.clear()
 
     # Draw everything to screen
     @staticmethod
     def draw():
         GameManager.main_camera.use()
-        GameManager.__background_entities.draw()
-        GameManager.__static_entities.draw()
-        GameManager.__dynamic_entities.draw()
+        GameManager.__background_entities_spritelist.draw()
+        GameManager.__static_entities_spritelist.draw()
+        GameManager.__dynamic_entities_spritelist.draw()
         # Debug
         if GameManager.debug:
             for collider in GameManager.get_colliders():
@@ -266,7 +278,7 @@ class GameManager:
 
         # Draw GUI
         GameManager.gui_camera.use()
-        GameManager.__gui_entities.draw()
+        GameManager.__gui_entities_spritelist.draw()
 
         # Debug
         if GameManager.debug:
