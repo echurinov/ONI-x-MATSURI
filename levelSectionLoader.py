@@ -37,6 +37,9 @@ class LevelSectionLoader(Component):
         for entity in section:
             entity.transform.move(offset)
 
+    def on_remove(self):
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
+
     def on_created(self):
         if self.in_boss_level:
             return
