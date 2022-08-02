@@ -8,6 +8,9 @@ from soundManager import SoundManager
 IDLE_TIMER = 1
 MOVING_TIMER = 3
 DAMAGE_TIMER = 5
+PREPARE_ATTACK_TIMER = 0.3
+ATTACK_TIME = 0.3
+ATTACK_TIMER = 3
 
 
 class BossController(Component):
@@ -34,7 +37,15 @@ class BossController(Component):
         else:
             self.__sprite_renderer.sprite.color = (255, 255, 255)
 
+        # Animation update
+        self.update_animation()
+
     def on_physics_update(self, dt):
+        self.__idle_timer -= dt
+        self.__attack_timer -= dt
+        self.__attack_time -= dt
+        self.__damage_timer -= dt
+        self.__moving_timer -= dt
         return
 
     def __init__(self):
@@ -48,16 +59,13 @@ class BossController(Component):
         # Timers for enemy moving
         self.__moving_timer = MOVING_TIMER
         self.__idle_timer = IDLE_TIMER
+        self.__attack_time = ATTACK_TIME
+        self.__attack_timer = PREPARE_ATTACK_TIMER
 
         # Private variables for enemy health
         self.__health = 1
         self.__taking_damage = False
         self.__damage_timer = 0.0
-
-        # Sprite switching (animation)
-        self.__animation_timer = 0  # Frames since last change
-        self.__animation_frame = 0  # Which frame we're in
-        self.__animation_state = "idle"
 
         self.__moving = False
         self.__standing = True
@@ -66,6 +74,23 @@ class BossController(Component):
         # Variables for attacking
         self.__prepare_attack = False
         self.__is_attacking = False
+
+        # Animation
+        self.current_texture = 0
+        self.__default = True
+
+        # Idle animations
+        idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
+        self.idle_texture = (idle_1, idle_1)
+
+        prepare_attack_1 = arcade.load_texture("assets/sprites/enemy/boss_2.png")
+        prepare_attack_2 = arcade.load_texture("assets/sprites/enemy/boss_3.png")
+        self.prepare_attack_texture = (prepare_attack_1, prepare_attack_2)
+
+        # Attack animation
+        attack_1 = arcade.load_texture("assets/sprites/enemy/boss_attack_1.png")
+        attack_2 = arcade.load_texture("assets/sprites/enemy/boss_attack_2.png")
+        self.attack_texture = (attack_1, attack_2)
 
 
     def on_remove(self):
@@ -79,6 +104,31 @@ class BossController(Component):
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         EventManager.add_listener("Update", self.on_update)
         EventManager.add_listener("PhysicsUpdate", self.on_physics_update)
+
+    def update_animation(self):
+        # If boss is not preparing to attack or attacking
+        if self.__default:
+            self.__sprite_renderer.set_texture(self.idle_texture[0])
+            return
+
+        # If the boss is preparing to attack
+        if self.__prepare_attack:
+            self.current_texture += 1
+            if self.current_texture > (2 * 9) - 1:
+                self.current_texture = 0
+            frame = self.current_texture // 9
+            self.__sprite_renderer.set_texture(self.prepare_attack_texture[frame])
+            return
+
+        # If the boss is attacking
+        if self.__is_attacking:
+            self.__current_texture += 1
+            if self.current_texture > (2 * 9) - 1:
+                self.current_texture = 0
+            frame = self.current_texture // 9
+            self.__sprite_renderer.set_texture(self.attack_texture[frame])
+            return
+        return
 
     @property
     def touching_ground(self):
