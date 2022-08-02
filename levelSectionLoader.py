@@ -21,8 +21,7 @@ class LevelSectionLoader(Component):
         self.current_offset = 0
 
         # List of all level files
-        #self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
-        self.level_section_files = ["level1.dat"]
+        self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
         # List of all the loaded level sections
         self.level_sections = []
         for level_file in self.level_section_files:

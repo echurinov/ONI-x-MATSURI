@@ -54,6 +54,7 @@ class PowerUpHealth(Entity):
 
         SoundManager.play_sound("powerups", "heal")
         GameManager.remove_entity(self)
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Health-Up"
 
 
@@ -91,6 +92,7 @@ class PowerUpSpeed(Entity):
 
     def on_collection(self):
         GameManager.remove_entity(self)
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Speed"
 
 
@@ -128,6 +130,7 @@ class PowerUpJump(Entity):
 
     def on_collection(self):
         GameManager.remove_entity(self)
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Jump"
 
 
@@ -165,4 +168,5 @@ class PowerUpAttack(Entity):
 
     def on_collection(self):
         GameManager.remove_entity(self)
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Attack"
