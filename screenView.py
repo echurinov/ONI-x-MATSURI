@@ -117,6 +117,7 @@ class GameView(arcade.View):
         player_collider = Collider(auto_generate_polygon="box")
         # Create a level section loader component for the player. This handles loading the level sections
         level_section_loader = LevelSectionLoader()
+        level_section_loader.in_boss_level = False
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
                                [player_sprite_renderer, player_transform, self.player_controller, player_collider,
@@ -134,7 +135,7 @@ class GameView(arcade.View):
     def __create_sword(self):
         # Create an arcade.Sprite for the sword (it will be invisible, so it doesn't matter what it is)
         # Using a rectangle that covers the player character and extends in front
-        sword_attack_sprite = arcade.Sprite(":resources:onscreen_controls/flat_dark/select.png", scale=3, image_height=48, image_width=40)
+        sword_attack_sprite = arcade.Sprite("assets/tiles/ground_tile.png", scale=3, image_height=100, image_width=100)
         # Set the texture to be invisible
         sword_attack_sprite.alpha = 0
         # Create a sprite renderer component for the sword
@@ -199,6 +200,8 @@ class GameView(arcade.View):
 
         # Reset player position
         self.player_controller.set_transform((50, 2000))
+        # Disable the level section loader
+        self.player_controller.parent.get_component_by_name("LevelSectionLoader").in_boss_level = True
 
         # Set up new level layout
         # Background

@@ -11,6 +11,9 @@ class SpriteRenderer(Component):
     def switch_sprite(self, sprite):
         self.__sprite.texture = sprite.texture
 
+    def set_texture(self, texture):
+        self.__sprite.texture = texture
+
     # Add the "parent" attribute to the sprite (useful later)
     def on_added_to_entity(self):
         self.__sprite.parent = self.parent
