@@ -17,10 +17,10 @@ class BossController(Component):
         self.__damage_timer = 5
         self.__health = self.health - amount
         if self.__health < 0:
-            SoundManager.play_sound("enemy_oni", "death")
+            SoundManager.play_sound("enemy_oni_boss", "death")
             GameManager.remove_entity(self.parent)
         else:
-            SoundManager.play_sound("enemy_oni", "death")
+            SoundManager.play_sound("enemy_oni_boss", "damage")
         self.__taking_damage = True
 
     # Gets called every frame
