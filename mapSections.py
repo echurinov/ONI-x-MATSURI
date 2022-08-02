@@ -10,7 +10,6 @@ from transform import Transform
 from powerUps import PowerUpHealth, PowerUpSpeed, PowerUpJump, PowerUpAttack
 
 
-
 class SimpleBlock(Entity):
     def __init__(self, position):
         floor_sprite = arcade.Sprite("assets/tiles/ground_tile.png")
