@@ -81,15 +81,15 @@ class BossController(Component):
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
-        self.idle_texture = (idle_1, idle_1)
+        self.idle_texture = (idle_1)
 
-        prepare_attack_1 = arcade.load_texture("assets/sprites/enemy/boss_2.png")
-        prepare_attack_2 = arcade.load_texture("assets/sprites/enemy/boss_3.png")
+        prepare_attack_1 = (arcade.load_texture("assets/sprites/enemy/boss_2.png"), arcade.load_texture("assets/sprites/enemy/boss_2.png"))
+        prepare_attack_2 = (arcade.load_texture("assets/sprites/enemy/boss_3.png"), arcade.load_texture("assets/sprites/enemy/boss_3.png"))
         self.prepare_attack_texture = (prepare_attack_1, prepare_attack_2)
 
         # Attack animation
-        attack_1 = arcade.load_texture("assets/sprites/enemy/boss_attack_1.png")
-        attack_2 = arcade.load_texture("assets/sprites/enemy/boss_attack_2.png")
+        attack_1 = (arcade.load_texture("assets/sprites/enemy/boss_attack_1.png"), arcade.load_texture("assets/sprites/enemy/boss_attack_1.png"))
+        attack_2 = (arcade.load_texture("assets/sprites/enemy/boss_attack_2.png"), arcade.load_texture("assets/sprites/enemy/boss_attack_2.png"))
         self.attack_texture = (attack_1, attack_2)
 
 
