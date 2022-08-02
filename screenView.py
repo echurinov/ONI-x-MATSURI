@@ -118,6 +118,7 @@ class GameView(arcade.View):
         player_collider = Collider(auto_generate_polygon="box")
         # Create a level section loader component for the player. This handles loading the level sections
         level_section_loader = LevelSectionLoader()
+        level_section_loader.in_boss_level = False
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
                                [player_sprite_renderer, player_transform, self.player_controller, player_collider,
@@ -201,6 +202,8 @@ class GameView(arcade.View):
 
         # Reset player position
         self.player_controller.set_transform((50, 2000))
+        # Disable the level section loader
+        self.player_controller.parent.get_component_by_name("LevelSectionLoader").in_boss_level = True
 
 
         # Set up new level layout

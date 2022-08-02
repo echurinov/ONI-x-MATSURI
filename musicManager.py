@@ -5,7 +5,7 @@ import time
 
 from eventManager import EventManager
 
-MUSIC_VOLUME = 0.3
+MUSIC_VOLUME = 0.7
 MUSIC_PATH = "assets/sounds/music/"
 
 # Handles all loading and playing of music for all views in the game (Main Menu, Game View, Lose Screen, Win Screen, etc)
