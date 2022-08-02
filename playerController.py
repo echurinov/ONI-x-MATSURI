@@ -95,8 +95,14 @@ class PlayerController(Component):
 
 
         # Disallow the player from moving past the edge of the screen
-        if self.__transform.position[0] <= self.__camera_min + 50:
-            self.__transform.position = (self.__camera_min + 51, self.__transform.position[1])
+        if not self.__freeze_camera:
+            if self.__transform.position[0] <= self.__camera_min + 50:
+                self.__transform.position = (self.__camera_min + 51, self.__transform.position[1])
+        else:
+            if self.__transform.position[0] <= 100:
+                self.__transform.position = (101, self.__transform.position[1])
+            if self.__transform.position[0] >= 1820:
+                self.__transform.position = (1819, self.__transform.position[1])
 
 
         # Player dies if they fall off the level edge
@@ -462,7 +468,7 @@ class PlayerController(Component):
         self.__animation_state = "idle"
         # Dictionary for frames for animations
 
-        self.__exit_sprite = arcade.Sprite("assets/sprites/pause.png", 1.0)
+        self.__exit_sprite = arcade.Sprite("assets/sprites/exit.png", 1.0)
 
         self.__animation_data = {
             "idle_L": {
@@ -538,7 +544,7 @@ class PlayerController(Component):
         for i in range(3):
             heart_sprite = arcade.Sprite("assets/sprites/heart_full.png")
             heart_sprite_renderer = SpriteRenderer(heart_sprite)
-            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0,
+            heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 980 + heart_sprite.height / 2), 0,
                                         1.0)
             heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
             self.__heart_entities.append(heart_entity)
@@ -550,7 +556,7 @@ class PlayerController(Component):
 
         # Exit Button
         exit_sprite_renderer = SpriteRenderer(self.__exit_sprite)
-        exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, 1.0)
+        exit_transform = Transform((1860, 1020), 0, 1.0)
         exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
         GameManager.add_gui_entity(exit_entity)
 
@@ -696,6 +702,10 @@ class PlayerController(Component):
     @property
     def health(self):
         return self.__health
+
+    @health.setter
+    def health(self, new):
+        self.__health = new
 
     @property
     def max_health(self):

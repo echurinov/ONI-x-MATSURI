@@ -101,6 +101,14 @@ class GameManager:
         GameManager.__gui_entities = arcade.SpriteList()
 
     @staticmethod
+    def remove_background_entities():
+        GameManager.__background_entities.clear()
+
+    @staticmethod
+    def remove_static_entities():
+        GameManager.__static_entities.clear()
+
+    @staticmethod
     def remove_entity(entity):
         entity.in_scene = False
         if entity in GameManager.__entities:

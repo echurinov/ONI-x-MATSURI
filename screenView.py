@@ -181,27 +181,32 @@ class GameView(arcade.View):
 
         # Wait for game over
         if GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health == 0:
-            lose_view = LoseView()
-            SoundManager.stop_active_sounds()
-            MusicManager.change_list("lose_view", loop=False)
-            MusicManager.play_song()
-            self.window.show_view(lose_view)
+            self.begin_boss()
+            GameManager.get_entities_by_tag("Player")[0].get_component_by_name("PlayerController").health = 5
+            #lose_view = LoseView()
+            #SoundManager.stop_active_sounds()
+            #MusicManager.change_list("lose_view", loop=False)
+            #MusicManager.play_song()
+            #self.window.show_view(lose_view)
 
     def begin_boss(self):
         # Remove all entities except Player elements and GUI
-        bg_entities = GameManager.get_background_entities
-        for entity in bg_entities:
-            GameManager.remove_entity(entity)
-
-        static_entities = GameManager.get_static_entities
-        for entity in static_entities:
-            GameManager.remove_entity(entity)
+        GameManager.remove_background_entities()
+        GameManager.remove_static_entities()
 
         enemy_entities = GameManager.get_entities_by_tag("Enemy")
-        for entity in enemy_entities:
-            GameManager.remove_entity(entity)
+        for obj in enemy_entities:
+            GameManager.remove_entity(obj)
+
+        power_entities = GameManager.get_entities_by_tag("PowerUp")
+        for obj in power_entities:
+            GameManager.remove_entity(obj)
+
+        # Reset player position
+        self.player_controller.set_transform((50, 1000))
 
         # Set up new level layout
+        # Background
         background_sprite = arcade.Sprite("assets/backgrounds/boss_background.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
         background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
@@ -210,11 +215,16 @@ class GameView(arcade.View):
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
 
+        # Invisible floor collider
+        floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
+        floor_sprite_renderer = SpriteRenderer(floor_sprite)
+        floor_transform = Transform((floor_sprite.width / 2, floor_sprite.height / 2), 0, 1.0)
+        floor_collider = Collider(auto_generate_polygon="simple")
+        ground_entity = Entity("Ground", ["GroundTag"], [floor_sprite_renderer, floor_transform, floor_collider],
+                                          static=True)
+        GameManager.add_entity(ground_entity)
+
         # Create boss
-
-
-        # Reset player position
-        self.player_controller.set_transform((50, 1000))
 
         # Reset and freeze camera
         GameManager.main_camera.move((0, 0))
@@ -243,12 +253,11 @@ class GameView(arcade.View):
         GameManager.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if 1417 < x < 1505 and 750 < y < 842:
+        if 1816 < x < 1904 and 976 < y < 1044:
             arcade.exit()
 
     def on_mouse_motion(self, x, y, dx, dy):
-        # DOESN'T WORK AND IDK HOW TO MAKE IT
-        if 1417 < x < 1505 and 750 < y < 842:
+        if 1816 < x < 1904 and 976 < y < 1044:
             self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
         else:
             self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit.png", 1.0))
