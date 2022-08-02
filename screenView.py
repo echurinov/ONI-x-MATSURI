@@ -238,7 +238,7 @@ class GameView(arcade.View):
         # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
         boss_collider = Collider(auto_generate_polygon="box")
         # Create the enemy entity and add all the components to it
-        boss_entity = Entity("Enemy", ["Enemy"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
+        boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
 
         GameManager.add_entity(boss_entity)
 

@@ -68,7 +68,7 @@ class Entity:
     # Returns the first component matching the given name,
     # or None if the entity doesn't have this component
     def get_component_by_name(self, name):
-        for index, component in enumerate(self.__components):
+        for component in self.__components:
             if name == component.name:
                 return component
         return None
