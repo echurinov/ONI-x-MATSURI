@@ -30,12 +30,16 @@ class LevelSectionLoader(Component):
             self.level_sections.append((level_file, length, entities))
             print("Loaded level", level_file)
 
+        self.in_boss_level = False  # Don't do anything if we're in the boss level
+
     # Helper to translate a level section by an offset
     def __tranform_section(self, section, offset):
         for entity in section:
             entity.transform.move(offset)
 
     def on_created(self):
+        if self.in_boss_level:
+            return
         # Don't do anything if the player isn't in the level yet
         # This function is called both when the player entity is created and when it is added to the scene
         if not self.parent.in_scene:
@@ -51,6 +55,8 @@ class LevelSectionLoader(Component):
             self.current_section = section
 
     def on_physics_update(self, dt):
+        if self.in_boss_level:
+            return
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
