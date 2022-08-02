@@ -36,6 +36,7 @@ class PlayerController(Component):
 
         # Toggle debug
         if key == arcade.key.F:
+            print("Toggling debug mode")
             GameManager.debug = not GameManager.debug
 
         # Pause/quit
@@ -552,6 +553,15 @@ class PlayerController(Component):
         exit_transform = Transform((1460, 750 + self.__exit_sprite.height / 2), 0, 1.0)
         exit_entity = Entity("Exit", ["ExitTag"], [exit_sprite_renderer, exit_transform])
         GameManager.add_gui_entity(exit_entity)
+
+    # Called when the entity is removed
+    # Remove listeners here
+    def on_remove(self):
+        print("Removing listeners for player controller")
+        EventManager.remove_listener("Update", self.on_update)
+        EventManager.remove_listener("KeyPress", self.on_key_press)
+        EventManager.remove_listener("KeyRelease", self.on_key_release)
+        EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
 
     def set_transform(self, pos):
         self.__transform.position = pos

@@ -66,6 +66,11 @@ class GameManager:
     def remove_tagged_entities(tag):
         for entity in GameManager.__entities:
             if tag in entity.tags:
+                for component in entity.components:
+                    if hasattr(component, "on_remove"):
+                        component.on_remove()
+                if hasattr(entity, "on_remove"):
+                    entity.on_remove()
                 GameManager.__entities.remove(entity)
                 entity.in_scene = False
                 if entity.get_component_by_name("SpriteRenderer"):
@@ -83,6 +88,12 @@ class GameManager:
 
     @staticmethod
     def remove_all_entities():
+        for entity in GameManager.__entities:
+            for component in entity.components:
+                if hasattr(component, "on_remove"):
+                    component.on_remove()
+            if hasattr(entity, "on_remove"):
+                entity.on_remove()
         GameManager.__entities = []
         GameManager.__dynamic_entities = arcade.SpriteList()
         GameManager.__static_entities = arcade.SpriteList()
@@ -94,6 +105,11 @@ class GameManager:
         entity.in_scene = False
         if entity in GameManager.__entities:
             GameManager.__entities.remove(entity)
+            for component in entity.components:
+                if hasattr(component, "on_remove"):
+                    component.on_remove()
+            if hasattr(entity, "on_remove"):
+                entity.on_remove()
         else:
             #print("Entity", entity.name, "not found in GameManager.__entities")
             pass

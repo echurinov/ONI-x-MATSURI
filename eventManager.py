@@ -19,7 +19,7 @@ class EventManager:
     # Remove a listener from an event
     @staticmethod
     def remove_listener(event_name, method):
-        if event_name in EventManager.__listeners:
+        if event_name in EventManager.__listeners and method in EventManager.__listeners[event_name]:
             EventManager.__listeners[event_name].remove(method)
 
     # Trigger an event
