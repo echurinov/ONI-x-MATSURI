@@ -80,6 +80,9 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        # Load here as it takes a while for some reason
+        self.__boss_ground_sprite_preloaded = arcade.Sprite("assets/sprites/boss_ground.png")
+
     def __create_level(self):
         # Setup level
 
@@ -227,7 +230,7 @@ class GameView(arcade.View):
 
 
         # Invisible floor collider
-        floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
+        floor_sprite = self.__boss_ground_sprite_preloaded
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
         floor_transform = Transform((floor_sprite.width / 2, floor_sprite.height / 2 + 1080), 0, 1.0)
         floor_collider = Collider(auto_generate_polygon="box")
