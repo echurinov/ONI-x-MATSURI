@@ -21,6 +21,7 @@ from spriteRenderer import SpriteRenderer
 from swordController import SwordController
 from transform import Transform
 import mapSections
+from bossController import BossController
 
 
 class StartView(arcade.View):
@@ -67,6 +68,12 @@ class StartView(arcade.View):
         self.clear()
         GameManager.draw()
         self.manager.draw()
+
+    #def on_mouse_press(self, _x, _y, _button, _modifiers):
+    #    """ If the user presses the mouse button, start the game. """
+    #    game_view = GameView()
+    #    game_view.setup()
+    #    self.window.show_view(game_view)
 
 
 class GameView(arcade.View):
@@ -117,6 +124,7 @@ class GameView(arcade.View):
         player_collider = Collider(auto_generate_polygon="box")
         # Create a level section loader component for the player. This handles loading the level sections
         level_section_loader = LevelSectionLoader()
+        level_section_loader.in_boss_level = False
         # Create the player entity and add all the components to it
         player_entity = Entity("Player", ["Player"],
                                [player_sprite_renderer, player_transform, self.player_controller, player_collider,
@@ -185,6 +193,7 @@ class GameView(arcade.View):
             #self.window.show_view(lose_view)
 
     def begin_boss(self):
+
         # Remove all entities except Player elements and GUI
         GameManager.remove_background_entities()
         GameManager.remove_static_entities()
@@ -199,6 +208,9 @@ class GameView(arcade.View):
 
         # Reset player position
         self.player_controller.set_transform((50, 2000))
+        # Disable the level section loader
+        self.player_controller.parent.get_component_by_name("LevelSectionLoader").in_boss_level = True
+
 
         # Set up new level layout
         # Background
@@ -210,6 +222,7 @@ class GameView(arcade.View):
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
 
+
         # Invisible floor collider
         floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
@@ -220,6 +233,21 @@ class GameView(arcade.View):
         GameManager.add_entity(ground_entity)
 
         # Create boss
+        # Create an arcade.Sprite for the boss
+        boss_sprite = arcade.Sprite("assets/sprites/enemy/boss_1.png")
+        # Create a sprite renderer component
+        boss_sprite_renderer = SpriteRenderer(boss_sprite)
+        # Create a transform component
+        boss_transform = Transform((2 * floor_sprite.width / 3, 1080 + boss_sprite.height), 0, 1.0)
+        # Create boss controller component
+        boss_controller = BossController()
+        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
+        boss_collider = Collider(auto_generate_polygon="box")
+        # Create the enemy entity and add all the components to it
+        boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
+
+        GameManager.add_entity(boss_entity)
+
 
         # Reset and freeze camera
         GameManager.main_camera.move((0, 1080))

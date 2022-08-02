@@ -63,8 +63,8 @@ class PlayerController(Component):
             self.current_texture = 0
 
         # Suicide (debugging)
-        #if key == arcade.key.K:
-            #self.__health = 0
+        if key == arcade.key.K:
+            self.__health = 0
 
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
@@ -174,6 +174,10 @@ class PlayerController(Component):
                 if "Enemy" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(self.__attack_power)
+
+                if "Boss" in collider.parent.tags:
+                    if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
+                        collider.parent.get_component_by_name("BossController").take_damage(self.__attack_power)
 
         if self.__taking_damage and not self.__is_falling:
             # implement damage knock back
