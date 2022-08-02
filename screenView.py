@@ -21,6 +21,7 @@ from spriteRenderer import SpriteRenderer
 from swordController import SwordController
 from transform import Transform
 import mapSections
+from bossController import BossController
 
 
 class StartView(arcade.View):
@@ -185,6 +186,7 @@ class GameView(arcade.View):
             #self.window.show_view(lose_view)
 
     def begin_boss(self):
+
         # Remove all entities except Player elements and GUI
         GameManager.remove_background_entities()
         GameManager.remove_static_entities()
@@ -200,6 +202,7 @@ class GameView(arcade.View):
         # Reset player position
         self.player_controller.set_transform((50, 2000))
 
+
         # Set up new level layout
         # Background
         background_sprite = arcade.Sprite("assets/backgrounds/boss_background.png", 1.0)
@@ -209,6 +212,7 @@ class GameView(arcade.View):
         background_entity = Entity("Background", ["BackgroundTag"],
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
+
 
         # Invisible floor collider
         floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
@@ -220,6 +224,21 @@ class GameView(arcade.View):
         GameManager.add_entity(ground_entity)
 
         # Create boss
+        # Create an arcade.Sprite for the boss
+        boss_sprite = arcade.Sprite("assets/sprites/enemy/boss_1.png")
+        # Create a sprite renderer component
+        boss_sprite_renderer = SpriteRenderer(boss_sprite)
+        # Create a transform component
+        boss_transform = Transform((1080,1500), 0, 1.0)
+        # Create boss controller component
+        boss_controller = BossController()
+        # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
+        boss_collider = Collider(auto_generate_polygon="box")
+        # Create the enemy entity and add all the components to it
+        boss_entity = Entity("Enemy", ["Enemy"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
+
+        GameManager.add_entity(boss_entity)
+
 
         # Reset and freeze camera
         GameManager.main_camera.move((0, 1080))
