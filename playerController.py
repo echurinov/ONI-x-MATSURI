@@ -26,6 +26,7 @@ ATTACK_ANIMATION = 0.25
 # Constants for animation
 RIGHT_FACING = 1
 LEFT_FACING = 0
+IDLE_TIME = 3
 
 # DEFAULT SPEED VALUES
 GRAVITY = -2000
@@ -37,6 +38,8 @@ class PlayerController(Component):
     # Called when a key is pressed
     def on_key_press(self, key, modifiers):
         self.__keys_pressed[key] = True
+        self.__idle = False
+        self.__idle_timer = IDLE_TIME
 
         # Jump
         if key == arcade.key.W:
@@ -66,6 +69,7 @@ class PlayerController(Component):
     # Change the value of the key_pressed dictionary when a key is released
     def on_key_release(self, key, modifiers):
         self.__keys_pressed[key] = False
+        self.__idle_timer = IDLE_TIME
 
     # Called every time physics get updated (currently every frame)
     # Deals with all player movement and collision
@@ -88,6 +92,7 @@ class PlayerController(Component):
         self.__speed_timer -= dt
         self.__mad_timer -= dt
         self.__attack_animation_timer -= dt
+        self.__idle_timer -= dt
 
         # If the player is in the air, determine if they've landed on the ground
         # If the player is on the ground, determine if they've jumped (or moved up/down a slope)
@@ -169,8 +174,7 @@ class PlayerController(Component):
                 if "Enemy" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("EnemyController").take_damage(self.__attack_power)
-
-                if "Boss" in collider.parent.tags:
+                elif "Boss" in collider.parent.tags:
                     if arcade.are_polygons_intersecting(self.__sword_sprite_polygon, collider.polygon):
                         collider.parent.get_component_by_name("BossController").take_damage(self.__attack_power)
 
@@ -351,6 +355,9 @@ class PlayerController(Component):
 
         self.__jump_requested = False
 
+        if self.__idle_timer < 0:
+            self.__idle = True
+
         self.power_up_effects()
 
     # Gets called every frame
@@ -365,7 +372,8 @@ class PlayerController(Component):
         width, height = self.__screen_width, self.__screen_height
 
         if self.__transform.position[0] > (self.__camera_min + width / 2):
-            self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
+            if self.__transform.position[0] < 1920 * 9 - width / 2:
+                self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
         if not self.__freeze_camera:
             GameManager.main_camera.move_to((self.__camera_min, 0), 5 * dt)
@@ -462,6 +470,9 @@ class PlayerController(Component):
         self.__attack_animation_timer = 0
         self.__attack_animation = False
 
+        self.__idle = True
+        self.__idle_timer = IDLE_TIME
+
         idle_1 = (arcade.load_texture("assets/sprites/player/player_idle_1.png"), arcade.load_texture("assets/sprites/player/player_idle_1.png"))
         idle_2 = (arcade.load_texture("assets/sprites/player/player_idle_2.png"), arcade.load_texture("assets/sprites/player/player_idle_2.png"))
         self.idle_texture_pair = (idle_1, idle_2)
@@ -530,6 +541,9 @@ class PlayerController(Component):
 
     def set_transform(self, pos):
         self.__transform.position = pos
+
+    def get_transform_x(self):
+        return self.__transform.position[0]
 
     def set_health(self, health):
         self.__health = health
@@ -635,7 +649,7 @@ class PlayerController(Component):
                 self.__sprite_renderer.sprite.color = (100, 255, 100)
             elif self.__flash_count % 8 == 0:
                 self.__sprite_renderer.sprite.color = (255, 255, 255)
-            self.__flash_count = (self.__flash_count + 1) % 80
+            self.__flash_count = (self.__flash_count + 1) % 8e0
 
         # FLASHES PURPLE when you get ATTACK-BOOST
         if self.__mad:
@@ -658,7 +672,7 @@ class PlayerController(Component):
             speed = 9
         if self.__velocity[0] > 500 or self.__velocity[0] < -500:
             speed = 7
-        if self.__velocity[0] > 600 or self.__velocity[0] < -700:
+        if self.__velocity[0] > 600 or self.__velocity[0] < -600:
             speed = 3
 
         # Determine if the character is facing right or left
@@ -671,9 +685,9 @@ class PlayerController(Component):
         if self.__attack_animation:
             # Update frame
             self.current_texture += 1
-            if self.current_texture > (2 * speed) - 1:
+            if self.current_texture > (2 * 9) - 1:
                 self.current_texture = 0
-            frame = self.current_texture // speed
+            frame = self.current_texture // 9
             if not self.__touching_floor: # If you are attacking in air
                 self.__sprite_renderer.set_texture(self.jump_attack_texture_pair[frame][self.character_face_direction])
                 return
@@ -681,35 +695,37 @@ class PlayerController(Component):
                 self.__sprite_renderer.set_texture(self.attack_texture_pair[frame][self.character_face_direction])
                 return
 
-        # Walking animation:
-        if speed < 9:
-            # Update frame
-            self.current_texture += 1
-            if self.current_texture > (4 * speed) - 1:
-                self.current_texture = 0
-            frame = self.current_texture // speed
-            self.__sprite_renderer.set_texture(self.walk_texture_pair[frame][self.character_face_direction])
-            return
+        # Idle animation:
+        # Update frame
+        if 0.1 > self.__velocity[0] > -0.1:
+            if not self.__idle:
+                # Side idle animation
+                # Update frame
+                self.current_texture += 1
+                if self.current_texture > (2 * speed) - 1:
+                    self.current_texture = 0
+                frame = self.current_texture // speed
+                self.__sprite_renderer.set_texture(self.idle_side_texture_pair[frame][self.character_face_direction])
+                return
 
-        if self.__velocity != 0:
-            # Update frame
             self.current_texture += 1
             if self.current_texture > (2 * speed) - 1:
                 self.current_texture = 0
             frame = self.current_texture // speed
-            self.__sprite_renderer.set_texture(self.idle_side_texture_pair[frame][self.character_face_direction])
+            self.__sprite_renderer.set_texture(self.idle_texture_pair[frame][self.character_face_direction])
             return
 
-        # Idle animation:
+        # Walking animation:
         # Update frame
         self.current_texture += 1
-        if self.current_texture > (2 * speed) - 1:
+        if self.current_texture > (4 * speed) - 1:
             self.current_texture = 0
         frame = self.current_texture // speed
-        self.__sprite_renderer.set_texture(self.idle_texture_pair[frame][self.character_face_direction])
-
+        self.__sprite_renderer.set_texture(self.walk_texture_pair[frame][self.character_face_direction])
         return
 
+
+        return
 
     @property
     def touching_ground(self):
