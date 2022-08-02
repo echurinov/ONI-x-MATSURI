@@ -68,12 +68,6 @@ class StartView(arcade.View):
         GameManager.draw()
         self.manager.draw()
 
-    #def on_mouse_press(self, _x, _y, _button, _modifiers):
-    #    """ If the user presses the mouse button, start the game. """
-    #    game_view = GameView()
-    #    game_view.setup()
-    #    self.window.show_view(game_view)
-
 
 class GameView(arcade.View):
     def __init__(self):
@@ -204,13 +198,13 @@ class GameView(arcade.View):
             GameManager.remove_entity(obj)
 
         # Reset player position
-        self.player_controller.set_transform((50, 1000))
+        self.player_controller.set_transform((50, 2000))
 
         # Set up new level layout
         # Background
         background_sprite = arcade.Sprite("assets/backgrounds/boss_background.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
-        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2), 0, 1.0)
+        background_transform = Transform((background_sprite.width / 2, background_sprite.height / 2 + 1080), 0, 1.0)
         background_resizer = BackgroundResizer()
         background_entity = Entity("Background", ["BackgroundTag"],
                                    [background_sprite_renderer, background_transform, background_resizer])
@@ -219,17 +213,17 @@ class GameView(arcade.View):
         # Invisible floor collider
         floor_sprite = arcade.Sprite("assets/sprites/boss_ground.png")
         floor_sprite_renderer = SpriteRenderer(floor_sprite)
-        floor_transform = Transform((floor_sprite.width / 2, floor_sprite.height / 2), 0, 1.0)
-        floor_collider = Collider(auto_generate_polygon="simple")
-        ground_entity = Entity("Ground", ["GroundTag"], [floor_sprite_renderer, floor_transform, floor_collider],
+        floor_transform = Transform((floor_sprite.width / 2, floor_sprite.height / 2 + 1080), 0, 1.0)
+        floor_collider = Collider(auto_generate_polygon="box")
+        ground_entity = Entity("Ground", ["Ground"], [floor_sprite_renderer, floor_transform, floor_collider],
                                           static=True)
         GameManager.add_entity(ground_entity)
 
         # Create boss
 
         # Reset and freeze camera
-        GameManager.main_camera.move((0, 0))
-        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+        GameManager.main_camera.move((0, 1080))
+        arcade.set_viewport(0, self.window.width, 1080, self.window.height + 1080)
         self.player_controller.toggle_camera_movement()
 
         # Change music
@@ -261,7 +255,8 @@ class GameView(arcade.View):
 
     def on_mouse_motion(self, x, y, dx, dy):
         if 1816 < x < 1904 and 976 < y < 1044:
-            self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0))
+            new_sprite = arcade.Sprite("assets/sprites/exit_highlighted.png", 1.0)
+            self.player_controller.set_exit_sprite(new_sprite)
         else:
             self.player_controller.set_exit_sprite(arcade.Sprite("assets/sprites/exit.png", 1.0))
 
