@@ -5,12 +5,8 @@ from eventManager import EventManager
 from gameManager import GameManager
 from soundManager import SoundManager
 
-IDLE_TIMER = 1
-WALKING_TIMER = 2
-WALKING_SPEED = 3
 
-
-class EnemyController(Component):
+class BossController(Component):
     def take_damage(self, amount):
         if self.__damage_timer > 0:
             return
@@ -22,43 +18,6 @@ class EnemyController(Component):
         else:
             SoundManager.play_sound("enemy_oni", "death")
         self.__taking_damage = True
-
-    # Called every time physics get updated (currently every frame)
-    # Deals with all enemy movement and collision
-    def on_physics_update(self, dt):
-        # Don't do physics if it isn't active yet
-        if not self.parent.in_scene:
-            return
-        # Update walking/standing timers
-        if self.__walking_timer < 0:
-            self.__idle_timer = IDLE_TIMER
-            self.__walking_timer = WALKING_TIMER
-            self.__standing = True
-            self.__walking = False
-
-        if self.__idle_timer < 0:
-            self.__walking_timer = WALKING_TIMER
-            self.__idle_timer = IDLE_TIMER
-            self.__walking = True
-            self.__standing = False
-            self.__direction = self.__direction * -1
-
-        if self.__walking:
-            self.__walking_timer -= dt
-
-        if self.__standing:
-            self.__idle_timer -= dt
-
-        # Update damage timer
-        self.__damage_timer -= dt
-
-        # Walk oni to the right
-        if self.__walking and self.__direction == 1:
-            self.__transform.position = (self.__transform.position[0] - WALKING_SPEED, self.__transform.position[1])
-
-        # Walk oni to the left
-        if self.__walking and self.__direction == -1:
-            self.__transform.position = (self.__transform.position[0] + WALKING_SPEED, self.__transform.position[1])
 
     # Gets called every frame
     # dt is the time taken since the last frame
@@ -75,7 +34,7 @@ class EnemyController(Component):
             self.__animation_state = "idle"
 
         if self.__walking and self.__direction == 1:  # Walking to the right
-            self.__animation_state = "walk_L"
+             self.__animation_state = "walk_L"
 
         if self.__walking and self.__direction == -1:  # Walking to the left
             self.__animation_state = "walk_R"
@@ -93,7 +52,7 @@ class EnemyController(Component):
                 self.__animation_data[self.__animation_state]["frames"][self.__animation_frame])
 
     def __init__(self):
-        super().__init__("EnemyController")
+        super().__init__("BossController")
 
         # Store some components here (set when the program starts), so we don't have to look for them each time
         self.__transform = None
@@ -101,7 +60,7 @@ class EnemyController(Component):
         self.__sprite_renderer = None
 
         # Timers for enemy walking
-        self.__walking_timer = WALKING_TIMER
+        self.__moving_timer = WALKING_TIMER
         self.__idle_timer = IDLE_TIMER
 
         # Private variables for enemy health
@@ -114,29 +73,33 @@ class EnemyController(Component):
         self.__animation_frame = 0  # Which frame we're in
         self.__animation_state = "idle"
 
-        self.__walking = False
+        self.__moving = False
         self.__standing = True
         self.__direction = 1  # Direction is 1 for right, -1 for left
+
+        # Variables for attacking
+        self.__prepare_attack = False
+        self.__is_attacking = False
 
         # Dictionary for frames for animations
 
         self.__animation_data = {
             "idle": {
-                "name_prefix": "oni_idle_",
-                "num_frames": 2,
+                "name_prefix": "boss_",
+                "num_frames": 1,
                 "frame_delay": 30,
                 "frames": []
             },
-            "walk_L": {
-                "name_prefix": "oni_walk_L_",
+            "prepare_attack": {
+                "name_prefix": "boss_",
                 "num_frames": 4,
-                "frame_delay": 5,
+                "frame_delay": 20,
                 "frames": []
             },
-            "walk_R": {
-                "name_prefix": "oni_walk_R_",
-                "num_frames": 4,
-                "frame_delay": 5,
+            "attack": {
+                "name_prefix": "boss_attack_",
+                "num_frames": 2,
+                "frame_delay": 10,
                 "frames": []
             }
         }
