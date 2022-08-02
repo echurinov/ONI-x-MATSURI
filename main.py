@@ -30,6 +30,8 @@ def main():
     SoundManager.start()
     MusicManager.start()
     start_view = StartView()
+    MusicManager.change_list("start_view")
+    MusicManager.play_song()
     window.show_view(start_view)
     GameManager.start()
     window.run()
