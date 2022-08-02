@@ -25,6 +25,9 @@ class EnemyController(Component):
     # Called every time physics get updated (currently every frame)
     # Deals with all enemy movement and collision
     def on_physics_update(self, dt):
+        # Don't do physics if it isn't active yet
+        if not self.parent.in_scene:
+            return
         #Update walking/standing timers
         if self.__walking_timer < 0:
             self.__idle_timer = IDLE_TIMER
@@ -59,6 +62,9 @@ class EnemyController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
+        # Don't animate if it isn't active yet
+        if not self.parent.in_scene:
+            return
         if self.__damage_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)
         else:

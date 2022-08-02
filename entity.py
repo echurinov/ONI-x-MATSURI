@@ -13,6 +13,7 @@ class Entity:
         self.__parent = None
         self.__active = active
         self.__transform = None
+        self.in_scene = False  # Used to know who to send events to
         # Call on_added_to_entity and on_created on all child components
         for item in components:
             if hasattr(item, 'on_added_to_entity'):

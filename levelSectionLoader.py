@@ -1,5 +1,5 @@
 import random
-from copy import deepcopy
+import copy
 
 from component import Component
 from eventManager import EventManager
@@ -21,7 +21,8 @@ class LevelSectionLoader(Component):
         self.current_offset = 0
 
         # List of all level files
-        self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
+        #self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
+        self.level_section_files = ["level1.dat"]
         # List of all the loaded level sections
         self.level_sections = []
         for level_file in self.level_section_files:
@@ -36,28 +37,34 @@ class LevelSectionLoader(Component):
             entity.transform.move(offset)
 
     def on_created(self):
+        # Don't do anything if the player isn't in the level yet
+        # This function is called both when the player entity is created and when it is added to the scene
+        if not self.parent.in_scene:
+            return
         if self.current_section is None:
             print("Loading first section")
             # Load a copy of the first section
-            section = deepcopy(random.choice(self.level_sections))
+            section = copy.deepcopy(random.choice(self.level_sections))
             # Add the section to the scene
             for entity in section[2]:
                 GameManager.add_entity(entity)
             # Set current_section
             self.current_section = section
 
-
     def on_physics_update(self, dt):
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
 
+        # Don't do anything if the player isn't in the level yet
+        if not self.parent.in_scene:
+            return
 
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section
         if player_position[0] > self.current_offset + (self.current_section[1] / 2):
             # Load a copy of the next section
-            section = deepcopy(random.choice(self.level_sections))
+            section = copy.deepcopy(random.choice(self.level_sections))
             # Translate that section to put it after the end of the current loaded section
             self.__tranform_section(section[2], (self.current_offset + self.current_section[1], 0))
             # Add the section to the scene
@@ -81,5 +88,3 @@ class LevelSectionLoader(Component):
             self.current_offset += self.previous_section[1]
 
             print("Loaded new section", self.current_section[0])
-
-

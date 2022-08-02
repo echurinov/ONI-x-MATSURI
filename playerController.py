@@ -565,7 +565,7 @@ class PlayerController(Component):
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
 
     def set_gui(self):
-        #ddddGameManager.clear_gui_sprite()
+        #GameManager.clear_gui_sprite()
 
         if self.__health <= 2:
             if self.__health == 1:

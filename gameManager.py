@@ -67,6 +67,7 @@ class GameManager:
         for entity in GameManager.__entities:
             if tag in entity.tags:
                 GameManager.__entities.remove(entity)
+                entity.in_scene = False
                 if entity.get_component_by_name("SpriteRenderer"):
                     sprite = entity.get_component_by_name("SpriteRenderer").sprite
                     if sprite in GameManager.__static_entities:
@@ -90,12 +91,12 @@ class GameManager:
 
     @staticmethod
     def remove_entity(entity):
+        entity.in_scene = False
         if entity in GameManager.__entities:
-            print("before removing", entity.name,len(GameManager.__entities))
             GameManager.__entities.remove(entity)
-            print(len(GameManager.__entities))
         else:
-            print("Entity", entity.name, "not found in GameManager.__entities")
+            #print("Entity", entity.name, "not found in GameManager.__entities")
+            pass
 
         if entity.get_component_by_name("SpriteRenderer"):
             sprite = entity.get_component_by_name("SpriteRenderer").sprite
@@ -113,6 +114,7 @@ class GameManager:
     # Adds a background entity (draws below everything else, has no collision)
     @staticmethod
     def add_background_entity(entity):
+        entity.in_scene = True
         GameManager.__entities.append(entity)
         # Add sprite to list so it gets drawn
         sprite = entity.get_component_by_name("SpriteRenderer")
@@ -130,6 +132,7 @@ class GameManager:
     # Handles adding it to sprite lists so it gets rendered
     @staticmethod
     def add_entity(entity):
+        entity.in_scene = True
         GameManager.__entities.append(entity)
         sprite = entity.get_component_by_name("SpriteRenderer")
         # Only add to sprite lists if entity has a sprite component
@@ -150,6 +153,7 @@ class GameManager:
     # Handles adding it to sprite lists so it gets rendered
     @staticmethod
     def add_gui_entity(entity):
+        entity.in_scene = True
         GameManager.__entities.append(entity)
         sprite = entity.get_component_by_name("SpriteRenderer")
         # Only add to sprite lists if entity has a sprite component
@@ -242,11 +246,11 @@ class GameManager:
 
         # Debug
         if GameManager.debug:
-            player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
-            string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
-            string_to_print2 = "Vel: " + str(player_cont.velocity)
+            #player_cont = GameManager.get_entities_by_name("Player")[0].get_component_by_name("PlayerController")
+            #string_to_print = "Pos: " + str(GameManager.get_entities_by_name("Player")[0].get_component_by_name("Transform").position)
+            #string_to_print2 = "Vel: " + str(player_cont.velocity)
 
-            arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
-            arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
+            #arcade.draw_text(string_to_print, 0, 500, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
+            #arcade.draw_text(string_to_print2, 0, 470, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
             arcade.draw_text("Frame time: " + str(GameManager.dt), 0, 530, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
             arcade.draw_text(str(len(GameManager.get_entities())) + " entities", 0, 550, arcade.color.BLACK, 20, anchor_x="left", anchor_y="bottom")
