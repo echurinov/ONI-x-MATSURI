@@ -6,14 +6,15 @@ from gameManager import GameManager
 from soundManager import SoundManager
 
 IDLE_TIMER = 1
-WALKING_TIMER = 2
-WALKING_SPEED = 3
+MOVING_TIMER = 3
+DAMAGE_TIMER = 5
+
 
 class BossController(Component):
     def take_damage(self, amount):
         if self.__damage_timer > 0:
             return
-        self.__damage_timer = 1.0
+        self.__damage_timer = 5
         self.__health = self.health - amount
         if self.__health < 0:
             SoundManager.play_sound("enemy_oni", "death")
@@ -44,8 +45,8 @@ class BossController(Component):
         self.__collider = None
         self.__sprite_renderer = None
 
-        # Timers for enemy walking
-        self.__moving_timer = WALKING_TIMER
+        # Timers for enemy moving
+        self.__moving_timer = MOVING_TIMER
         self.__idle_timer = IDLE_TIMER
 
         # Private variables for enemy health

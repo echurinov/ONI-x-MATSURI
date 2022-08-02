@@ -232,13 +232,13 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         boss_sprite_renderer = SpriteRenderer(boss_sprite)
         # Create a transform component
-        boss_transform = Transform((1080,1500), 0, 1.0)
+        boss_transform = Transform((2 * floor_sprite.width / 3, 1080 + boss_sprite.height), 0, 1.0)
         # Create boss controller component
         boss_controller = BossController()
         # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
         boss_collider = Collider(auto_generate_polygon="box")
         # Create the enemy entity and add all the components to it
-        boss_entity = Entity("Enemy", ["Enemy"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
+        boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
 
         GameManager.add_entity(boss_entity)
 
