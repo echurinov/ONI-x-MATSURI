@@ -28,7 +28,11 @@ class PowerUpHealth(Entity):
 
         self.__player_controller = None  # Will set this later
 
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+    # Avoid memory leak
+    # If this is in init, it will mess with the copying when level sections are being loaded and unloaded
+    def on_created(self):
+        if self.in_scene:
+            EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
         self.__collection_timer -= dt
@@ -68,7 +72,11 @@ class PowerUpSpeed(Entity):
 
         self.__player_controller = None
 
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+    # Avoid memory leak
+    # If this is in init, it will mess with the copying when level sections are being loaded and unloaded
+    def on_created(self):
+        if self.in_scene:
+            EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
         if self.__player_controller is None:
@@ -101,7 +109,11 @@ class PowerUpJump(Entity):
 
         self.__player_controller = None
 
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+    # Avoid memory leak
+    # If this is in init, it will mess with the copying when level sections are being loaded and unloaded
+    def on_created(self):
+        if self.in_scene:
+            EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
         if self.__player_controller is None:
@@ -134,7 +146,11 @@ class PowerUpAttack(Entity):
 
         self.__player_controller = None
 
-        EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
+    # Avoid memory leak
+    # If this is in init, it will mess with the copying when level sections are being loaded and unloaded
+    def on_created(self):
+        if self.in_scene:
+            EventManager.add_listener("PhysicsUpdate", self.on_physics_update)  # calls physics_update every frame
 
     def on_physics_update(self, dt):
         if self.__player_controller is None:
