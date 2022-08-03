@@ -16,9 +16,9 @@ class MusicManager:
     __music_lists = {
         "boss_view": [MUSIC_PATH + "boss_stage_music.mp3"],
         "game_view": [MUSIC_PATH + "main_stage_music.mp3"],
-        "lose_view": [MUSIC_PATH + "J 3ds3 24 Btl Lose 3ds.mp3"],
+        "lose_view": [MUSIC_PATH + "lose_screen_music.mp3"],
         "start_view": [MUSIC_PATH + "main_menu_music.mp3"],
-        "win_view": []
+        "win_view": [MUSIC_PATH + "win_screen_music.mp3"]
     }
     __current_list = None
     __current_song_index = 0
@@ -36,7 +36,6 @@ class MusicManager:
 
     @staticmethod
     def play_song():
-        """ Play the song. """
         # Stop what is currently playing.
         MusicManager.stop_song()
 
