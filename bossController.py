@@ -15,7 +15,7 @@ ATTACK_TIME = 2 # How long the boss attacks
 ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
-HEALTH = 1
+HEALTH = 6
 PHASE_2_HEALTH = 3
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 2
@@ -105,6 +105,7 @@ class BossController(Component):
                 if chance % 10 == 0:
                     self.__moving = True
                     self.__idle = False
+                    self.current_texture = 0
 
             # Give chance that boss will prepare to attack
             if chance % self.__attack_chance == 0 and not self.__prepare_attack and not self.__is_attacking and self.__attack_timer < 0:
@@ -114,6 +115,7 @@ class BossController(Component):
                 self.__prepare_attack = True
                 self.__is_attacking = False
                 self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
+                self.current_texture = 0
 
             if self.__prepare_attack_timer < 0 and self.__prepare_attack:
                 self.__moving = True
@@ -122,11 +124,13 @@ class BossController(Component):
                 self.__prepare_attack = False
                 self.__default = False
                 self.__idle = False
+                self.current_texture = 0
 
             if self.__is_attacking and self.__attack_time < 0:
                 self.__is_attacking = False
                 self.__default = True
                 self.__attack_timer = ATTACK_TIMER
+                self.current_texture = 0
 
             # If the boss is moving to the other side
             if self.__moving and not self.__idle:
@@ -138,6 +142,7 @@ class BossController(Component):
                         self.__idle = True
                         self.__idle_timer = IDLE_TIMER
                         self.__right_side = False
+                        self.current_texture = 0
 
                 else:
                     if self.__transform.position[0] <= self.__right_side_position:
@@ -147,6 +152,7 @@ class BossController(Component):
                         self.__idle = True
                         self.__idle_timer = IDLE_TIMER
                         self.__right_side = True
+                        self.current_texture = 0
 
         if self.__health < PHASE_2_HEALTH and self.__phase == 0:
             SoundManager.play_sound("enemy_oni_boss", "phase2-groan")
@@ -194,11 +200,13 @@ class BossController(Component):
                 self.__default = False
                 self.__prepare_attack = True
                 self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
+                self.current_texture = 0
 
             if self.__prepare_attack and self.__prepare_attack_timer < 0:
                 self.__prepare_attack = False
                 self.__is_attacking = True
                 self.__moving = True
+                self.current_texture = 0
 
             if self.__moving and not self.__idle:
                 if self.__right_side: # if boss is starting to move on the right side of the screen
@@ -211,6 +219,7 @@ class BossController(Component):
                         self.__idle = True
                         self.__default = True
                         self.__idle_timer = IDLE_TIMER
+                        self.current_texture = 0
                 else:
                     if self.__transform.position[0] <= self.__right_side_position:
                         self.__transform.position = (self.__transform.position[0] + MOVING_SPEED, self.__transform.position[1])
@@ -221,6 +230,7 @@ class BossController(Component):
                         self.__idle = True
                         self.__default = True
                         self.__idle_timer = IDLE_TIMER
+                        self.current_texture = 0
 
         # Animation update
         self.update_animation()
@@ -299,6 +309,8 @@ class BossController(Component):
         self.__dying_timer = DYING_TIMER
         self.__flash_count = 1
         self.__opacity = 255
+
+        self.__sound_played_attack = False
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -401,6 +413,8 @@ class BossController(Component):
             self.current_texture += 1
             if self.current_texture > (2 * 60) - 1:
                 self.current_texture = 0
+            if self.current_texture % 60 == 1:
+                SoundManager.play_sound("enemy_oni_boss", "drum-charge")
             frame = self.current_texture // 60
             texture = self.prepare_attack_texture[frame][0]
             self.squish_amount(texture)
@@ -412,9 +426,13 @@ class BossController(Component):
             self.current_texture += 1
             if self.current_texture > (3 * 9) - 1:
                 self.current_texture = 0
-                SoundManager.play_sound("enemy_oni_boss", "drum-attack")
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
+            if frame == 1 and not self.__sound_played_attack:
+                SoundManager.play_sound("enemy_oni_boss", "drum-attack")
+                self.__sound_played = True
+            if frame == 2:
+                self.__sound_played_attack = False
             self.squish_amount(texture)
             self.__collider.generate_hitbox_from_sprite()
             return
