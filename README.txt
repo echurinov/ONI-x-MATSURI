@@ -1,16 +1,21 @@
-<<<<<<< HEAD
 ONI x MATSURI
 Current Stage: Prototype
 
 --------------------------
 
-Build command:
-    Run the following script in the project root folder:
-        build.bat
-    The resulting main.exe will be located in the dist\main\ directory.
-    IF THE SCRIPT FAILS, run the following two commands manually (in command prompt as an administrator):
-        pip install -r requirements.txt
-        pyinstaller --onefile --add-data "assets;assets" main.py --windowed
+How to build:
+	Using build.bat:
+	    1. Run the build.bat script. This will download and install all requirements, then generate the installer.
+	        If this fails, use the manual build method below.
+
+	Manually:
+        1. Install NSIS: http://nsis.sourceforge.net/Download
+        2. Install pynsist from pip with the following command:
+            pip install pynsist
+        3. Run the following command to generate the installer:
+            pynsist installer.cfg
+        3a. If pynsist isn't found, run the following alternative command:
+            python -m nsist installer.cfg
 
 --------------------------
 

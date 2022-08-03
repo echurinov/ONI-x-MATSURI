@@ -32,4 +32,10 @@ if '%errorlevel%' NEQ '0' (
 :--------------------------------------
 
 pip install -r requirements.txt
-pyinstaller --onefile --add-data "assets;assets" main.py --windowed
+::pyinstaller --onefile --add-data "assets;assets" main.py --windowed
+::downloads and installs NSIS (pynsist requirement)
+powershell -Command "Invoke-WebRequest https://prdownloads.sourceforge.net/nsis/nsis-3.08-setup.exe -OutFile nsis-3.08-setup.exe"
+START /WAIT nsis-3.08-setup.exe
+::Runs pynsist to create installer
+pynsist installer.cfg
+

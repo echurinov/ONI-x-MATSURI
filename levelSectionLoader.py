@@ -47,7 +47,7 @@ class LevelSectionLoader(Component):
         self.tower_section_file = "tower.dat"
         self.tower_section = None
         # List of all level files
-        self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
+        self.level_section_files = ["level1.dat", "level2.dat", "level3.dat", "level4.dat", "level5.dat", "level6.dat", "level7.dat", "level8.dat", "level9.dat", "level10.dat"]
         # List of all the loaded level sections
         self.level_sections = []
         for level_file in self.level_section_files:
@@ -94,8 +94,7 @@ class LevelSectionLoader(Component):
     def on_physics_update(self, dt):
         if self.in_boss_level:
             return
-        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
-            return
+
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
@@ -110,6 +109,9 @@ class LevelSectionLoader(Component):
             background_copy.transform.position = background_copy.transform.position[0] * self.number_background_sections, background_copy.transform.position[1]
             GameManager.add_background_entity(background_copy)
             self.number_background_sections += 1
+
+        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
+            return
 
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section

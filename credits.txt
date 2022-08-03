@@ -1,0 +1,76 @@
+/assets/
+    /sounds/
+        /enemy/
+            enemy_oni_boss_damage.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                General Sounds/Simple Damage Sounds/sfx_damage_hit3.wav
+            enemy_oni_boss_death.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                Death Screams/Alien/sfx_deathscream_alien1.wav
+            enemy_oni_boss_drop.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                Explosions/Short/sfx_exp_short_hard2.wav
+            enemy_oni_boss_drum-attack:
+                https://taira-komori.jpn.org/instrument01en.html
+                Japanese_drum1
+            enemy_oni_boss_groan.wav:
+                https://taira-komori.jpn.org/monster01en.html
+                monster_roaning2
+            enemy_oni_boss_laugh.wav:
+                https://taira-komori.jpn.org/monster01en.html
+                devil_laughing3
+            enemy_oni_damage.wav: 
+                https://opengameart.org/content/512-sound-effects-8-bit-style 
+                General Sounds/Impacts/sfx_sounds_impact12.wav
+            enemy_oni_death.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style 
+                Death Screams/Human/sfx_deathscream_human4.wav
+                
+                
+        /menu/
+            button_press.wav:
+                https://moludar.itch.io/menu-sounds-archive
+                menu_28.wav
+            button_press.wav2:
+                https://opengameart.org/content/512-sound-effects-8-bit-style 
+                General Sounds/Buttons/sfx_sounds_button2.wav
+                
+                
+        /music/
+            main_menu_music:
+                https://milkytracker.org/downloads/
+                Skyrunner - Synthesized Samurai
+            
+            main_stage_music:
+                https://opengameart.org/content/japanese-samurai-ninja-battle-trailer
+                ISAo - Japanese Samurai Ninja Battle Trailer
+                
+            boss_stage_music:
+                Bandai Namco
+                
+                
+        /player/
+            player_attack.wav, player_attack_16bit.wav:
+                https://coloralpha.itch.io/50-menu-interface-sfx:
+                MI_SFX 06.wav
+            player_damage.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style 
+                General Sounds/Simple Damage Sounds/sfx_damage_hit1.wav
+            player_jump.wav, player_jump_16bit.wav:
+                https://coloralpha.itch.io/50-menu-interface-sfx:
+                MI_SFX 45.wav
+                
+                
+        /powerups/
+            attack-boost.wav:
+                https://gamesupply.itch.io/1000-nintendo-sound-effects
+                1000+NintendoSFX!/SFX_Powerup-Weapon/Powerup 119 (9).wav
+            heal.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                General Sounds/Positive Sounds/sfx_sounds_powerup3.wav
+            jump-boost.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                General Sounds/Positive Sounds/sfx_sounds_powerup13.wav
+            speed-boost.wav:
+                https://opengameart.org/content/512-sound-effects-8-bit-style
+                General Sounds/Positive Sounds/sfx_sounds_powerup11.wav

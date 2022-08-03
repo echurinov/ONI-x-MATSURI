@@ -131,7 +131,7 @@ class PlayerController(Component):
             self.__taking_damage = True
             self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
             self.__is_falling = True
-            self.__transform.position = (50, self.__camera_min + 55)
+            self.__transform.position = (self.__camera_min + 50, 1500)
 
         # For when the player is attacking
         if self.__is_attacking and self.__attack_timer < 0:
