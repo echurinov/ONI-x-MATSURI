@@ -75,7 +75,7 @@ class Collider(Component):
             self.__transform = self.parent.get_component_by_name("Transform")
 
         # Avoid redoing the expensive calculation if the polygon hasn't changed position or scale
-        if not (self.__old_scale == self.transform.scale) or not (self.__old_pos == self.transform.position) or self.__cached_polygon is None:
+        if self.__cached_polygon is None or not (self.__old_scale == self.transform.scale) or not (self.__old_pos == self.transform.position):
             scaled_polygon = Collider.scale_polygon(self.__base_polygon, self.transform.scale)
 
             new_polygon = []
@@ -132,21 +132,27 @@ class Collider(Component):
         if self.sprite_renderer is None:
             self.sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
         self.__base_polygon = (
-            (self.sprite_renderer.sprite.width / 2, self.sprite_renderer.sprite.height / 2),
-            (-self.sprite_renderer.sprite.width / 2, self.sprite_renderer.sprite.height / 2),
-            (-self.sprite_renderer.sprite.width / 2, -self.sprite_renderer.sprite.height / 2),
-            (self.sprite_renderer.sprite.width / 2, -self.sprite_renderer.sprite.height / 2),
+            (self.sprite_renderer.sprite.texture.width / 2, self.sprite_renderer.sprite.texture.height / 2),
+            (-self.sprite_renderer.sprite.texture.width / 2, self.sprite_renderer.sprite.texture.height / 2),
+            (-self.sprite_renderer.sprite.texture.width / 2, -self.sprite_renderer.sprite.texture.height / 2),
+            (self.sprite_renderer.sprite.texture.width / 2, -self.sprite_renderer.sprite.texture.height / 2),
         )
+        self.__cached_polygon = None  # Clear cached polygon
         self.__height = None
+        self.__width = None
 
     # Generates a "simple" polygon from the sprite
     def generate_simple_polygon_from_sprite(self):
         sprite = self.parent.get_component_by_name("SpriteRenderer").sprite
         self.__base_polygon = arcade.calculate_hit_box_points_simple(sprite.texture.image)
+        self.__cached_polygon = None  # Clear cached polygon
         self.__height = None
+        self.__width = None
 
     # Generates a "detailed" polygon from the sprite
     def generate_polygon_from_sprite(self):
         sprite = self.parent.get_component_by_name("SpriteRenderer").sprite
         self.__base_polygon = arcade.calculate_hit_box_points_detailed(sprite.texture.image)
+        self.__cached_polygon = None  # Clear cached polygon
         self.__height = None
+        self.__width = None

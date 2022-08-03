@@ -286,16 +286,20 @@ class BossController(Component):
 
     # Adds squish to the movement to make boss look more lively
     def squish_amount(self, texture):
+        curr_sprite = self.__sprite_renderer.sprite
         if not self.__moving:
             self.__squish_amount = 0
-            self.__sprite_renderer.set_texture(texture)
+            #self.__sprite_renderer.set_texture(texture)
         else:
             self.__squish_amount += 1
             if self.__squish_amount == 4:
                 self.__squish_amount = 0
 
-            # Rachel: Somehow change squish amount of the texture here plz :D
-            self.__sprite_renderer.set_texture(texture)
+        # Rachel: Somehow change squish amount of the texture here plz :D
+        scale = 1 - self.__squish_amount / 20
+        new_sprite = arcade.Sprite(scale=1.0, image_width=curr_sprite.width, image_height=curr_sprite.height - 2, center_x=curr_sprite.center_x, center_y=curr_sprite.center_y, texture=curr_sprite.texture)
+        self.__sprite_renderer.switch_sprite(new_sprite)
+        #print(str(scale) + " " + str(new_sprite.height))
 
     def update_animation(self):
         # If boss is not preparing to attack or attacking

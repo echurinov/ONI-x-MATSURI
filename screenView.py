@@ -82,6 +82,7 @@ class GameView(arcade.View):
 
         # Load here as it takes a while for some reason
         self.__boss_ground_sprite_preloaded = arcade.Sprite("assets/sprites/boss_ground.png")
+        self.inBoss = False
 
     def __create_level(self):
         # Setup level
@@ -193,10 +194,21 @@ class GameView(arcade.View):
             MusicManager.play_song()
             self.window.show_view(lose_view)
 
+        # Check win conditions
+        if self.inBoss:
+            if self.boss_controller.health <= 0:
+                MusicManager.stop_song()
+                win_view = WinView()
+                SoundManager.stop_active_sounds()
+                MusicManager.change_list("win_view", loop=False)
+                MusicManager.play_song()
+                self.window.show_view(win_view)
+
         # Check to see if the player meets the parameters to proceed to the boss level
-        if self.player_controller.get_transform_x() >= 1920 * 9 + 50:
+        if self.player_controller.get_transform_x() >= 1920 * 9:
             MusicManager.stop_song()
             self.begin_boss()
+            self.inBoss = True
 
     def begin_boss(self):
 
@@ -246,15 +258,15 @@ class GameView(arcade.View):
         # Create a transform component
         boss_transform = Transform((2 * floor_sprite.width / 3, 3000 + boss_sprite.height), 0, 1.0)
         # Create boss controller component
-        boss_controller = BossController()
+        self.boss_controller = BossController()
         # Create a collider component for the enemy (Will autogenerate hitbox when entity is created)
         boss_collider = Collider(auto_generate_polygon="box")
         # Create the enemy entity and add all the components to it
-        boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
+        boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, self.boss_controller, boss_collider], static=False)
 
         # Set the boss's positions
-        boss_controller.set_left_side_position(1 * floor_sprite.width / 3)
-        boss_controller.set_right_side_position(2 * floor_sprite.width / 3)
+        self.boss_controller.set_left_side_position(1 * floor_sprite.width / 3)
+        self.boss_controller.set_right_side_position(2 * floor_sprite.width / 3)
         boss_controller.set_collider(boss_collider)
 
         GameManager.add_entity(boss_entity)
@@ -276,8 +288,9 @@ class GameView(arcade.View):
         # Trigger key press events
         EventManager.trigger_event("KeyPress", key, modifiers)
 
-        if key == 98: #B
+        if key == 98:  # B
             self.begin_boss()
+            self.inBoss = True
 
     def on_key_release(self, key, modifiers):
         # Don't do anything if we're paused
@@ -313,14 +326,15 @@ class WinView(arcade.View):
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
 
         # Return button
-        button = StartButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
+        button = ReturnButton(self, x=0, y=0, texture=arcade.load_texture('assets/sprites/return_button.png'),
                                             texture_hovered=arcade.load_texture('assets/sprites/return_button_highlighted.png'),
                                             texture_pressed=arcade.load_texture('assets/sprites/return_button_pressed.png'))
         box.add(button.with_space_around(top=100))
 
-
     def on_show_view(self):
         """ This is run once when we switch to this view """
+        GameManager.remove_all_entities()
+
         # Load background
         background_sprite = arcade.Sprite("assets/backgrounds/win_screen.png", 1.0)
         background_sprite_renderer = SpriteRenderer(background_sprite)
@@ -330,8 +344,10 @@ class WinView(arcade.View):
                                    [background_sprite_renderer, background_transform, background_resizer])
         GameManager.add_background_entity(background_entity)
 
+        background_resizer.on_resize(self.window.width, self.window.height)
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
+        GameManager.main_camera.move((0, 0))
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_draw(self):
