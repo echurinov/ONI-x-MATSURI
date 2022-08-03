@@ -16,7 +16,7 @@ ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
 HEALTH = 10
-PHASE_2_HEALTH = 5
+PHASE_2_HEALTH = 9
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 3
 
@@ -54,9 +54,9 @@ class BossController(Component):
         if not self.parent.in_scene:
             return
         if self.__damage_timer > 0:
-            self.__sprite_renderer.sprite.color = (255, 100, 100)
+            self.__sprite_renderer.sprite.color = (255, 100 - self.__red_amount, 100 - self.__red_amount)
         else:
-            self.__sprite_renderer.sprite.color = (255, 255, 255)
+            self.__sprite_renderer.sprite.color = (255, 255 - self.__red_amount, 255 - self.__red_amount)
 
         chance = random.randint(0, 100)
 
@@ -85,13 +85,6 @@ class BossController(Component):
                 self.__prepare_attack = False
                 self.__default = False
                 self.__idle = False
-                temp = self.power_up_drop(5)
-                for power_up in temp:
-                    self.__power_up_list.append(power_up)
-
-            for power_up in self.__power_up_list:
-                if power_up.transform.position[1] > 1325:
-                    power_up.transform.move((0,-10))
 
             if self.__is_attacking:
                 self.camera_shake(3)
@@ -122,12 +115,23 @@ class BossController(Component):
                         self.__idle_timer = IDLE_TIMER
                         self.__right_side = True
 
-        if self.__health < PHASE_2_HEALTH:
+        if self.__health < PHASE_2_HEALTH and self.__phase == 0:
+            self.camera_shake(10)
+            self.power_up_drop(5)
             self.__phase = 1
-            self.__idle = True
-            self.__idle_timer = 3
+            self.__is_attacking = True
+            self.__idle = False
+            self.__default = False
+            self.__moving = False
+            self.__prepare_attack = False
+            self.__attack_timer = 3
             self.__angry_timer = ANGRY_TIMER
 
+        if self.__angry_timer > 0:
+            self.__red_amount + 10
+            if self.__red_amount > 255:
+                self.__red_amount = 255
+            self.__sprite_renderer.sprite.color = (255, 255 - self.__red_amount, 255 - self.__red_amount)
 
 
         # Boss phase 2: Boss moves back and forth across the screen, continously attacking
@@ -137,6 +141,11 @@ class BossController(Component):
 
         # Animation update
         self.update_animation()
+
+        # Have all power-ups fall
+        for power_up in self.__power_up_list:
+            if power_up.transform.position[1] > 1325:
+                power_up.transform.move((0, -10))
 
     def on_physics_update(self, dt):
         self.__idle_timer -= dt
@@ -196,6 +205,7 @@ class BossController(Component):
         self.__shake_timer = SHAKE_TIMER
         self.__start_animation = True
         self.__angry_timer = ANGRY_TIMER
+        self.__red_amount = 0
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -229,7 +239,6 @@ class BossController(Component):
     def power_up_drop(self, amount):
         power_up_list = ["PowerUpHealth", "PowerUpSpeed", "PowerUpJump", "PowerUpAttack"]
         to_spawn = []
-        to_return = []
 
         # randomly pick which powerups to spawn
         for i in range(amount):
@@ -251,9 +260,8 @@ class BossController(Component):
             elif power_up == "PowerUpSpeed":
                 temp = PowerUpSpeed((position, 2500))
                 GameManager.add_entity(temp)
-            to_return.append(temp)
-
-        return to_return
+            self.__power_up_list.append(temp)
+        return
 
     # I USED THE FOLLOWING LINK AS REFERENCE FOR THIS: https://api.arcade.academy/en/latest/examples/sprite_move_scrolling_shake.html
     def camera_shake(self, amount):
@@ -294,6 +302,7 @@ class BossController(Component):
         if self.__default:
             texture = self.idle_texture[0]
             self.squish_amount(texture)
+            self.__collider.generate_hitbox_from_sprite()
             return
 
         # If the boss is preparing to attack
@@ -314,7 +323,7 @@ class BossController(Component):
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
             self.squish_amount(texture)
-            self.__collider.generate_simple_polygon_from_sprite()
+            self.__collider.generate_hitbox_from_sprite()
             return
         return
 
