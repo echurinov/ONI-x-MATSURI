@@ -47,6 +47,7 @@ class BossController(Component):
                 #print(self.__transform.position)
             else:
                 self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 3)
+                SoundManager.play_sound("enemy_oni_boss", "drop")
                 self.camera_shake(10)
                 self.__start_animation = False
 
