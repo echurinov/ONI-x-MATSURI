@@ -21,7 +21,8 @@ class LevelSectionLoader(Component):
         self.current_offset = 0
 
         self.sections_gone_through = 0
-        self.sections_before_tower = 8
+        self.sections_before_tower = 3
+        self.tower_teleport_x = None
 
         self.tutorial_section_file = "tutorial.dat"
         self.tutorial_section = None
@@ -76,6 +77,8 @@ class LevelSectionLoader(Component):
     def on_physics_update(self, dt):
         if self.in_boss_level:
             return
+        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
+            return
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
@@ -92,6 +95,7 @@ class LevelSectionLoader(Component):
                 # load tower section
                 print("Loading tower section")
                 section = copy.deepcopy(self.tower_section)
+                self.tower_teleport_x = self.current_offset + section[1]
             else:
                 # Load a copy of the next section
                 section = copy.deepcopy(random.choice(self.level_sections))
