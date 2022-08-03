@@ -33,6 +33,19 @@ class BossController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
+        # Cheeky little opening animation (boss drops down, player cannot move)
+        if self.__start_animation:
+            self.__moving = False
+            self.__idle = True
+            self.__idle_timer = IDLE_TIMER + 4
+            if self.__transform.position[1] > 1396:
+                self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 7)
+                print(self.__transform.position)
+            else:
+                self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 3)
+                self.camera_shake(10)
+                self.__start_animation = False
+
         # Don't animate if it isn't active yet
         if not self.parent.in_scene:
             return
@@ -158,6 +171,7 @@ class BossController(Component):
         self.__default = True
         self.__squish_amount = 0
         self.__shake_timer = SHAKE_TIMER
+        self.__start_animation = True
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
