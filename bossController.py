@@ -19,8 +19,8 @@ HEALTH = 5
 PHASE_2_HEALTH = 2
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 2
-DYING_TIMER = 3
-WHITE_TIMER = 1
+DYING_TIMER = 1
+WHITE_TIMER = 2
 
 
 class BossController(Component):
@@ -32,8 +32,8 @@ class BossController(Component):
         self.__damage_timer = 5
         self.__health = self.health - amount
         if self.__health < 0:
+            self.__health = 0
             SoundManager.play_sound("enemy_oni_boss", "death")
-            GameManager.remove_entity(self.parent)
         else:
             SoundManager.play_sound("enemy_oni_boss", "damage")
         self.__taking_damage = True
@@ -41,19 +41,35 @@ class BossController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
-        if self.__dead:
-            self.__flash_count += 1
+        if self.__health == 0:
+            self.__dead = True
+            self.__idle = True
+            self.__is_attacking = False
+            self.__default = True
+            self.__moving = False
+
+        if self.__dying_timer < 0 and self.__dead:
+            SoundManager.play_sound("enemy_oni_boss", "death")
+            self.__flash_count = self.__flash_count + 1
             if self.__flash_count % 2 == 0:
                 self.__sprite_renderer.sprite.color = (100, 100, 100)
             else:
                 self.__sprite_renderer.sprite.color = (255, 255, 255)
+            if self.__flash_count == 7:
+                self.__white_timer = WHITE_TIMER
+                self.__white = True
+            else:
+                self.__dying_timer = DYING_TIMER
 
-        if self.__dying_timer <= 0 and self.__dead:
-            self.__white_timer = WHITE_TIMER
-            self.__white = True
+        if self.__white_timer > 0 and self.__white:
+            self.__opacity -= 5
+            if self.__opacity < 0:
+                self.__opacity = 0
+            self.__sprite_renderer.sprite.color = (100, 100, 100, self.__opacity)
 
         if self.__white_timer <= 0 and self.__white:
             self.__health = -1 #boss actually dies
+            SoundManager.play_sound("enemy_oni_boss", "death")
 
         # Cheeky little opening animation (boss drops down)
         if self.__start_animation:
@@ -72,15 +88,16 @@ class BossController(Component):
         # Don't animate if it isn't active yet
         if not self.parent.in_scene:
             return
-        if self.__damage_timer > 0:
-            self.__sprite_renderer.sprite.color = (255, 100 - self.__red_amount, 100 - self.__red_amount)
-        else:
-            self.__sprite_renderer.sprite.color = (255, 255 - self.__red_amount, 255 - self.__red_amount)
+        if not self.__dead:
+            if self.__damage_timer > 0:
+                self.__sprite_renderer.sprite.color = (255, 100 - self.__red_amount, 100 - self.__red_amount)
+            else:
+                self.__sprite_renderer.sprite.color = (255, 255 - self.__red_amount, 255 - self.__red_amount)
 
         chance = random.randint(0, 100)
 
         # Boss phase 1: boss moves back and forth across the screen, attacks sometimes
-        if self.__phase == 0:
+        if self.__phase == 0 and not self.__dead:
             # If boss has been idle for more than IDLE_TIMER
             if self.__idle and self.__idle_timer < 0:
                 # Give a chance that the boss will move
@@ -145,10 +162,9 @@ class BossController(Component):
             self.__angry_timer = ANGRY_TIMER
             self.__attack_shake = 5
             self.__move_animation = True
-            self.__flash_count = 0
             self.__dying_timer = DYING_TIMER
 
-        if self.__angry_timer > 0 and self.__phase == 1:
+        if self.__angry_timer > 0 and self.__phase == 1 and not self.__dead:
             self.__red_amount += 10
             if self.__red_amount > 100:
                 self.__red_amount = 100
@@ -163,11 +179,11 @@ class BossController(Component):
                 self.__idle_timer = IDLE_TIMER
                 self.__right_side = True
                 self.__move_animation = False
+                self.__default = True
 
 
         # Boss phase 2: Boss moves back and forth across the screen, continously attacking
-        if self.__phase == 1 and not self.__move_animation:
-            print(self.__idle_timer)
+        if self.__phase == 1 and not self.__move_animation and not self.__dead:
             if self.__idle or self.__prepare_attack:
                 self.__is_attacking = False
 
@@ -280,6 +296,8 @@ class BossController(Component):
         self.__white_timer = WHITE_TIMER
         self.__white = False
         self.__dying_timer = DYING_TIMER
+        self.__flash_count = 1
+        self.__opacity = 255
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -354,8 +372,6 @@ class BossController(Component):
             GameManager.main_camera.shake(shake_vector,
                                       speed=shake_speed,
                                       damping=shake_damping)
-
-
 
     # Adds squish to the movement to make boss look more lively
     def squish_amount(self, texture):
