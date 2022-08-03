@@ -25,8 +25,8 @@ class FoodStalls(Entity):
         food_stall_sprite = arcade.Sprite("assets/tiles/food_stalls.png")
         food_stall_sprite_renderer = SpriteRenderer(food_stall_sprite)
         food_stall_transform = Transform(position, 0, 1.0)
-        food_stall_collider = Collider(auto_generate_polygon="simple")
-        super(FoodStalls, self).__init__("FoodStall", ["Ground"],
+        food_stall_collider = Collider(auto_generate_polygon="detailed")
+        super(FoodStalls, self).__init__("FoodStall", ["Platform"],
                                          [food_stall_sprite_renderer, food_stall_transform, food_stall_collider],
                                          static=True)
 
@@ -57,7 +57,7 @@ class Platform(Entity):
         platform_sprite_renderer = SpriteRenderer(platform_sprite)
         platform_transform = Transform(position, 0, 1.0)
         platform_collider = Collider(auto_generate_polygon="simple")
-        super(Platform, self).__init__("Platform", ["Ground", "Platform"],
+        super(Platform, self).__init__("Platform", ["Platform"],
                                        [platform_sprite_renderer, platform_transform, platform_collider], static=True)
 
 
@@ -125,6 +125,13 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 tutorial_entity = Entity("Tutorial Block", ["Tutorial"],
                                          [tutorial_sprite_renderer, tutorial_transform], static=True)
                 entities.append(tutorial_entity)
+            elif line[0] == "tower.png":
+                tower_sprite = arcade.Sprite("assets/tiles/tower.png")
+                tower_sprite_renderer = SpriteRenderer(tower_sprite)
+                tower_transform = Transform((float(line[1]), float(line[2])))
+                tower_entity = Entity("Tower", ["Tower"],
+                                         [tower_sprite_renderer, tower_transform], static=True)
+                entities.append(tower_entity)
             entities[-1].transform.scale = float(line[3])  # Apply scale
     for entity in entities:
         if offset != (0, 0):

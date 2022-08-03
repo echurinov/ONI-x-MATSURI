@@ -65,7 +65,7 @@ class Collider(Component):
             self.generate_hitbox_from_sprite()
         elif self.__auto_generate_polygon == "simple":
             self.generate_simple_polygon_from_sprite()
-        elif self.__auto_generate_polygon == "detailed":
+        elif self.__auto_generate_polygon == "detailed" or self.__auto_generate_polygon == "complex":
             self.generate_polygon_from_sprite()
 
     # Gets the actual position of the polygon for an entity (takes into account transforms)

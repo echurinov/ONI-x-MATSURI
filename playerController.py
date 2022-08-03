@@ -9,7 +9,6 @@ from transform import Transform
 from entity import Entity
 from levelSectionLoader import LevelSectionLoader
 
-
 # A component that handles input for a player
 from gameManager import GameManager
 
@@ -111,8 +110,8 @@ class PlayerController(Component):
         all_colliders = GameManager.get_colliders()  # List of all colliders in scene
         player_collision_polygon = self.__collider.polygon  # Polygon of the player
         # CAN'T GET THIS OBJECT IN on_created() (CIRCULAR REFERENCE) (Need to create player first in screenView.setup())
-        self.__sword_sprite_polygon = GameManager.get_entities_by_name("Sword")[0].get_component_by_name("Collider").polygon
-
+        self.__sword_sprite_polygon = GameManager.get_entities_by_name("Sword")[0].get_component_by_name(
+            "Collider").polygon
 
         # Disallow the player from moving past the edge of the screen
         if not self.__freeze_camera:
@@ -124,7 +123,6 @@ class PlayerController(Component):
             if self.__transform.position[0] >= 1820:
                 self.__transform.position = (1819, self.__transform.position[1])
 
-
         # Player dies if they fall off the level edge
         if self.__transform.position[1] < -5:
             self.__health = self.__health - 1
@@ -135,11 +133,10 @@ class PlayerController(Component):
             self.__is_falling = True
             self.__transform.position = (50, self.__camera_min + 55)
 
-
         # For when the player is attacking
         if self.__is_attacking and self.__attack_timer < 0:
             SoundManager.play_sound("player", "attack")
-            #SoundManager.test_play_sound("assets/sounds/music/main_stage_music.mp3") """Used to test if sounds will stop playing on death"""
+            # SoundManager.test_play_sound("assets/sounds/music/main_stage_music.mp3") """Used to test if sounds will stop playing on death"""
             self.__attack_time = ATTACK_TIME
             self.__attack_timer = ATTACK_COOL_DOWN
             self.__attack_animation_timer = ATTACK_ANIMATION
@@ -147,24 +144,28 @@ class PlayerController(Component):
             self.__is_attacking = False
             # implement attacking knock back
             if self.__velocity[1] == 0:
-                if(self.__velocity[0] >= KNOCK_BACK_ATTACK):
+                if (self.__velocity[0] >= KNOCK_BACK_ATTACK):
                     self.__velocity = (self.__velocity[0] - KNOCK_BACK_ATTACK, self.__velocity[1])
                 elif self.__velocity[0] >= 0:
-                    self.__velocity = (self.__velocity[0] - (KNOCK_BACK_ATTACK - (self.__velocity[0] / 2)), self.__velocity[1])
+                    self.__velocity = (
+                    self.__velocity[0] - (KNOCK_BACK_ATTACK - (self.__velocity[0] / 2)), self.__velocity[1])
                 elif (self.__velocity[0] <= (-1 * KNOCK_BACK_ATTACK)):
                     self.__velocity = (self.__velocity[0] + KNOCK_BACK_ATTACK, self.__velocity[1])
                 elif self.__velocity[0] < 0:
-                    self.__velocity = (self.__velocity[0] + (KNOCK_BACK_ATTACK - self.__velocity[0] / 2), self.__velocity[1])
+                    self.__velocity = (
+                    self.__velocity[0] + (KNOCK_BACK_ATTACK - self.__velocity[0] / 2), self.__velocity[1])
 
             else:
-                if(self.__velocity[0] >= KNOCK_BACK_ATTACK):
+                if (self.__velocity[0] >= KNOCK_BACK_ATTACK):
                     self.__velocity = (self.__velocity[0] - KNOCK_BACK_ATTACK / 2, self.__velocity[1])
                 elif self.__velocity[0] >= 0:
-                    self.__velocity = (self.__velocity[0] - (KNOCK_BACK_ATTACK / 2 - (self.__velocity[0] / 2)), self.__velocity[1])
+                    self.__velocity = (
+                    self.__velocity[0] - (KNOCK_BACK_ATTACK / 2 - (self.__velocity[0] / 2)), self.__velocity[1])
                 elif (self.__velocity[0] <= (-1 * KNOCK_BACK_ATTACK)):
                     self.__velocity = (self.__velocity[0] + KNOCK_BACK_ATTACK / 2, self.__velocity[1])
                 elif self.__velocity[0] < 0:
-                    self.__velocity = (self.__velocity[0] + (KNOCK_BACK_ATTACK / 2 - self.__velocity[0] / 2), self.__velocity[1])
+                    self.__velocity = (
+                    self.__velocity[0] + (KNOCK_BACK_ATTACK / 2 - self.__velocity[0] / 2), self.__velocity[1])
 
             for collider in all_colliders:
                 if collider.parent is self:
@@ -275,21 +276,21 @@ class PlayerController(Component):
                             self.__health_up = True
 
                         if temp == "Speed":
-                            self.__sprite_renderer.sprite.color = (100,100,255)
+                            self.__sprite_renderer.sprite.color = (100, 100, 255)
                             self.__speed = True
                             self.__speed_timer = 5
-                            #CHANGE
+                            # CHANGE
                             self.__max_velocity = (self.__max_velocity[0] + 350, self.__max_velocity[1] + 350)
                             self.__velocity = (self.__velocity[0] + 100, self.__velocity[1] + 100)
 
-                            #Make player speed
+                            # Make player speed
 
                         if temp == "Jump":
                             self.__jumping_timer = 7
                             self.__jump = True
                             self.__jumping_timer = 7
                             self.__sprite_renderer.sprite.color = (100, 255, 100)
-                            #CHANGE
+                            # CHANGE
                             self.__gravity = -1000
                             self.__max_velocity = (self.__max_velocity[0], self.__max_velocity[1] + 100)
                             self.__velocity = (self.__velocity[0], self.__velocity[1] + 100)
@@ -300,9 +301,10 @@ class PlayerController(Component):
                             self.__mad_timer = 5
                             self.__attack_power = 10
 
-
                 # Only checking for objects tagged with "Ground" or "Platform" (solid objects and platforms)
-                if "Ground" in collider.parent.tags or "Platform" in collider.parent.tags:
+                if "Ground" in collider.parent.tags or (
+                        "Platform" in collider.parent.tags and self.__transform.position[1] > (
+                        collider.transform.position[1] + collider.height / 4)):
                     if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                         # Get how far we would have to move the player to get them out of the floor
                         difference = (collider.transform.position[1] + collider.height / 2) - \
@@ -347,17 +349,20 @@ class PlayerController(Component):
             if self.__velocity[0] > 0:  # Moving right (accelerating)
                 self.__velocity = (self.__velocity[0] + self.__horizontal_acceleration * dt, self.__velocity[1])
             else:  # Moving left (decelerating)
-                self.__velocity = (self.__velocity[0] + self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
+                self.__velocity = (
+                self.__velocity[0] + self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
         elif self.__keys_pressed[arcade.key.A]:
             self.__moving_left = True
             self.__holding_left = True
             self.__holding_right = False
             if self.__velocity[0] > 0:  # Moving right (decelerating)
-                self.__velocity = (self.__velocity[0] - self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
+                self.__velocity = (
+                self.__velocity[0] - self.__horizontal_turnaround_acceleration * dt, self.__velocity[1])
             else:  # Moving left (accelerating)
                 self.__velocity = (self.__velocity[0] - self.__horizontal_acceleration * dt, self.__velocity[1])
         else:  # no keys pressed, default deceleration
-            self.__velocity = (self.__velocity[0] * (1 - self.__horizontal_deceleration_multiplier * dt), self.__velocity[1])
+            self.__velocity = (
+            self.__velocity[0] * (1 - self.__horizontal_deceleration_multiplier * dt), self.__velocity[1])
 
         self.__jump_requested = False
 
@@ -378,7 +383,10 @@ class PlayerController(Component):
         width, height = self.__screen_width, self.__screen_height
 
         if self.__transform.position[0] > (self.__camera_min + width / 2):
-            if self.__transform.position[0] < 1920 * 9 - width / 2:
+            loader = self.get_level_section_loader()
+            if loader.sections_gone_through < loader.sections_before_tower or \
+                    self.get_transform_x() < (loader.current_offset + loader.tower_section[1] - width / 2):
+                # if self.__transform.position[0] < 1920 * 9 - width / 2:
                 self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
         if not self.__freeze_camera:
@@ -407,6 +415,7 @@ class PlayerController(Component):
         self.__collider = None
         self.__sprite_renderer = None
         self.__sword_sprite_polygon = None
+        self.__level_section_loader = None
 
         # Private variables for player health
         self.__health = 6
@@ -414,7 +423,7 @@ class PlayerController(Component):
         self.__taking_damage = False
         self.__invincibility_timer = 0.0
 
-        #Private variable for player attacking
+        # Private variable for player attacking
         self.__is_attacking = False
         self.__attack_time = ATTACK_TIME
         self.__attack_timer = ATTACK_COOL_DOWN
@@ -429,16 +438,16 @@ class PlayerController(Component):
 
         # Private variables for player movement
         self.__touching_ground = False
-        self.__touching_floor = False #this is a variable just for animation
+        self.__touching_floor = False  # this is a variable just for animation
         self.__jump_requested = False
         self.__velocity = (0, 0)
         self.__gravity = -2000
-        self.__jump_speed = 1000
+        self.__jump_speed = 1300
         self.__max_velocity = (500, 2500)
-        self.__falling_speed_multiplier = 1.5  # Fall faster than you go up (makes jumps feel better)
+        self.__falling_speed_multiplier = 1.75  # Fall faster than you go up (makes jumps feel better)
         self.__coyote_time = 0.1  # Period after walking off a platform where you can still jump (another QOL feature)
         self.__coyote_timer = 0  # Temporary variable to keep track of the coyote time
-        self.__is_falling = False # variable changes to true once you fall off an edge and false once you respawn
+        self.__is_falling = False  # variable changes to true once you fall off an edge and false once you respawn
 
         # Pressing jump within this amount of time before touching the ground
         # will make you jump when you land, avoiding missed inputs.
@@ -479,29 +488,42 @@ class PlayerController(Component):
         self.__idle = True
         self.__idle_timer = IDLE_TIME
 
-        idle_1 = (arcade.load_texture("assets/sprites/player/player_idle_1.png"), arcade.load_texture("assets/sprites/player/player_idle_1.png"))
-        idle_2 = (arcade.load_texture("assets/sprites/player/player_idle_2.png"), arcade.load_texture("assets/sprites/player/player_idle_2.png"))
+        idle_1 = (arcade.load_texture("assets/sprites/player/player_idle_1.png"),
+                  arcade.load_texture("assets/sprites/player/player_idle_1.png"))
+        idle_2 = (arcade.load_texture("assets/sprites/player/player_idle_2.png"),
+                  arcade.load_texture("assets/sprites/player/player_idle_2.png"))
         self.idle_texture_pair = (idle_1, idle_2)
 
-        idle_side_1 = (arcade.load_texture("assets/sprites/player/player_idle_L_1.png"), arcade.load_texture("assets/sprites/player/player_idle_R_1.png"))
-        idle_side_2 = (arcade.load_texture("assets/sprites/player/player_idle_L_2.png"), arcade.load_texture("assets/sprites/player/player_idle_R_2.png"))
+        idle_side_1 = (arcade.load_texture("assets/sprites/player/player_idle_L_1.png"),
+                       arcade.load_texture("assets/sprites/player/player_idle_R_1.png"))
+        idle_side_2 = (arcade.load_texture("assets/sprites/player/player_idle_L_2.png"),
+                       arcade.load_texture("assets/sprites/player/player_idle_R_2.png"))
         self.idle_side_texture_pair = (idle_side_1, idle_side_2)
 
-        attack_1 = (arcade.load_texture("assets/sprites/player/player_attack_L_1.png"), arcade.load_texture("assets/sprites/player/player_attack_R_1.png"))
-        attack_2 = (arcade.load_texture("assets/sprites/player/player_attack_L_2.png"), arcade.load_texture("assets/sprites/player/player_attack_R_2.png"))
+        attack_1 = (arcade.load_texture("assets/sprites/player/player_attack_L_1.png"),
+                    arcade.load_texture("assets/sprites/player/player_attack_R_1.png"))
+        attack_2 = (arcade.load_texture("assets/sprites/player/player_attack_L_2.png"),
+                    arcade.load_texture("assets/sprites/player/player_attack_R_2.png"))
         self.attack_texture_pair = (attack_1, attack_2)
 
-        jump_attack_1 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_1.png"), arcade.load_texture("assets/sprites/player/player_jump_attack_R_1.png"))
-        jump_attack_2 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_2.png"), arcade.load_texture("assets/sprites/player/player_jump_attack_R_2.png"))
+        jump_attack_1 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_1.png"),
+                         arcade.load_texture("assets/sprites/player/player_jump_attack_R_1.png"))
+        jump_attack_2 = (arcade.load_texture("assets/sprites/player/player_jump_attack_L_2.png"),
+                         arcade.load_texture("assets/sprites/player/player_jump_attack_R_2.png"))
         self.jump_attack_texture_pair = (jump_attack_1, jump_attack_2)
 
-        jump_1 = (arcade.load_texture("assets/sprites/player/player_jump_L.png"), arcade.load_texture("assets/sprites/player/player_jump_R.png"))
+        jump_1 = (arcade.load_texture("assets/sprites/player/player_jump_L.png"),
+                  arcade.load_texture("assets/sprites/player/player_jump_R.png"))
         self.jump_texture_pair = (jump_1)
 
-        walk_1 = (arcade.load_texture("assets/sprites/player/player_walk_L_1.png"), arcade.load_texture("assets/sprites/player/player_walk_R_1.png"))
-        walk_2 = (arcade.load_texture("assets/sprites/player/player_walk_L_2.png"), arcade.load_texture("assets/sprites/player/player_walk_R_2.png"))
-        walk_3 = (arcade.load_texture("assets/sprites/player/player_walk_L_3.png"), arcade.load_texture("assets/sprites/player/player_walk_R_3.png"))
-        walk_4 = (arcade.load_texture("assets/sprites/player/player_walk_L_4.png"), arcade.load_texture("assets/sprites/player/player_walk_R_4.png"))
+        walk_1 = (arcade.load_texture("assets/sprites/player/player_walk_L_1.png"),
+                  arcade.load_texture("assets/sprites/player/player_walk_R_1.png"))
+        walk_2 = (arcade.load_texture("assets/sprites/player/player_walk_L_2.png"),
+                  arcade.load_texture("assets/sprites/player/player_walk_R_2.png"))
+        walk_3 = (arcade.load_texture("assets/sprites/player/player_walk_L_3.png"),
+                  arcade.load_texture("assets/sprites/player/player_walk_R_3.png"))
+        walk_4 = (arcade.load_texture("assets/sprites/player/player_walk_L_4.png"),
+                  arcade.load_texture("assets/sprites/player/player_walk_R_4.png"))
         self.walk_texture_pair = (walk_1, walk_2, walk_3, walk_4)
 
         self.texture = self.idle_texture_pair
@@ -557,14 +579,18 @@ class PlayerController(Component):
     def set_power_up(self, power_up):
         self.__power_up_type = power_up
 
+    def get_level_section_loader(self):
+        return self.__level_section_loader
+
     # Called when parent entity is created
     def on_created(self):
         self.__collider = self.parent.get_component_by_name("Collider")
         self.__transform = self.parent.get_component_by_name("Transform")
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
+        self.__level_section_loader = self.parent.get_component_by_name("LevelSectionLoader")
 
     def set_gui(self):
-        #GameManager.clear_gui_sprite()
+        # GameManager.clear_gui_sprite()
         if self.__health <= 2:
             if self.__health == 1:
                 self.make_heart_entity(0, "half")
@@ -694,7 +720,7 @@ class PlayerController(Component):
             if self.current_texture > (2 * 9) - 1:
                 self.current_texture = 0
             frame = self.current_texture // 9
-            if not self.__touching_floor: # If you are attacking in air
+            if not self.__touching_floor:  # If you are attacking in air
                 self.__sprite_renderer.set_texture(self.jump_attack_texture_pair[frame][self.character_face_direction])
                 return
             else:
@@ -770,4 +796,3 @@ class PlayerController(Component):
     @property
     def attack_power(self):
         return self.__attack_power
-

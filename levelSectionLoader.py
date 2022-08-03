@@ -20,8 +20,15 @@ class LevelSectionLoader(Component):
         # Marks the end of the previous_section
         self.current_offset = 0
 
+        self.sections_gone_through = 0
+        self.sections_before_tower = 8
+        self.tower_teleport_x = None
+
         self.tutorial_section_file = "tutorial.dat"
         self.tutorial_section = None
+
+        self.tower_section_file = "tower.dat"
+        self.tower_section = None
         # List of all level files
         self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
         # List of all the loaded level sections
@@ -35,6 +42,10 @@ class LevelSectionLoader(Component):
         length, entities = mapSections.load_from_file(self.tutorial_section_file)
         self.tutorial_section = (self.tutorial_section_file, length, entities)
         print("Loaded tutorial level", self.tutorial_section_file)
+
+        length, entities = mapSections.load_from_file(self.tower_section_file)
+        self.tower_section = (self.tower_section_file, length, entities)
+        print("Loaded tower level", self.tower_section_file)
 
         self.in_boss_level = False  # Don't do anything if we're in the boss level
 
@@ -66,6 +77,8 @@ class LevelSectionLoader(Component):
     def on_physics_update(self, dt):
         if self.in_boss_level:
             return
+        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
+            return
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
@@ -77,8 +90,15 @@ class LevelSectionLoader(Component):
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section
         if player_position[0] > self.current_offset + (self.current_section[1] / 2):
-            # Load a copy of the next section
-            section = copy.deepcopy(random.choice(self.level_sections))
+            self.sections_gone_through += 1
+            if self.sections_gone_through > self.sections_before_tower:
+                # load tower section
+                print("Loading tower section")
+                section = copy.deepcopy(self.tower_section)
+                self.tower_teleport_x = self.current_offset + section[1]
+            else:
+                # Load a copy of the next section
+                section = copy.deepcopy(random.choice(self.level_sections))
             # Translate that section to put it after the end of the current loaded section
             self.__tranform_section(section[2], (self.current_offset + self.current_section[1], 0))
             # Add the section to the scene

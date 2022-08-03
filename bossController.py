@@ -47,6 +47,7 @@ class BossController(Component):
                 #print(self.__transform.position)
             else:
                 self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 3)
+                SoundManager.play_sound("enemy_oni_boss", "drop")
                 self.camera_shake(10)
                 self.__start_animation = False
 
@@ -371,6 +372,7 @@ class BossController(Component):
             self.current_texture += 1
             if self.current_texture > (3 * 9) - 1:
                 self.current_texture = 0
+                SoundManager.play_sound("enemy_oni_boss", "drum-attack")
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
             self.squish_amount(texture)
