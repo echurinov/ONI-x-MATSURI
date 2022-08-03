@@ -14,6 +14,9 @@ class BackgroundResizer(Component):
 
         EventManager.add_listener("Resize", self.on_resize)
 
+    def get_width(self):
+        return self.__sprite.width
+
     def on_created(self):
         self.__sprite = self.parent.get_component_by_name("SpriteRenderer").sprite
         self.__original_position = self.parent.get_component_by_name("Transform").position
