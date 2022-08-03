@@ -220,7 +220,7 @@ class BossController(Component):
             if self.__squish_amount == 4:
                 self.__squish_amount = 0
 
-
+            # Rachel: Somehow change squish amount of the texture here plz :D
             self.__sprite_renderer.set_texture(texture)
 
     def update_animation(self):
