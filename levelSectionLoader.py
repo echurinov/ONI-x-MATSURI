@@ -94,8 +94,7 @@ class LevelSectionLoader(Component):
     def on_physics_update(self, dt):
         if self.in_boss_level:
             return
-        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
-            return
+
         # Check player position, if they're more than halfway through a section, load the next section.
         # Also unload the section behind them
         # Sections are chosen randomly from the level_sections list
@@ -110,6 +109,9 @@ class LevelSectionLoader(Component):
             background_copy.transform.position = background_copy.transform.position[0] * self.number_background_sections, background_copy.transform.position[1]
             GameManager.add_background_entity(background_copy)
             self.number_background_sections += 1
+
+        if self.tower_teleport_x is not None:  # Don't keep loading if we've loaded the tower
+            return
 
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section
