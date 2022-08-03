@@ -21,7 +21,7 @@ class LevelSectionLoader(Component):
         self.current_offset = 0
 
         self.sections_gone_through = 0
-        self.sections_before_tower = 3
+        self.sections_before_tower = 8
         self.tower_teleport_x = None
 
         self.tutorial_section_file = "tutorial.dat"
