@@ -16,7 +16,7 @@ ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
 HEALTH = 10
-PHASE_2_HEALTH = 9
+PHASE_2_HEALTH = 5
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 3
 
@@ -47,6 +47,7 @@ class BossController(Component):
                 #print(self.__transform.position)
             else:
                 self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 3)
+                SoundManager.play_sound("enemy_oni_boss", "drop")
                 self.camera_shake(10)
                 self.__start_animation = False
 
@@ -86,10 +87,6 @@ class BossController(Component):
                 self.__default = False
                 self.__idle = False
 
-            if self.__is_attacking:
-                self.camera_shake(3)
-
-
             if self.__is_attacking and self.__attack_time < 0:
                 self.__is_attacking = False
                 self.__default = True
@@ -126,6 +123,7 @@ class BossController(Component):
             self.__prepare_attack = False
             self.__attack_timer = 3
             self.__angry_timer = ANGRY_TIMER
+            self.__attack_shake = 5
 
         if self.__angry_timer > 0:
             self.__red_amount + 10
@@ -135,9 +133,9 @@ class BossController(Component):
 
 
         # Boss phase 2: Boss moves back and forth across the screen, continously attacking
-        if self.__phase == 1:
-            # go idle for a second
-            pass
+        # if self.__phase == 1:
+        #     # go idle for a second
+        #     pass
 
         # Animation update
         self.update_animation()
@@ -146,6 +144,9 @@ class BossController(Component):
         for power_up in self.__power_up_list:
             if power_up.transform.position[1] > 1325:
                 power_up.transform.move((0, -10))
+
+        if self.__is_attacking:
+            self.camera_shake(self.__attack_shake)
 
     def on_physics_update(self, dt):
         self.__idle_timer -= dt
@@ -164,9 +165,6 @@ class BossController(Component):
         self.__transform = None
         self.__collider = None
         self.__sprite_renderer = None
-
-        self.__attacking_sprite_1 = arcade.Sprite("assets/sprites/enemy/boss_attack_1.png")
-        self.__attacking_sprite_2 = arcade.Sprite("assets/sprites/enemy/boss_attack_2.png")
 
         # Timers for enemy moving
         self.__idle_timer = IDLE_TIMER
@@ -206,6 +204,7 @@ class BossController(Component):
         self.__start_animation = True
         self.__angry_timer = ANGRY_TIMER
         self.__red_amount = 0
+        self.__attack_shake = 3
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -286,20 +285,20 @@ class BossController(Component):
 
     # Adds squish to the movement to make boss look more lively
     def squish_amount(self, texture):
-        curr_sprite = self.__sprite_renderer.sprite
-        if not self.__moving:
-            self.__squish_amount = 0
-            #self.__sprite_renderer.set_texture(texture)
-        else:
-            self.__squish_amount += 1
-            if self.__squish_amount == 4:
-                self.__squish_amount = 0
-
+        # curr_sprite = self.__sprite_renderer.sprite
+        # if not self.__moving:
+        #     self.__squish_amount = 0
+        #     self.__sprite_renderer.set_texture(texture)
+        # else:
+        #     self.__squish_amount += 1
+        #     if self.__squish_amount == 4:
+        #         self.__squish_amount = 0
+        self.__sprite_renderer.set_texture(texture)
         # Rachel: Somehow change squish amount of the texture here plz :D
-        scale = 1 - self.__squish_amount / 20
-        new_sprite = arcade.Sprite(scale=1.0, image_width=curr_sprite.width, image_height=curr_sprite.height - 2, center_x=curr_sprite.center_x, center_y=curr_sprite.center_y, texture=curr_sprite.texture)
-        self.__sprite_renderer.switch_sprite(new_sprite)
-        #print(str(scale) + " " + str(new_sprite.height))
+        # scale = 1 - self.__squish_amount / 20
+        # new_sprite = arcade.Sprite(scale=1.0, image_width=curr_sprite.width, image_height=curr_sprite.height - 2, center_x=curr_sprite.center_x, center_y=curr_sprite.center_y, texture=curr_sprite.texture)
+        # self.__sprite_renderer.switch_sprite(new_sprite)
+        # #print(str(scale) + " " + str(new_sprite.height))
 
     def update_animation(self):
         # If boss is not preparing to attack or attacking
@@ -317,18 +316,22 @@ class BossController(Component):
             frame = self.current_texture // 60
             texture = self.prepare_attack_texture[frame][0]
             self.squish_amount(texture)
+            self.__collider.generate_hitbox_from_sprite()
             return
 
         # If the boss is attacking
         if self.__is_attacking:
             self.current_texture += 1
             if self.current_texture > (3 * 9) - 1:
+                SoundManager.play_sound("enemy_oni_boss", "drum-attack")
+                print("Played sound: enemy_oni_boss, drum-attack")
                 self.current_texture = 0
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
             self.squish_amount(texture)
             self.__collider.generate_hitbox_from_sprite()
             return
+        self.__collider.generate_hitbox_from_sprite()
         return
 
     def set_left_side_position(self, position):
