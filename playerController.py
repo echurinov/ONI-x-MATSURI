@@ -7,6 +7,7 @@ from soundManager import SoundManager
 from spriteRenderer import SpriteRenderer
 from transform import Transform
 from entity import Entity
+from levelSectionLoader import LevelSectionLoader
 
 
 # A component that handles input for a player
