@@ -22,7 +22,7 @@ class SoundManager:
     # This class will create a pyglet.media.player.Player when play_sound() is invoked
     __sound_lists = {
         "enemy_oni": {
-            "damage": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_damage_2.wav"),
+            "damage": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_damage.wav"),
             "death": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_death.wav")
         },
         "enemy_oni_boss": {
@@ -36,7 +36,7 @@ class SoundManager:
         "player": {
             "attack": arcade.load_sound(SOUND_PATH + "player/player_attack_16bit.wav"),
             "damage": arcade.load_sound(SOUND_PATH + "player/player_damage.wav"),
-            "jump": arcade.load_sound(SOUND_PATH + "player/player_jump3_16bit.wav")
+            "jump": arcade.load_sound(SOUND_PATH + "player/player_jump_16bit.wav")
         },
         "powerups": {
             "attack-boost": arcade.load_sound(SOUND_PATH + "powerups/attack-boost.wav"),
