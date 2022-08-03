@@ -270,7 +270,6 @@ class BossController(Component):
 
 
     def on_remove(self):
-        self.camera_shake(5)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         EventManager.remove_listener("Update", self.on_update)
 
