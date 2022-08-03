@@ -323,6 +323,8 @@ class BossController(Component):
         if self.__is_attacking:
             self.current_texture += 1
             if self.current_texture > (3 * 9) - 1:
+                SoundManager.play_sound("enemy_oni_boss", "drum-attack")
+                print("Played sound: enemy_oni_boss, drum-attack")
                 self.current_texture = 0
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
