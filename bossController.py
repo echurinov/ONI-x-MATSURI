@@ -310,8 +310,6 @@ class BossController(Component):
         self.__flash_count = 1
         self.__opacity = 255
 
-        self.__sound_played_attack = False
-
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
         self.idle_texture = idle_1
@@ -428,11 +426,10 @@ class BossController(Component):
                 self.current_texture = 0
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
-            if frame == 1 and not self.__sound_played_attack:
+
+            if self.current_texture % 9 == 1 and frame == 2:
                 SoundManager.play_sound("enemy_oni_boss", "drum-attack")
-                self.__sound_played = True
-            if frame == 2:
-                self.__sound_played_attack = False
+
             self.squish_amount(texture)
             self.__collider.generate_hitbox_from_sprite()
             return
