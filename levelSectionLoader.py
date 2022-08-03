@@ -20,6 +20,8 @@ class LevelSectionLoader(Component):
         # Marks the end of the previous_section
         self.current_offset = 0
 
+        self.tutorial_section_file = "tutorial.dat"
+        self.tutorial_section = None
         # List of all level files
         self.level_section_files = ["level1.dat", "level2.dat", "level3.dat"]
         # List of all the loaded level sections
@@ -29,6 +31,10 @@ class LevelSectionLoader(Component):
             length, entities = mapSections.load_from_file(level_file)
             self.level_sections.append((level_file, length, entities))
             print("Loaded level", level_file)
+
+        length, entities = mapSections.load_from_file(self.tutorial_section_file)
+        self.tutorial_section = (self.tutorial_section_file, length, entities)
+        print("Loaded tutorial level", self.tutorial_section_file)
 
         self.in_boss_level = False  # Don't do anything if we're in the boss level
 
@@ -48,9 +54,9 @@ class LevelSectionLoader(Component):
         if not self.parent.in_scene:
             return
         if self.current_section is None:
-            print("Loading first section")
+            print("Generating tutorial section")
             # Load a copy of the first section
-            section = copy.deepcopy(random.choice(self.level_sections))
+            section = copy.deepcopy(self.tutorial_section)
             # Add the section to the scene
             for entity in section[2]:
                 GameManager.add_entity(entity)
