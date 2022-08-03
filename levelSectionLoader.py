@@ -1,10 +1,16 @@
 import random
 import copy
 
+import arcade
+
+from backgroundResizer import BackgroundResizer
 from component import Component
+from entity import Entity
 from eventManager import EventManager
 import mapSections
 from gameManager import GameManager
+from spriteRenderer import SpriteRenderer
+from transform import Transform
 
 
 class LevelSectionLoader(Component):
@@ -16,6 +22,15 @@ class LevelSectionLoader(Component):
         self.previous_section = None
         self.current_section = None
 
+        # Create entity for background (will be copied and tiled)
+        background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
+        background_sprite_renderer = SpriteRenderer(background_sprite)
+        background_transform = Transform((background_sprite.width, background_sprite.height / 2), 0, 1.0)
+        self.background_resizer = BackgroundResizer()
+        self.background_entity = Entity("Background", ["BackgroundTag"],
+                                   [background_sprite_renderer, background_transform, self.background_resizer])
+
+
         # How far the player has progressed through the level
         # Marks the end of the previous_section
         self.current_offset = 0
@@ -23,6 +38,8 @@ class LevelSectionLoader(Component):
         self.sections_gone_through = 0
         self.sections_before_tower = 8
         self.tower_teleport_x = None
+
+        self.number_background_sections = 0
 
         self.tutorial_section_file = "tutorial.dat"
         self.tutorial_section = None
@@ -86,6 +103,13 @@ class LevelSectionLoader(Component):
         # Don't do anything if the player isn't in the level yet
         if not self.parent.in_scene:
             return
+
+        n_backgrounds = (self.parent.transform.position[0] + self.background_resizer.get_width()) // self.background_resizer.get_width()  # How many background sections we're through
+        if n_backgrounds >= self.number_background_sections:
+            background_copy = copy.deepcopy(self.background_entity)
+            background_copy.transform.position = background_copy.transform.position[0] * self.number_background_sections, background_copy.transform.position[1]
+            GameManager.add_background_entity(background_copy)
+            self.number_background_sections += 1
 
         player_position = self.parent.transform.position
         # Check if the player is more than halfway through the current section
