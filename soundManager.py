@@ -30,6 +30,7 @@ class SoundManager:
             "death": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_death.wav"),
             "drop": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drop.wav"),
             "drum-attack": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drum-attack.wav"),
+            "drum-charge": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drum-charge.wav"),
             "laugh": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_laugh.wav"),
             "phase2-groan": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_groan.wav")
         },
