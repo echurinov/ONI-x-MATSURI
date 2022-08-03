@@ -96,3 +96,6 @@ class LevelSectionLoader(Component):
             self.current_offset += self.previous_section[1]
 
             print("Loaded new section", self.current_section[0])
+
+    def get_final_coord(self):
+        return self.current_offset
