@@ -118,6 +118,13 @@ def load_from_file(path, offset=(0, 0), tag=...):
                 entities.append(PowerUpJump((float(line[1]), float(line[2]))))
             elif line[0] == "dango.png":
                 entities.append(PowerUpAttack((float(line[1]), float(line[2]))))
+            elif line[0] == "tutorial_board.png":
+                tutorial_sprite = arcade.Sprite("assets/tiles/tutorial_board.png", 1.0)
+                tutorial_sprite_renderer = SpriteRenderer(tutorial_sprite)
+                tutorial_transform = Transform((float(line[1]), float(line[2])))
+                tutorial_entity = Entity("Tutorial Block", ["Tutorial"],
+                                         [tutorial_sprite_renderer, tutorial_transform], static=True)
+                entities.append(tutorial_entity)
             entities[-1].transform.scale = float(line[3])  # Apply scale
     for entity in entities:
         if offset != (0, 0):
