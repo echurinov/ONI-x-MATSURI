@@ -15,10 +15,10 @@ ATTACK_TIME = 2 # How long the boss attacks
 ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
-HEALTH = 10
-PHASE_2_HEALTH = 5
+HEALTH = 5
+PHASE_2_HEALTH = 2
 PHASE_3_HEALTH = 2
-ANGRY_TIMER = 3
+ANGRY_TIMER = 2
 
 
 class BossController(Component):
@@ -37,7 +37,7 @@ class BossController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
-        # Cheeky little opening animation (boss drops down, player cannot move)
+        # Cheeky little opening animation (boss drops down)
         if self.__start_animation:
             self.__moving = False
             self.__idle = True
@@ -116,25 +116,72 @@ class BossController(Component):
             self.power_up_drop(5)
             self.__phase = 1
             self.__is_attacking = True
-            self.__idle = False
+            self.__idle = True
+            self.__idle_timer = IDLE_TIMER + ANGRY_TIMER
             self.__default = False
             self.__moving = False
             self.__prepare_attack = False
             self.__attack_timer = 3
             self.__angry_timer = ANGRY_TIMER
             self.__attack_shake = 5
+            self.__move_animation = True
 
-        if self.__angry_timer > 0:
-            self.__red_amount + 10
-            if self.__red_amount > 255:
-                self.__red_amount = 255
+        if self.__angry_timer > 0 and self.__phase == 1:
+            self.__red_amount += 10
+            if self.__red_amount > 100:
+                self.__red_amount = 100
             self.__sprite_renderer.sprite.color = (255, 255 - self.__red_amount, 255 - self.__red_amount)
+
+        if self.__move_animation:
+            if self.__transform.position[0] <= self.__right_side_position:
+                self.__transform.position = (self.__transform.position[0] + MOVING_SPEED, self.__transform.position[1])
+            else:
+                self.__moving = False
+                self.__idle = True
+                self.__idle_timer = IDLE_TIMER
+                self.__right_side = True
+                self.__move_animation = False
 
 
         # Boss phase 2: Boss moves back and forth across the screen, continously attacking
-        # if self.__phase == 1:
-        #     # go idle for a second
-        #     pass
+        if self.__phase == 1 and not self.__move_animation:
+            print(self.__idle_timer)
+            if self.__idle or self.__prepare_attack:
+                self.__is_attacking = False
+
+            # If boss has been idle for long enough
+            if self.__idle and self.__idle_timer < 0:
+                self.__idle = False
+                self.__default = False
+                self.__prepare_attack = True
+                self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
+
+            if self.__prepare_attack and self.__prepare_attack_timer < 0:
+                self.__prepare_attack = False
+                self.__is_attacking = True
+                self.__moving = True
+
+            if self.__moving and not self.__idle:
+                if self.__right_side: # if boss is starting to move on the right side of the screen
+                    if self.__transform.position[0] >= self.__left_side_position:
+                        self.__transform.position = (self.__transform.position[0] - MOVING_SPEED, self.__transform.position[1])
+                    else:
+                        self.__moving = False
+                        self.__right_side = False
+                        self.__is_attacking = False
+                        self.__idle = True
+                        self.__default = True
+                        self.__idle_timer = IDLE_TIMER
+                else:
+                    if self.__transform.position[0] <= self.__right_side_position:
+                        self.__transform.position = (self.__transform.position[0] + MOVING_SPEED, self.__transform.position[1])
+                    else:
+                        self.__moving = False
+                        self.__right_side = True
+                        self.__is_attacking = False
+                        self.__idle = True
+                        self.__default = True
+                        self.__idle_timer = IDLE_TIMER
 
         # Animation update
         self.update_animation()
@@ -204,6 +251,7 @@ class BossController(Component):
         self.__angry_timer = ANGRY_TIMER
         self.__red_amount = 0
         self.__attack_shake = 3
+        self.__move_animation = False
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
