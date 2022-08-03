@@ -172,7 +172,7 @@ class GameView(arcade.View):
 
         # Check win conditions
         if self.inBoss:
-            if self.boss_controller.health <= 0:
+            if self.boss_controller.health <= -1:
                 MusicManager.stop_song()
                 win_view = WinView()
                 SoundManager.stop_active_sounds()
