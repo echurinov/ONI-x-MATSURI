@@ -55,7 +55,7 @@ class PowerUpHealth(Entity):
         if self.__player_controller.health < self.__player_controller.max_health:
             self.__player_controller.set_health(self.__player_controller.health + 1)
 
-        SoundManager.play_sound("powerups", "heal")
+        SoundManager.play_sound("powerups", "heal", 0.5)
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Health-Up"
@@ -103,7 +103,7 @@ class PowerUpSpeed(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
-        SoundManager.play_sound("powerups", "speed-boost")
+        SoundManager.play_sound("powerups", "speed-boost", 0.5)
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Speed"
@@ -151,7 +151,7 @@ class PowerUpJump(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
-        SoundManager.play_sound("powerups", "jump-boost")
+        SoundManager.play_sound("powerups", "jump-boost", 0.5)
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Jump"
@@ -199,7 +199,7 @@ class PowerUpAttack(Entity):
                                        self.__sprite.position[1] + self.__bounce_amount)
 
     def on_collection(self):
-        SoundManager.play_sound("powerups", "attack-boost")
+        SoundManager.play_sound("powerups", "attack-boost", 0.3)
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Attack"
