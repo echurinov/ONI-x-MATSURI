@@ -188,14 +188,22 @@ class PlayerController(Component):
             # Ignore the player's own collider
             if collider.parent is self:
                 continue
-            if "Enemy" in collider.parent.tags:
+            if "Enemy" in collider.parent.tags or "Boss" in collider.parent.tags:
                 if arcade.are_polygons_intersecting(player_collision_polygon, collider.polygon):
                     if self.__invincibility_timer < 0:
-                        self.__invincibility_timer = 1.0
-                        self.__health = self.__health - 1
-                        SoundManager.play_sound("player", "damage")
-                        self.__taking_damage = True
-                        self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+                        if "Enemy" in collider.parent.tags:
+                            self.__invincibility_timer = 1.0
+                            self.__health = self.__health - 1
+                            SoundManager.play_sound("player", "damage")
+                            self.__taking_damage = True
+                            self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+                        else:
+                            damage_taken = collider.parent.get_component_by_name("BossController").get_attack_power()
+                            self.__invincibility_timer = 1.0
+                            self.__health = self.__health - damage_taken
+                            SoundManager.play_sound("player", "damage")
+                            self.__taking_damage = True
+                            self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
         if self.__invincibility_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)

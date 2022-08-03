@@ -252,6 +252,10 @@ class GameView(arcade.View):
         # Create the enemy entity and add all the components to it
         boss_entity = Entity("Boss", ["Boss"], [boss_sprite_renderer, boss_transform, boss_controller, boss_collider], static=False)
 
+        # Set the boss's positions
+        boss_controller.set_left_side_position(1 * floor_sprite.width / 3)
+        boss_controller.set_right_side_position(2 * floor_sprite.width / 3)
+
         GameManager.add_entity(boss_entity)
 
 

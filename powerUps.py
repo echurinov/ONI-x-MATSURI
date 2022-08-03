@@ -16,9 +16,9 @@ class PowerUpHealth(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/cottoncandy.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0)
+        self.__transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
-        super(PowerUpHealth, self).__init__("PowerUpHealth", ["PowerUp"], [sprite_renderer, transform, collider],
+        super(PowerUpHealth, self).__init__("PowerUpHealth", ["PowerUp"], [sprite_renderer, self.__transform, collider],
                                             static=False)
         self.__position = position
         self.__bounce_timer = BOUNCE_TIME
@@ -60,15 +60,21 @@ class PowerUpHealth(Entity):
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Health-Up"
 
+    def set_position(self, position):
+        self.__position = position
+
+    def get_position(self):
+        return self.__position
+
 
 class PowerUpSpeed(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/onigiri.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0)
+        self.__transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpSpeed, self).__init__("PowerUpSpeed", ["PowerUp"],
-                                           [sprite_renderer, transform, collider],
+                                           [sprite_renderer, self.__transform, collider],
                                            static=False)
         self.__position = position
         self.__bounce_timer = BOUNCE_TIME
@@ -102,15 +108,21 @@ class PowerUpSpeed(Entity):
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Speed"
 
+    def set_position(self, position):
+        self.__position = position
+
+    def get_position(self):
+        return self.__position
+
 
 class PowerUpJump(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/squid.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0)
+        self.__transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpJump, self).__init__("PowerUpJump", ["PowerUp"],
-                                          [sprite_renderer, transform, collider],
+                                          [sprite_renderer, self.__transform, collider],
                                           static=False)
         self.__position = position
         self.__bounce_timer = BOUNCE_TIME
@@ -144,15 +156,21 @@ class PowerUpJump(Entity):
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Jump"
 
+    def set_position(self, position):
+        self.__position = position
+
+    def get_position(self):
+        return self.__position
+
 
 class PowerUpAttack(Entity):
     def __init__(self, position):
         self.__sprite = arcade.Sprite("assets/sprites/dango.png")
         sprite_renderer = SpriteRenderer(self.__sprite)
-        transform = Transform(position, 0)
+        self.__transform = Transform(position, 0)
         collider = Collider(auto_generate_polygon="box")
         super(PowerUpAttack, self).__init__("PowerUpAttack", ["PowerUp"],
-                                            [sprite_renderer, transform, collider],
+                                            [sprite_renderer, self.__transform, collider],
                                             static=False)
         self.__position = position
         self.__bounce_timer = BOUNCE_TIME
@@ -185,3 +203,10 @@ class PowerUpAttack(Entity):
         GameManager.remove_entity(self)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         return "Attack"
+
+    def set_position(self, position):
+        self.__position = position
+
+
+    def get_position(self):
+        return self.__position
