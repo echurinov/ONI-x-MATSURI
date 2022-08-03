@@ -28,6 +28,7 @@ class SoundManager:
         "enemy_oni_boss": {
             "damage": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_damage.wav"),
             "death": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_death.wav"),
+            "death_vaporize": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_death_vaporize.wav"),
             "drop": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drop.wav"),
             "drum-attack": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drum-attack.wav"),
             "drum-charge": arcade.load_sound(SOUND_PATH + "enemy/enemy_oni_boss_drum-charge.wav"),
