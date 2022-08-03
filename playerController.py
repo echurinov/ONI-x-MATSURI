@@ -200,12 +200,14 @@ class PlayerController(Component):
                             self.__taking_damage = True
                             self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
                         else:
-                            damage_taken = collider.parent.get_component_by_name("BossController").get_attack_power()
-                            self.__invincibility_timer = 1.0
-                            self.__health = self.__health - damage_taken
-                            SoundManager.play_sound("player", "damage")
-                            self.__taking_damage = True
-                            self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
+                            if not collider.parent.get_component_by_name("BossController").dead:
+                                damage_taken = collider.parent.get_component_by_name(
+                                    "BossController").get_attack_power()
+                                self.__invincibility_timer = 1.0
+                                self.__health = self.__health - damage_taken
+                                SoundManager.play_sound("player", "damage")
+                                self.__taking_damage = True
+                                self.__velocity = (self.__velocity[0] * 490 / 500, self.__velocity[1])
 
         if self.__invincibility_timer > 0:
             self.__sprite_renderer.sprite.color = (255, 100, 100)

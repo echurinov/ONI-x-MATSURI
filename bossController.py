@@ -19,10 +19,14 @@ HEALTH = 5
 PHASE_2_HEALTH = 2
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 2
+DYING_TIMER = 3
+WHITE_TIMER = 1
 
 
 class BossController(Component):
     def take_damage(self, amount):
+        if self.__dead:
+            return
         if self.__damage_timer > 0:
             return
         self.__damage_timer = 5
@@ -37,6 +41,20 @@ class BossController(Component):
     # Gets called every frame
     # dt is the time taken since the last frame
     def on_update(self, dt):
+        if self.__dead:
+            self.__flash_count += 1
+            if self.__flash_count % 2 == 0:
+                self.__sprite_renderer.sprite.color = (100, 100, 100)
+            else:
+                self.__sprite_renderer.sprite.color = (255, 255, 255)
+
+        if self.__dying_timer <= 0 and self.__dead:
+            self.__white_timer = WHITE_TIMER
+            self.__white = True
+
+        if self.__white_timer <= 0 and self.__white:
+            self.__health = -1 #boss actually dies
+
         # Cheeky little opening animation (boss drops down)
         if self.__start_animation:
             self.__moving = False
@@ -126,6 +144,8 @@ class BossController(Component):
             self.__angry_timer = ANGRY_TIMER
             self.__attack_shake = 5
             self.__move_animation = True
+            self.__flash_count = 0
+            self.__dying_timer = DYING_TIMER
 
         if self.__angry_timer > 0 and self.__phase == 1:
             self.__red_amount += 10
@@ -203,6 +223,8 @@ class BossController(Component):
         self.__attack_timer -= dt
         self.__shake_timer -= dt
         self.__angry_timer -= dt
+        self.__dying_timer -= dt
+        self.__white_timer -= dt
         return
 
     def __init__(self):
@@ -220,6 +242,7 @@ class BossController(Component):
         self.__health = HEALTH
         self.__taking_damage = False
         self.__damage_timer = 0.0
+        self.__dead = False
 
         # Holds all the powerups currently on screen
         self.__power_up_list = []
@@ -253,6 +276,9 @@ class BossController(Component):
         self.__red_amount = 0
         self.__attack_shake = 3
         self.__move_animation = False
+        self.__white_timer = WHITE_TIMER
+        self.__white = False
+        self.__dying_timer = DYING_TIMER
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -392,6 +418,11 @@ class BossController(Component):
     def set_collider(self, collider):
         self.__collider = collider
 
+    def die_animation(self):
+        self.camera_shake(10)
+        self.__dead = True
+        self.__dying_timer = DYING_TIMER
+
     @property
     def touching_ground(self):
         return self.__touching_ground
@@ -407,3 +438,7 @@ class BossController(Component):
     @property
     def taking_damage(self):
         return self.__taking_damage
+
+    @property
+    def dead(self):
+        return self.__dead
