@@ -1,4 +1,6 @@
 import random
+import sys
+os.chdir(os.path.dirname(sys.modules['__main__'].__file__))
 
 import arcade
 import os
