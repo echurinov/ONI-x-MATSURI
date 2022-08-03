@@ -6,6 +6,7 @@ from gameManager import GameManager
 from soundManager import SoundManager
 from powerUps import PowerUpJump, PowerUpSpeed, PowerUpAttack, PowerUpHealth
 import random
+import math
 
 IDLE_TIMER = 5
 DAMAGE_TIMER = 5
@@ -13,6 +14,7 @@ PREPARE_ATTACK_TIMER = 2
 ATTACK_TIME = 2 # How long the boss attacks
 ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
+SHAKE_TIMER = 0.7 # How long between camera shakes
 
 
 class BossController(Component):
@@ -72,10 +74,12 @@ class BossController(Component):
             if power_up.transform.position[1] > 1325:
                 power_up.transform.move((0,-10))
 
+        if self.__is_attacking:
+            self.camera_shake(3)
 
         if self.__is_attacking:
             # CHANGE THE COLLIDER TO BE THE BIGGER COLLIDER
-            self.__is_attacking = True
+            print("hey")
 
         if self.__is_attacking and self.__attack_time < 0:
             self.__is_attacking = False
@@ -111,6 +115,7 @@ class BossController(Component):
         self.__attack_time -= dt
         self.__damage_timer -= dt
         self.__attack_timer -= dt
+        self.__shake_timer -= dt
         return
 
     def __init__(self):
@@ -152,6 +157,7 @@ class BossController(Component):
         self.current_texture = 0
         self.__default = True
         self.__squish_amount = 0
+        self.__shake_timer = SHAKE_TIMER
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
@@ -209,6 +215,27 @@ class BossController(Component):
             to_return.append(temp)
 
         return to_return
+
+    # I USED THE FOLLOWING LINK AS REFERENCE FOR THIS: https://api.arcade.academy/en/latest/examples/sprite_move_scrolling_shake.html
+    def camera_shake(self, amount):
+        if self.__shake_timer < 0:
+            self.__shake_timer = SHAKE_TIMER
+            shake_direction = -5
+            # Calculate a vector based on that
+            shake_vector = (
+                math.cos(shake_direction) * amount,
+                math.sin(shake_direction) * amount
+            )
+            # Frequency of the shake
+            shake_speed = 1.5
+            # How fast to damp the shake
+            shake_damping = 0.9
+            # Do the shake
+            GameManager.main_camera.shake(shake_vector,
+                                      speed=shake_speed,
+                                      damping=shake_damping)
+
+
 
     # Adds squish to the movement to make boss look more lively
     def squish_amount(self, texture):
