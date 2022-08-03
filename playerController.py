@@ -378,7 +378,12 @@ class PlayerController(Component):
         width, height = self.__screen_width, self.__screen_height
 
         if self.__transform.position[0] > (self.__camera_min + width / 2):
-            if self.__transform.position[0] < 1920 * 9 - width / 2:
+            loader = self.get_level_section_loader()
+            print("sections:", loader.sections_gone_through)
+            print(self.get_transform_x(), loader.current_offset, loader.tower_section[1])
+            if loader.sections_gone_through < loader.sections_before_tower or \
+                    self.get_transform_x() < (loader.current_offset + loader.tower_section[1] - width/2):
+            #if self.__transform.position[0] < 1920 * 9 - width / 2:
                 self.__camera_min = self.__camera_min + (self.__transform.position[0] - (self.__camera_min + width / 2))
 
         if not self.__freeze_camera:
@@ -407,6 +412,7 @@ class PlayerController(Component):
         self.__collider = None
         self.__sprite_renderer = None
         self.__sword_sprite_polygon = None
+        self.__level_section_loader = None
 
         # Private variables for player health
         self.__health = 6
@@ -557,11 +563,15 @@ class PlayerController(Component):
     def set_power_up(self, power_up):
         self.__power_up_type = power_up
 
+    def get_level_section_loader(self):
+        return self.__level_section_loader
+
     # Called when parent entity is created
     def on_created(self):
         self.__collider = self.parent.get_component_by_name("Collider")
         self.__transform = self.parent.get_component_by_name("Transform")
         self.__sprite_renderer = self.parent.get_component_by_name("SpriteRenderer")
+        self.__level_section_loader = self.parent.get_component_by_name("LevelSectionLoader")
 
     def set_gui(self):
         #GameManager.clear_gui_sprite()

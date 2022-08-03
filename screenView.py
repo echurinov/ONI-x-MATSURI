@@ -205,7 +205,10 @@ class GameView(arcade.View):
                 self.window.show_view(win_view)
 
         # Check to see if the player meets the parameters to proceed to the boss level
-        if self.player_controller.get_transform_x() >= 1920 * 9:
+        loader = self.player_controller.get_level_section_loader()
+        # If player is at tower section and they're touching the right side of the screen
+        if loader.sections_gone_through > loader.sections_before_tower and self.player_controller.get_transform_x() >= (
+                loader.current_offset + loader.tower_section[1]):
             MusicManager.stop_song()
             self.begin_boss()
             self.inBoss = True
