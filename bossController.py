@@ -15,8 +15,8 @@ ATTACK_TIME = 2 # How long the boss attacks
 ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
-HEALTH = 5
-PHASE_2_HEALTH = 2
+HEALTH = 1
+PHASE_2_HEALTH = 3
 PHASE_3_HEALTH = 2
 ANGRY_TIMER = 2
 DYING_TIMER = 1
@@ -50,6 +50,7 @@ class BossController(Component):
 
         if self.__dying_timer < 0 and self.__dead:
             SoundManager.play_sound("enemy_oni_boss", "death")
+            self.power_up_drop(5)
             self.__flash_count = self.__flash_count + 1
             if self.__flash_count % 2 == 0:
                 self.__sprite_renderer.sprite.color = (100, 100, 100)
@@ -328,12 +329,12 @@ class BossController(Component):
 
     # Call to drop a bunch of power-ups on screen
     def power_up_drop(self, amount):
-        power_up_list = ["PowerUpHealth", "PowerUpSpeed", "PowerUpJump", "PowerUpAttack"]
+        power_up_list = ["PowerUpHealth", "PowerUpSpeed", "PowerUpJump"]
         to_spawn = []
 
         # randomly pick which powerups to spawn
         for i in range(amount):
-            to_spawn.append(power_up_list[random.randint(0, 4) - 1])
+            to_spawn.append(power_up_list[random.randint(0, 3) - 1])
 
         # determine the random positions for the powerups
         for power_up in to_spawn:
@@ -344,9 +345,6 @@ class BossController(Component):
                 GameManager.add_entity(temp)
             elif power_up == "PowerUpJump":
                 temp = PowerUpJump((position, 2500))
-                GameManager.add_entity(temp)
-            elif power_up == "PowerUpAttack":
-                temp = PowerUpAttack((position, 2500))
                 GameManager.add_entity(temp)
             elif power_up == "PowerUpSpeed":
                 temp = PowerUpSpeed((position, 2500))

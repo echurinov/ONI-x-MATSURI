@@ -97,7 +97,7 @@ class GameView(arcade.View):
         # Create a sprite renderer component
         player_sprite_renderer = SpriteRenderer(player_sprite)
         # Create a transform component for the player
-        player_transform = Transform((50, 1000), 0, 1.0)
+        player_transform = Transform((100, 100), 0, 1.0)
         # Create player controller component
         self.player_controller = PlayerController()
         # Create a collider component for the player (Will autogenerate hitbox when entity is created)
@@ -205,7 +205,7 @@ class GameView(arcade.View):
             GameManager.remove_entity(obj)
 
         # Reset player position
-        self.player_controller.set_transform((50, 2000))
+        self.player_controller.set_transform((60, 2000))
         # Disable the level section loader
         self.player_controller.parent.get_component_by_name("LevelSectionLoader").in_boss_level = True
 
