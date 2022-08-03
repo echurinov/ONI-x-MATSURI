@@ -87,32 +87,8 @@ class GameView(arcade.View):
     def __create_level(self):
         # Setup level
 
-        # Create box entities for a somewhat random floor
-
-        #level_length, entities = mapSections.load_from_file("level.dat")
-        #entities = mapSections.section3()
-        #print("Loaded level with", len(entities), "entities and length", level_length)
-        #for i in entities:
-        #    GameManager.add_entity(i)
-
-        # Create entities for background (tiled)
-        for i in range(5):
-            background_sprite = arcade.Sprite("assets/backgrounds/oni_background.png", 1.0)
-            background_sprite_renderer = SpriteRenderer(background_sprite)
-            background_transform = Transform((i * background_sprite.width, background_sprite.height / 2), 0, 1.0)
-            background_resizer = BackgroundResizer()
-            background_entity = Entity("Background", ["BackgroundTag"],
-                                       [background_sprite_renderer, background_transform, background_resizer])
-            GameManager.add_background_entity(background_entity)
-
-        # Create heart sprites
-        # Heart sprites are handled in the player controller now
-        #for i in range(3):
-        #    heart_sprite = arcade.Sprite("assets/sprites/heart_full.png", 1.0)
-        #    heart_sprite_renderer = SpriteRenderer(heart_sprite)
-        #    heart_transform = Transform((i * (heart_sprite.width + 10) + 70, 750 + heart_sprite.height / 2), 0, 1.0)
-        #    heart_entity = Entity("Heart", ["HeartTag"], [heart_sprite_renderer, heart_transform])
-        #    GameManager.add_gui_entity(heart_entity)
+        # now done in other scripts
+        pass
 
     def __create_player(self):
         # Setup player
@@ -196,7 +172,7 @@ class GameView(arcade.View):
 
         # Check win conditions
         if self.inBoss:
-            if self.boss_controller.health <= 0:
+            if self.boss_controller.health <= -1:
                 MusicManager.stop_song()
                 win_view = WinView()
                 SoundManager.stop_active_sounds()

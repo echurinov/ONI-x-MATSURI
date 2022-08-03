@@ -25,7 +25,7 @@ class FoodStalls(Entity):
         food_stall_sprite = arcade.Sprite("assets/tiles/food_stalls.png")
         food_stall_sprite_renderer = SpriteRenderer(food_stall_sprite)
         food_stall_transform = Transform(position, 0, 1.0)
-        food_stall_collider = Collider(auto_generate_polygon="detailed")
+        food_stall_collider = Collider(auto_generate_polygon="box")
         super(FoodStalls, self).__init__("FoodStall", ["Platform"],
                                          [food_stall_sprite_renderer, food_stall_transform, food_stall_collider],
                                          static=True)

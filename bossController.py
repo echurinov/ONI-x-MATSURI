@@ -131,6 +131,7 @@ class BossController(Component):
                         self.__right_side = True
 
         if self.__health < PHASE_2_HEALTH and self.__phase == 0:
+            SoundManager.play_sound("enemy_oni_boss", "phase2-groan")
             self.camera_shake(10)
             self.power_up_drop(5)
             self.__phase = 1
