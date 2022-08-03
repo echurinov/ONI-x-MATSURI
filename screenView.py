@@ -255,6 +255,7 @@ class GameView(arcade.View):
         # Set the boss's positions
         boss_controller.set_left_side_position(1 * floor_sprite.width / 3)
         boss_controller.set_right_side_position(2 * floor_sprite.width / 3)
+        boss_controller.set_collider(boss_collider)
 
         GameManager.add_entity(boss_entity)
 

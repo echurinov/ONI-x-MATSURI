@@ -15,6 +15,10 @@ ATTACK_TIME = 2 # How long the boss attacks
 ATTACK_TIMER = 7 # How long before the boss can attack again
 MOVING_SPEED = 1
 SHAKE_TIMER = 0.7 # How long between camera shakes
+HEALTH = 10
+PHASE_2_HEALTH = 5
+PHASE_3_HEALTH = 2
+ANGRY_TIMER = 3
 
 
 class BossController(Component):
@@ -40,7 +44,7 @@ class BossController(Component):
             self.__idle_timer = IDLE_TIMER + 4
             if self.__transform.position[1] > 1396:
                 self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 7)
-                print(self.__transform.position)
+                #print(self.__transform.position)
             else:
                 self.__transform.position = (self.__transform.position[0], self.__transform.position[1] - 3)
                 self.camera_shake(10)
@@ -56,68 +60,80 @@ class BossController(Component):
 
         chance = random.randint(0, 100)
 
-        # If boss has been idle for more than IDLE_TIMER
-        if self.__idle and self.__idle_timer < 0:
-            # Give a chance that the boss will move
-            if chance % 10 == 0:
-                self.__moving = True
+        # Boss phase 1: boss moves back and forth across the screen, attacks sometimes
+        if self.__phase == 0:
+            # If boss has been idle for more than IDLE_TIMER
+            if self.__idle and self.__idle_timer < 0:
+                # Give a chance that the boss will move
+                if chance % 10 == 0:
+                    self.__moving = True
+                    self.__idle = False
+
+            # Give chance that boss will prepare to attack
+            if chance % self.__attack_chance == 0 and not self.__prepare_attack and not self.__is_attacking and self.__attack_timer < 0:
+                self.__moving = False
                 self.__idle = False
+                self.__default = False
+                self.__prepare_attack = True
+                self.__is_attacking = False
+                self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
 
-        # Give chance that boss will prepare to attack
-        if chance % 15 == 0 and not self.__prepare_attack and not self.__is_attacking and self.__attack_timer < 0:
-            self.__moving = False
-            self.__idle = False
-            self.__default = False
-            self.__prepare_attack = True
-            self.__is_attacking = False
-            self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
+            if self.__prepare_attack_timer < 0 and self.__prepare_attack:
+                self.__moving = True
+                self.__is_attacking = True
+                self.__attack_time = ATTACK_TIME
+                self.__prepare_attack = False
+                self.__default = False
+                self.__idle = False
+                temp = self.power_up_drop(5)
+                for power_up in temp:
+                    self.__power_up_list.append(power_up)
 
-        if self.__prepare_attack_timer < 0 and self.__prepare_attack:
-            self.__moving = True
-            self.__is_attacking = True
-            self.__attack_time = ATTACK_TIME
-            self.__prepare_attack = False
-            self.__default = False
-            self.__idle = False
-            temp = self.power_up_drop(5)
-            for power_up in temp:
-                self.__power_up_list.append(power_up)
+            for power_up in self.__power_up_list:
+                if power_up.transform.position[1] > 1325:
+                    power_up.transform.move((0,-10))
 
-        for power_up in self.__power_up_list:
-            if power_up.transform.position[1] > 1325:
-                power_up.transform.move((0,-10))
+            if self.__is_attacking:
+                self.camera_shake(3)
 
-        if self.__is_attacking:
-            self.camera_shake(3)
 
-        if self.__is_attacking:
-            # CHANGE THE COLLIDER TO BE THE BIGGER COLLIDER
-            print("hey")
+            if self.__is_attacking and self.__attack_time < 0:
+                self.__is_attacking = False
+                self.__default = True
+                self.__attack_timer = ATTACK_TIMER
 
-        if self.__is_attacking and self.__attack_time < 0:
-            self.__is_attacking = False
-            self.__default = True
-            self.__attack_timer = ATTACK_TIMER
+            # If the boss is moving to the other side
+            if self.__moving and not self.__idle:
+                if self.__right_side: # If the boss started on the right side
+                    if self.__transform.position[0] >= self.__left_side_position:
+                        self.__transform.position = (self.__transform.position[0] - MOVING_SPEED, self.__transform.position[1])
+                    else:
+                        self.__moving = False
+                        self.__idle = True
+                        self.__idle_timer = IDLE_TIMER
+                        self.__right_side = False
 
-        # If the boss is moving to the other side
-        if self.__moving and not self.__idle:
-            if self.__right_side: # If the boss started on the right side
-                if self.__transform.position[0] >= self.__left_side_position:
-                    self.__transform.position = (self.__transform.position[0] - MOVING_SPEED, self.__transform.position[1])
                 else:
-                    self.__moving = False
-                    self.__idle = True
-                    self.__idle_timer = IDLE_TIMER
-                    self.__right_side = False
+                    if self.__transform.position[0] <= self.__right_side_position:
+                        self.__transform.position = (self.__transform.position[0] + MOVING_SPEED, self.__transform.position[1])
+                    else:
+                        self.__moving = False
+                        self.__idle = True
+                        self.__idle_timer = IDLE_TIMER
+                        self.__right_side = True
 
-            else:
-                if self.__transform.position[0] <= self.__right_side_position:
-                    self.__transform.position = (self.__transform.position[0] + MOVING_SPEED, self.__transform.position[1])
-                else:
-                    self.__moving = False
-                    self.__idle = True
-                    self.__idle_timer = IDLE_TIMER
-                    self.__right_side = True
+        if self.__health < PHASE_2_HEALTH:
+            self.__phase = 1
+            self.__idle = True
+            self.__idle_timer = 3
+            self.__angry_timer = ANGRY_TIMER
+
+
+
+        # Boss phase 2: Boss moves back and forth across the screen, continously attacking
+        if self.__phase == 1:
+            # go idle for a second
+            pass
 
         # Animation update
         self.update_animation()
@@ -129,6 +145,7 @@ class BossController(Component):
         self.__damage_timer -= dt
         self.__attack_timer -= dt
         self.__shake_timer -= dt
+        self.__angry_timer -= dt
         return
 
     def __init__(self):
@@ -139,11 +156,14 @@ class BossController(Component):
         self.__collider = None
         self.__sprite_renderer = None
 
+        self.__attacking_sprite_1 = arcade.Sprite("assets/sprites/enemy/boss_attack_1.png")
+        self.__attacking_sprite_2 = arcade.Sprite("assets/sprites/enemy/boss_attack_2.png")
+
         # Timers for enemy moving
         self.__idle_timer = IDLE_TIMER
 
         # Private variables for enemy health
-        self.__health = 1
+        self.__health = HEALTH
         self.__taking_damage = False
         self.__damage_timer = 0.0
 
@@ -157,14 +177,17 @@ class BossController(Component):
         self.__direction = 1  # Direction is 1 for right, -1 for left
         self.__left_side_position = 0
         self.__right_side_position = 0
+        self.__move_speed = 10
 
         # Variables for attacking
         self.__attack_power = 1
+        self.__attack_chance = 10
         self.__prepare_attack = False
         self.__is_attacking = False
         self.__attack_time = ATTACK_TIME
         self.__attack_timer = ATTACK_TIMER
         self.__prepare_attack_timer = PREPARE_ATTACK_TIMER
+        self.__phase = 0
 
         # Animation
         self.current_texture = 0
@@ -172,10 +195,11 @@ class BossController(Component):
         self.__squish_amount = 0
         self.__shake_timer = SHAKE_TIMER
         self.__start_animation = True
+        self.__angry_timer = ANGRY_TIMER
 
         # Idle animations
         idle_1 = (arcade.load_texture("assets/sprites/enemy/boss_1.png"), arcade.load_texture("assets/sprites/enemy/boss_1.png"))
-        self.idle_texture = (idle_1)
+        self.idle_texture = idle_1
 
         prepare_attack_1 = (arcade.load_texture("assets/sprites/enemy/boss_2.png"), arcade.load_texture("assets/sprites/enemy/boss_2.png"))
         prepare_attack_2 = (arcade.load_texture("assets/sprites/enemy/boss_3.png"), arcade.load_texture("assets/sprites/enemy/boss_3.png"))
@@ -189,6 +213,7 @@ class BossController(Component):
 
 
     def on_remove(self):
+        self.camera_shake(5)
         EventManager.remove_listener("PhysicsUpdate", self.on_physics_update)
         EventManager.remove_listener("Update", self.on_update)
 
@@ -289,6 +314,7 @@ class BossController(Component):
             frame = self.current_texture // 9
             texture = self.attack_texture[frame][0]
             self.squish_amount(texture)
+            self.__collider.generate_simple_polygon_from_sprite()
             return
         return
 
@@ -300,6 +326,9 @@ class BossController(Component):
 
     def get_attack_power(self):
         return self.__attack_power
+
+    def set_collider(self, collider):
+        self.__collider = collider
 
     @property
     def touching_ground(self):
